@@ -58,6 +58,7 @@ class CsisAPI:
         # only save tickets that do not have the TOPdesk id
         for external_id in tickets_ids:
             ticket_details = self.__get_ticket(external_id)
+            print(ticket_details)
             if ticket_details["payload"]["customer_reference"] == "" or ticket_details["payload"]["customer_reference"] is None:
                 tickets.append(ticket_details)
 

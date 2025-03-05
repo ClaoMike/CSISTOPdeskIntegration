@@ -16,7 +16,7 @@ class ConfigurationManager:
             load_dotenv()
 
             # General variables
-            self.__minutes = 150
+            self.__minutes = 200
 
             # CSIS variables
             self.__CSIS_AUTHENTICATION_URL = "https://login.csis.com/oauth2/v2/token"

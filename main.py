@@ -17,3 +17,5 @@ tickets_to_be_created = ticketConverter.convert_tickets_to_TOPdesk_format(ticket
 created_tickets = topdeskAPI.create_tickets(tickets_to_be_created)
 # Update the CSIS ticket with a reference to the TOPdesk ticket
 csisAPI.update_tickets(created_tickets)
+
+# TODO: log, documentation, test, the rest
