@@ -1,5 +1,6 @@
 import requests
 from ConfigurationManager import ConfigurationManager
+from TimestampGenerator import TimestampGenerator
 
 class CsisAPI:
     _instance = None  # Class variable to store the single instance
@@ -15,6 +16,9 @@ class CsisAPI:
         if not hasattr(self, "_initialized"):  # Ensure it's only initialized once
             self._initialized = True
             self.__configurationManager = ConfigurationManager()
+
+            timestampGenerator = TimestampGenerator()
+            self.__timestamp = timestampGenerator.get_timestamp(minutes=self.__configurationManager.minutes)
 
     def get_token(self):
         payload = {
@@ -32,7 +36,7 @@ class CsisAPI:
         else:
             print(f"Error {response.status_code}: {response.text}")
 
-    def get_tickets_created_after(self, created_after_timestamp):
+    def get_tickets_to_be_created(self):
         """Fetch tickets created after a timestamp, that are not closed."""
         offset = 0
         limit = 2
@@ -40,7 +44,7 @@ class CsisAPI:
         tickets = []
 
         while True:
-            response = self.__get_tickets_with_offset(created_after_timestamp, offset, limit)
+            response = self.__get_tickets_with_offset(offset, limit)
             payload = response["payload"]
 
             for ticket in payload["page"]:
@@ -54,12 +58,12 @@ class CsisAPI:
         # only save tickets that do not have the TOPdesk id
         for external_id in tickets_ids:
             ticket_details = self.__get_ticket(external_id)
-            if ticket_details["payload"]["customer_reference"] == "":
+            if ticket_details["payload"]["customer_reference"] == "" or ticket_details["payload"]["customer_reference"] is None:
                 tickets.append(ticket_details)
 
         return tickets
 
-    def __get_tickets_with_offset(self, created_after_timestamp, offset, limit):
+    def __get_tickets_with_offset(self, offset, limit):
         """Fetch tickets created after a timestamp, that are not closed."""
         headers = {
             "Authorization": f"Bearer {self.__configurationManager.client_token}",
@@ -67,7 +71,7 @@ class CsisAPI:
         }
 
         params = {
-            "created_after": created_after_timestamp,
+            "created_after": self.__timestamp,
             "status": ["new", "pending-customer", "pending-csis", "confirmed"],  # Ensure 'closed' is excluded
             "limit": limit,
             "offset": offset

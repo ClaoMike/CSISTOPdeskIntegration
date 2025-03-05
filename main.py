@@ -1,12 +1,16 @@
-import datetime
-from ConfigurationManager import ConfigurationManager
 from CsisAPI import CsisAPI
+from TOPdeskAPI import TOPdeskAPI
+from TicketConverter import TicketConverter
 
-configurationManager = ConfigurationManager()
 csisAPI = CsisAPI()
+topdeskAPI = TOPdeskAPI()
+ticketConverter = TicketConverter()
 
 csisAPI.get_token()
-tickets_to_be_created = csisAPI.get_tickets_created_after("2024-10-27T09:00:17.242Z")
+
+tickets_to_be_created = csisAPI.get_tickets_to_be_created()
+tickets_to_be_created = ticketConverter.convert_tickets_to_TOPdesk_format(tickets_to_be_created)
+topdeskAPI.create_tickets(tickets_to_be_created)
 
 for ticket in tickets_to_be_created:
     print(ticket)

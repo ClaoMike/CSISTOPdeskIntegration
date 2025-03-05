@@ -21,6 +21,7 @@ class ConfigurationManager:
             self.__CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 
             self.__CLIENT_TOKEN = ""
+            self.__minutes = 6
 
     @property
     def authentication_url(self):
@@ -54,3 +55,8 @@ class ConfigurationManager:
             self.__CLIENT_TOKEN = new_data
         else:
             raise ValueError("Configuration data must be a dictionary")
+
+    @property
+    def minutes(self):
+        """Getter for minutes."""
+        return self.__minutes
