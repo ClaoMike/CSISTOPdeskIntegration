@@ -1,7 +1,3 @@
-import requests
-from ConfigurationManager import ConfigurationManager
-
-
 class TicketConverter:
     _instance = None  # Singleton instance
 
@@ -17,4 +13,9 @@ class TicketConverter:
             self._initialized = True
 
     def convert_tickets_to_TOPdesk_format(self, tickets):
-        return tickets
+        new_tickets = []
+
+        for ticket in tickets:
+            print(ticket)
+
+        return new_tickets

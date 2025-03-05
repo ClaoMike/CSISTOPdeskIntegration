@@ -23,16 +23,16 @@ class CsisAPI:
     def get_token(self):
         payload = {
             "grant_type": "client_credentials",
-            "client_id": self.__configurationManager.client_id,
-            "client_secret": self.__configurationManager.client_secret,
+            "client_id": self.__configurationManager.csis_client_id,
+            "client_secret": self.__configurationManager.csis_client_secret,
             "scope": "https://api.csis.com/ticket:read https://api.csis.com/ticket:write"
         }
 
-        response = requests.post(self.__configurationManager.authentication_url, data=payload)
+        response = requests.post(self.__configurationManager.csis_authentication_url, data=payload)
 
         if response.status_code == 200:
             token = response.json().get("access_token")
-            self.__configurationManager.client_token = token
+            self.__configurationManager.csis_client_token = token
         else:
             print(f"Error {response.status_code}: {response.text}")
 
@@ -66,7 +66,7 @@ class CsisAPI:
     def __get_tickets_with_offset(self, offset, limit):
         """Fetch tickets created after a timestamp, that are not closed."""
         headers = {
-            "Authorization": f"Bearer {self.__configurationManager.client_token}",
+            "Authorization": f"Bearer {self.__configurationManager.csis_client_token}",
             "Content-Type": "application/json"
         }
 
@@ -77,7 +77,7 @@ class CsisAPI:
             "offset": offset
         }
 
-        url = f"{self.__configurationManager.base_url}/ticket/"
+        url = f"{self.__configurationManager.csis_base_url}/ticket/"
         response = requests.get(url, headers=headers, params=params)
 
         if response.status_code == 200:
@@ -89,11 +89,11 @@ class CsisAPI:
     def __get_ticket(self, external_id):
         """Fetch ticket details by external_id."""
         headers = {
-            "Authorization": f"Bearer {self.__configurationManager.client_token}",
+            "Authorization": f"Bearer {self.__configurationManager.csis_client_token}",
             "Content-Type": "application/json"
         }
 
-        url = f"{self.__configurationManager.base_url}/ticket/{external_id}"  # Construct full API URL
+        url = f"{self.__configurationManager.csis_base_url}/ticket/{external_id}"  # Construct full API URL
         response = requests.get(url, headers=headers)
 
         if response.status_code == 200:
