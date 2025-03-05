@@ -17,8 +17,11 @@ class TOPdeskAPI:
             self.__configurationManager = ConfigurationManager()
 
     def create_tickets(self, tickets):
+        created_tickets = []
         for ticket in tickets:
-            self.__create_ticket(ticket)
+            created_tickets.append(self.__create_ticket(ticket))
+
+        return created_tickets
 
     def __create_ticket(self, ticket):
         url = f"{self.__configurationManager.topdesk_base_url}/incidents"
@@ -34,4 +37,4 @@ class TOPdeskAPI:
             json = ticket
         )
 
-        print(response.json())
+        return response.json()

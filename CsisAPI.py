@@ -101,3 +101,29 @@ class CsisAPI:
         else:
             print(f"Error {response.status_code}: {response.text}")
             return None  # Return None if API request fails
+
+    def update_tickets(self, tickets):
+        for ticket in tickets:
+            self.__update_ticket(ticket)
+
+    def __update_ticket(self, ticket):
+        print(ticket)
+        url = f"{self.__configurationManager.csis_base_url}/ticket/{ticket["externalNumber"]}"  # Construct full API URL
+
+        payload = {
+            "customer_reference": ticket["number"],
+        }
+
+        headers = {
+            "Authorization": f"Bearer {self.__configurationManager.csis_client_token}",
+            "Content-Type": "application/json"
+        }
+
+        response = requests.patch(
+            url,
+            headers=headers,
+            json=payload
+        )
+
+        if response.status_code == 200:
+            print("success")

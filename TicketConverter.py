@@ -62,8 +62,6 @@ class TicketConverter:
             }
 
             new_tickets.append(new_ticket)
-            # print("TOPdesk ticket")
-            # print(new_ticket)
 
         return new_tickets
 
