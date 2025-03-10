@@ -41,21 +41,45 @@ class TOPdeskAPI:
 
     def update_tickets(self, tickets):
         for topdesk_id in tickets.keys():
-            url = f"{self.__configurationManager.topdesk_base_url}/incidents/number/{topdesk_id}"
+            payload = tickets[topdesk_id]["payload"]
+            comments = tickets[topdesk_id]["comments"]
 
-            headers = {
-                "Content-Type": "application/json"
-            }
+            self.__update_ticket(topdesk_id, payload)
 
-            response = requests.patch(
-                url,
-                auth=(self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),
-                headers=headers,
-                json=tickets[topdesk_id]
-            )
+            for comment in comments:
+                self.__update_actions(topdesk_id, comment)
 
-    def __update_ticket(self, ticket_id, ticket):
-        pass
 
-    def __update_actions(self, ticket_id, actions):
-        pass
+    def __update_ticket(self, topdesk_id, payload):
+        url = f"{self.__configurationManager.topdesk_base_url}/incidents/number/{topdesk_id}"
+
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        response = requests.patch(
+            url,
+            auth=(self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),
+            headers=headers,
+            json=payload
+        )
+
+        print(response.status_code)
+
+    def __update_actions(self, topdesk_id, comment):
+        url = f"{self.__configurationManager.topdesk_base_url}/incidents/number/{topdesk_id}"
+
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        response = requests.put(
+            url,
+            auth=(self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),
+            headers=headers,
+            json=comment
+        )
+
+        print(response.status_code)
+        if response.status_code != 200:
+            print(response.text)

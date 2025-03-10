@@ -33,7 +33,7 @@ print(f"Tickets to be updated:\n{tickets_to_be_updated}")
 tickets_to_be_updated = ticketConverter.convert_updated_tickets_to_TOPdesk_format(tickets_to_be_updated)
 print(f"Converted to TOPdesk-format-tickets:\n{tickets_to_be_updated}")
 
-# csisAPI.update_tickets(tickets_to_be_updated)
+topdeskAPI.update_tickets(tickets_to_be_updated)
 ########################################################################################################################
 
-# TODO: log, documentation, test, the rest
+# TODO: documentation, test, log, the rest

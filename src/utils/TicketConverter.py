@@ -81,10 +81,10 @@ class TicketConverter:
             new_comments = []
             for comment in comments:
                 new_comment = {}
-                new_comment["creator"] = comment["creator"]
-                new_comment["text"] = comment["text"]
+                new_comment["action"] = f"<b>Creator:</b> {comment["creator"]}<br>{comment['text']}"
                 new_comments.append(new_comment)
 
+            new_comments.reverse()
             new_tickets[payload["customer_reference"]] = {
                 "payload": new_payload,
                 "comments": new_comments
