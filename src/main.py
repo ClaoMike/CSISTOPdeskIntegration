@@ -1,6 +1,9 @@
 from src.API.CsisAPI import CsisAPI
 from src.API.TOPdeskAPI import TOPdeskAPI
+from src.utils.Logger import Logger
 from src.utils.TicketConverter import TicketConverter
+
+logger = Logger()
 
 csisAPI = CsisAPI()
 topdeskAPI = TOPdeskAPI()
@@ -36,4 +39,4 @@ print(f"Converted to TOPdesk-format-tickets:\n{tickets_to_be_updated}")
 topdeskAPI.update_tickets(tickets_to_be_updated)
 ########################################################################################################################
 
-# TODO: documentation, test, log, the rest
+# TODO: log, test, documentation, the rest
