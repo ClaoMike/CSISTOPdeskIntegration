@@ -38,28 +38,72 @@ class CsisAPI:
 
     def get_tickets_to_be_created(self):
         """Fetch tickets created after a timestamp, that are not closed."""
+        return self.__get_filtered_tickets(self.__get_tickets_with_offset, "created_after")
+
+    def get_updated_tickets(self):
+        """Fetch tickets updated after a timestamp."""
+        return self.__get_filtered_tickets(self.__get_updated_tickets_with_offset, "updated_after")
+
+    def __get_tickets_with_offset(self, offset, limit):
+        """Fetch tickets created after a timestamp, that are not closed."""
+        return self.__get_tickets(offset, limit, "created_after",
+                                  ["new", "pending-customer", "pending-csis", "confirmed"])
+
+    def __get_updated_tickets_with_offset(self, offset, limit):
+        """Fetch tickets updated after a timestamp."""
+        return self.__get_tickets(offset, limit, "updated_after",
+                                  ["new", "pending-customer", "pending-csis", "confirmed", "closed"])
+
+    def __get_tickets(self, offset, limit, timestamp_key, status_list):
+        """Generic method to fetch tickets based on creation or update timestamp."""
+        headers = {
+            "Authorization": f"Bearer {self.__configurationManager.csis_client_token}",
+            "Content-Type": "application/json"
+        }
+
+        params = {
+            timestamp_key: self.__timestamp,
+            "status": status_list,
+            "limit": limit,
+            "offset": offset
+        }
+
+        url = f"{self.__configurationManager.csis_base_url}/ticket/"
+        response = requests.get(url, headers=headers, params=params)
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            print(f"Error {response.status_code}: {response.text}")
+            return None
+
+    def __get_filtered_tickets(self, fetch_function, timestamp_key):
+        """Fetch and filter tickets based on the given fetch function."""
         offset = 0
         limit = 2
         tickets_ids = []
         tickets = []
 
         while True:
-            response = self.__get_tickets_with_offset(offset, limit)
+            response = fetch_function(offset, limit)
+            if response is None:
+                break  # Exit on error
+
             payload = response["payload"]
 
             for ticket in payload["page"]:
                 tickets_ids.append(ticket["id"])
 
-            if payload["has_next"] is False:
+            if not payload.get("has_next", False):
                 break
 
             offset += limit
 
-        # only save tickets that do not have the TOPdesk id
+        # Only save tickets that do not have a TOPdesk ID
         for external_id in tickets_ids:
             ticket_details = self.__get_ticket(external_id)
             print(ticket_details)
-            if ticket_details["payload"]["customer_reference"] == "" or ticket_details["payload"]["customer_reference"] is None:
+            if ticket_details["payload"].get("customer_reference") in ("", None):
                 tickets.append(ticket_details)
 
         return tickets
