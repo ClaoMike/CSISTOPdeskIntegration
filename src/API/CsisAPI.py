@@ -18,6 +18,7 @@ class CsisAPI:
         if not hasattr(self, "_initialized"):  # Ensure it's only initialized once
             self._initialized = True
             self.__logger = Logger()
+            self.__responseEvaluator = HTTPRequestResponseEvaluator()
 
             self.__configurationManager = ConfigurationManager()
 
@@ -34,9 +35,7 @@ class CsisAPI:
         }
 
         response = requests.post(self.__configurationManager.csis_authentication_url, data=payload)
-
-        responseEvaluator = HTTPRequestResponseEvaluator()
-        responseEvaluator.evaluate(response)
+        self.__responseEvaluator.evaluate(response)
 
         token = response.json().get("access_token")
         self.__configurationManager.csis_client_token = token
@@ -77,13 +76,11 @@ class CsisAPI:
         }
 
         url = f"{self.__configurationManager.csis_base_url}/ticket/"
-        response = requests.get(url, headers=headers, params=params)
 
-        if response.status_code == 200:
-            return response.json()
-        else:
-            print(f"Error {response.status_code}: {response.text}")
-            return None
+        response = requests.get(url, headers=headers, params=params)
+        self.__responseEvaluator.evaluate(response)
+
+        return response.json()
 
     def __get_filtered_tickets(self, fetch_function, timestamp_key, should_have_customer_reference):
         """Fetch and filter tickets based on the given fetch function."""
@@ -109,7 +106,6 @@ class CsisAPI:
 
         # Only save tickets that do not have a TOPdesk ID
         for external_id in tickets_ids:
-            print(external_id)
             ticket_details = self.__get_ticket(external_id)
             if should_have_customer_reference:
                 if ticket_details["payload"].get("customer_reference") not in ("", None):
@@ -135,13 +131,11 @@ class CsisAPI:
         }
 
         url = f"{self.__configurationManager.csis_base_url}/ticket/"
-        response = requests.get(url, headers=headers, params=params)
 
-        if response.status_code == 200:
-            return response.json()
-        else:
-            print(f"Error {response.status_code}: {response.text}")
-            return None
+        response = requests.get(url, headers=headers, params=params)
+        self.__responseEvaluator.evaluate(response)
+
+        return response.json()
 
     def __get_ticket(self, external_id):
         """Fetch ticket details by external_id."""
@@ -151,13 +145,11 @@ class CsisAPI:
         }
 
         url = f"{self.__configurationManager.csis_base_url}/ticket/{external_id}"  # Construct full API URL
-        response = requests.get(url, headers=headers)
 
-        if response.status_code == 200:
-            return response.json()  # Return ticket details as JSON
-        else:
-            print(f"Error {response.status_code}: {response.text}")
-            return None  # Return None if API request fails
+        response = requests.get(url, headers=headers)
+        self.__responseEvaluator.evaluate(response)
+
+        return response.json()  # Return ticket details as JSON
 
     def update_tickets(self, tickets):
         for ticket in tickets:
@@ -181,9 +173,7 @@ class CsisAPI:
             headers=headers,
             json=payload
         )
-
-        if response.status_code == 200:
-            print("success")
+        self.__responseEvaluator.evaluate(response)
 
     def __attach_comments(self, tickets):
         for ticket in tickets:
@@ -214,7 +204,7 @@ class CsisAPI:
             url,
             headers=headers
         )
+        self.__responseEvaluator.evaluate(response)
 
-        if response.status_code == 200:
-            return response.json()["payload"]
+        return response.json()["payload"]
 

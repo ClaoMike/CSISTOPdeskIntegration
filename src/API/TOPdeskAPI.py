@@ -1,5 +1,8 @@
 import requests
 from src.config.ConfigurationManager import ConfigurationManager
+from src.utils.HTTPRequestResponseEvaluator import HTTPRequestResponseEvaluator
+from src.utils.Logger import Logger
+
 
 class TOPdeskAPI:
     _instance = None  # Singleton instance
@@ -15,6 +18,8 @@ class TOPdeskAPI:
         if not hasattr(self, "_initialized"):
             self._initialized = True
             self.__configurationManager = ConfigurationManager()
+            self.__logger = Logger()
+            self.__responseEvaluator = HTTPRequestResponseEvaluator()
 
     def create_tickets(self, tickets):
         created_tickets = []
@@ -36,6 +41,7 @@ class TOPdeskAPI:
             headers=headers,
             json = ticket
         )
+        self.__responseEvaluator.evaluate(response)
 
         return response.json()
 
@@ -63,8 +69,7 @@ class TOPdeskAPI:
             headers=headers,
             json=payload
         )
-
-        print(response.status_code)
+        self.__responseEvaluator.evaluate(response)
 
     def __update_actions(self, topdesk_id, comment):
         url = f"{self.__configurationManager.topdesk_base_url}/incidents/number/{topdesk_id}"
@@ -79,7 +84,4 @@ class TOPdeskAPI:
             headers=headers,
             json=comment
         )
-
-        print(response.status_code)
-        if response.status_code != 200:
-            print(response.text)
+        self.__responseEvaluator.evaluate(response)
