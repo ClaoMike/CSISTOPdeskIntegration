@@ -70,7 +70,7 @@ logger.newline()
 
 # Update the CSIS ticket with a reference to the TOPdesk ticket
 csisAPI.update_tickets(created_tickets)
-# logger.array(, array_title="CSIS Tickets updated with TOPdesk IDs") TODO: Update this
+
 logger.info_end_section(message="DONE Updating the CSIS tickets with the TOPdesk's IDs")
 logger.newline()
 # END Logging ##########################################################################################################
@@ -108,10 +108,9 @@ topdeskAPI.update_tickets(tickets_to_be_updated)
 
 # Logging ##############################################################################################################
 logger.newline()
-# logger.array(tickets_to_be_updated, array_title="CSIS Tickets recently updated (TOPdesk format)") TODO: Update this
 logger.info_end_section(message="DONE Updating the converted fetched-recently-created tickets")
 logger.newline()
 # END Logging ##########################################################################################################
 # END Update tickets ###################################################################################################
 
-# TODO: log, documentation, test, the rest
+# TODO: documentation, test, the rest
