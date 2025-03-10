@@ -66,23 +66,29 @@ class TicketConverter:
         new_tickets = {}
 
         for ticket in tickets:
-            ticket = ticket["payload"]
+            payload = ticket["payload"]
+            comments = ticket["comments"]
 
-            new_ticket = {
-                ticket["customer_reference"]: {
+            new_payload = {
                     "processingStatus": {
-                        "id": self.__convert_csis_to_topdesk_status(ticket["status"])
+                        "id": self.__convert_csis_to_topdesk_status(payload["status"])
                     },
                     "priority": {
-                        "id": self.__convert_severity_to_priority(ticket["severity"])
-                    },
-                    "comments": []
-                }
-
+                        "id": self.__convert_severity_to_priority(payload["severity"])
+                    }
             }
 
+            new_comments = []
+            for comment in comments:
+                new_comment = {}
+                new_comment["creator"] = comment["creator"]
+                new_comment["text"] = comment["text"]
+                new_comments.append(new_comment)
 
-            new_tickets[ticket["id"]] = new_ticket
+            new_tickets[payload["customer_reference"]] = {
+                "payload": new_payload,
+                "comments": new_comments
+            }
 
         return new_tickets
 
