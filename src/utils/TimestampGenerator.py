@@ -26,6 +26,7 @@ Usage Example:
 """
 
 import datetime
+import math
 
 
 class TimestampGenerator:
@@ -64,7 +65,7 @@ class TimestampGenerator:
         if not hasattr(self, "_initialized"):
             self._initialized = True
 
-    def get_timestamp(self, minutes: int) -> str:
+    def get_start_of_the_search_timestamp(self, minutes: int) -> str:
         """
         Generates a timestamp representing the current UTC time minus the specified minutes.
 
@@ -76,7 +77,7 @@ class TimestampGenerator:
 
         Example:
             >>> generator = TimestampGenerator()
-            >>> generator.get_timestamp(10)
+            >>> generator.get_start_of_the_search_timestamp(10)
             "2025-03-10T09:38:59.060Z"
         """
         new_time = datetime.datetime.utcnow() - datetime.timedelta(minutes=minutes)
@@ -105,6 +106,6 @@ class TimestampGenerator:
         diff = dt2 - dt1
 
         # Convert to minutes (rounded)
-        minutes_diff = round(abs(diff.total_seconds() / 60))
+        minutes_diff = math.ceil(abs(diff.total_seconds() / 60))
 
         return minutes_diff

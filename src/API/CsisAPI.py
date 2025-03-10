@@ -87,7 +87,7 @@ class CsisAPI:
 
             # Generate timestamp for filtering tickets
             timestampGenerator = TimestampGenerator()
-            self.__timestamp = timestampGenerator.get_timestamp(minutes=self.__configurationManager.minutes)
+            self.__timestamp = timestampGenerator.get_start_of_the_search_timestamp(minutes=self.__configurationManager.minutes)
             self.__logger.info(f"Current timestamp: {self.__timestamp}")
 
     def get_token(self):
