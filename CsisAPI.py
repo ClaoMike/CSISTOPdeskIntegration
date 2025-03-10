@@ -102,7 +102,6 @@ class CsisAPI:
         # Only save tickets that do not have a TOPdesk ID
         for external_id in tickets_ids:
             ticket_details = self.__get_ticket(external_id)
-            print(ticket_details)
             if ticket_details["payload"].get("customer_reference") in ("", None):
                 tickets.append(ticket_details)
 
@@ -152,7 +151,7 @@ class CsisAPI:
             self.__update_ticket(ticket)
 
     def __update_ticket(self, ticket):
-        print(ticket)
+        print(f"Updating: {ticket}")
         url = f"{self.__configurationManager.csis_base_url}/ticket/{ticket["externalNumber"]}"  # Construct full API URL
 
         payload = {
@@ -172,3 +171,20 @@ class CsisAPI:
 
         if response.status_code == 200:
             print("success")
+
+    # def get_comments(self, ticket):
+    #     url = f"{self.__configurationManager.csis_base_url}/ticket/{ticket["payload"]["id"]}/comment"
+    #
+    #     headers = {
+    #         "Authorization": f"Bearer {self.__configurationManager.csis_client_token}",
+    #         "Content-Type": "application/json"
+    #     }
+    #
+    #     response = requests.get(
+    #         url,
+    #         headers=headers
+    #     )
+    #
+    #     if response.status_code == 200:
+    #         print(response.json())
+

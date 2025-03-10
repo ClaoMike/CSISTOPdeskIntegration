@@ -12,13 +12,10 @@ class TicketConverter:
         if not hasattr(self, "_initialized"):
             self._initialized = True
 
-    def convert_tickets_to_TOPdesk_format(self, tickets):
+    def convert_tickets_to_be_created_to_TOPdesk_format(self, tickets):
         new_tickets = []
 
         for ticket in tickets:
-            print("CSIS ticket")
-            print(ticket)
-
             ticket = ticket["payload"]
 
             new_ticket = {
@@ -32,7 +29,7 @@ class TicketConverter:
                     "name": "Unknown",
                     "timeZone": "Europe/Berlin"
                 },
-                "briefDescription": ticket["title"],
+                "briefDescription": ticket["title"][:80], # [[{'message': 'briefDescription - The value for the field can only be 80 characters long.'}]]
                 "externalNumber": ticket["id"],
                 "category": {
                     "id": "d9e956a4-dcf9-496e-8a15-70802107924c"
@@ -62,6 +59,25 @@ class TicketConverter:
             }
 
             new_tickets.append(new_ticket)
+
+        return new_tickets
+
+    def convert_updated_tickets_to_TOPdesk_format(self, tickets):
+        new_tickets = {}
+
+        for ticket in tickets:
+            ticket = ticket["payload"]
+
+            new_ticket = {
+                "processingStatus": {
+                    "id": self.__convert_csis_to_topdesk_status(ticket["status"])
+                },
+                "priority": {
+                    "id": self.__convert_severity_to_priority(ticket["severity"])
+                }
+            }
+
+            new_tickets[ticket["customer_reference"]] = new_ticket
 
         return new_tickets
 
