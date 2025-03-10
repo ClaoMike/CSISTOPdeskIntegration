@@ -16,7 +16,7 @@ class ConfigurationManager:
             load_dotenv()
 
             # General variables
-            self.__minutes = 100
+            self.__minutes = 6
 
             # CSIS variables
             self.__CSIS_AUTHENTICATION_URL = "https://login.csis.com/oauth2/v2/token"
@@ -26,7 +26,9 @@ class ConfigurationManager:
             self.__CSIS_CLIENT_TOKEN = ""
 
             # TOPdesk variables
-            self.__TOPdesk_BASE_URL = "https://dlfseeds.topdesk.net/tas/api"
+            # self.__TOPdesk_BASE_URL = "https://dlfseeds.topdesk.net/tas/api" # PRODUCTION
+            self.__TOPdesk_BASE_URL = "https://dlfseeds-test.topdesk.net/tas/api" # TEST
+
             self.__TOPdesk_USERNAME = os.getenv("TOPDESK_USERNAME")
             self.__TOPdesk_PASSWORD = os.getenv("TOPDESK_PASSWORD")
 

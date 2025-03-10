@@ -38,11 +38,11 @@ class CsisAPI:
 
     def get_tickets_to_be_created(self):
         """Fetch tickets created after a timestamp, that are not closed."""
-        return self.__get_filtered_tickets(self.__get_tickets_with_offset, "created_after")
+        return self.__get_filtered_tickets(self.__get_tickets_with_offset, "created_after", should_have_customer_reference=False)
 
     def get_updated_tickets(self):
         """Fetch tickets updated after a timestamp."""
-        return self.__get_filtered_tickets(self.__get_updated_tickets_with_offset, "updated_after")
+        return self.__get_filtered_tickets(self.__get_updated_tickets_with_offset, "updated_after", should_have_customer_reference=True)
 
     def __get_tickets_with_offset(self, offset, limit):
         """Fetch tickets created after a timestamp, that are not closed."""
@@ -77,7 +77,7 @@ class CsisAPI:
             print(f"Error {response.status_code}: {response.text}")
             return None
 
-    def __get_filtered_tickets(self, fetch_function, timestamp_key):
+    def __get_filtered_tickets(self, fetch_function, timestamp_key, should_have_customer_reference):
         """Fetch and filter tickets based on the given fetch function."""
         offset = 0
         limit = 2
@@ -101,9 +101,14 @@ class CsisAPI:
 
         # Only save tickets that do not have a TOPdesk ID
         for external_id in tickets_ids:
+            print(external_id)
             ticket_details = self.__get_ticket(external_id)
-            if ticket_details["payload"].get("customer_reference") in ("", None):
-                tickets.append(ticket_details)
+            if should_have_customer_reference:
+                if ticket_details["payload"].get("customer_reference") not in ("", None):
+                    tickets.append(ticket_details)
+            else:
+                if ticket_details["payload"].get("customer_reference") in ("", None):
+                    tickets.append(ticket_details)
 
         return tickets
 
@@ -172,19 +177,32 @@ class CsisAPI:
         if response.status_code == 200:
             print("success")
 
-    # def get_comments(self, ticket):
-    #     url = f"{self.__configurationManager.csis_base_url}/ticket/{ticket["payload"]["id"]}/comment"
-    #
-    #     headers = {
-    #         "Authorization": f"Bearer {self.__configurationManager.csis_client_token}",
-    #         "Content-Type": "application/json"
-    #     }
-    #
-    #     response = requests.get(
-    #         url,
-    #         headers=headers
-    #     )
-    #
-    #     if response.status_code == 200:
-    #         print(response.json())
+    def attach_comments(self, tickets):
+        new_tickets = {}
+        for ticket_id in tickets.keys():
+            # get comments
+            comments = self.__get_comments(ticket_id)
+
+            # append comments
+            customer_reference = next(iter(tickets[ticket_id]))  # Get the second-level key
+            new_tickets[customer_reference] = tickets[ticket_id][customer_reference]
+            new_tickets[customer_reference]["comments"] = comments
+
+        return new_tickets
+
+    def __get_comments(self, ticket_id):
+        url = f"{self.__configurationManager.csis_base_url}/ticket/{ticket_id}/comment"
+
+        headers = {
+            "Authorization": f"Bearer {self.__configurationManager.csis_client_token}",
+            "Content-Type": "application/json"
+        }
+
+        response = requests.get(
+            url,
+            headers=headers
+        )
+
+        if response.status_code == 200:
+            return response.json()["payload"]
 

@@ -69,15 +69,20 @@ class TicketConverter:
             ticket = ticket["payload"]
 
             new_ticket = {
-                "processingStatus": {
-                    "id": self.__convert_csis_to_topdesk_status(ticket["status"])
-                },
-                "priority": {
-                    "id": self.__convert_severity_to_priority(ticket["severity"])
+                ticket["customer_reference"]: {
+                    "processingStatus": {
+                        "id": self.__convert_csis_to_topdesk_status(ticket["status"])
+                    },
+                    "priority": {
+                        "id": self.__convert_severity_to_priority(ticket["severity"])
+                    },
+                    "comments": []
                 }
+
             }
 
-            new_tickets[ticket["customer_reference"]] = new_ticket
+
+            new_tickets[ticket["id"]] = new_ticket
 
         return new_tickets
 

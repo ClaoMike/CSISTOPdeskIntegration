@@ -32,6 +32,9 @@ print(f"Tickets to be updated:\n{tickets_to_be_updated}")
 
 tickets_to_be_updated = ticketConverter.convert_updated_tickets_to_TOPdesk_format(tickets_to_be_updated)
 print(f"Converted to TOPdesk-format-tickets:\n{tickets_to_be_updated}")
+
+tickets_to_be_updated = csisAPI.attach_comments(tickets_to_be_updated)
+print(f"Converted to TOPdesk-format-tickets witgh comments:\n{tickets_to_be_updated}")
 ########################################################################################################################
 
 # TODO: log, documentation, test, the rest
