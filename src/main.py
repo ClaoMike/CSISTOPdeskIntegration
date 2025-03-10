@@ -10,7 +10,9 @@ topdeskAPI = TOPdeskAPI()
 ticketConverter = TicketConverter()
 
 # Get access token #####################################################################################################
+logger.info_new_section(message="Fetching the CSIS access token")
 csisAPI.get_token()
+logger.info_end_section(message="DONE Fetching the CSIS access token")
 ########################################################################################################################
 
 # Create new tickets ###################################################################################################
@@ -58,4 +60,4 @@ topdeskAPI.update_tickets(tickets_to_be_updated)
 logger.info_end_section(message="DONE Updating the converted fetched-recently-created tickets")
 ########################################################################################################################
 
-# TODO: log, test, documentation, the rest
+# TODO: log, documentation, test, the rest

@@ -77,6 +77,7 @@ class Logger:
 
     def info(self, message):
         self.logger.info(message)
+        self._write_markdown(f"- **INFO**: {message}")
 
     def info_new_section(self, message):
         self.logger.info(message)

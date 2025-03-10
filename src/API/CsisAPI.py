@@ -1,5 +1,7 @@
 import requests
 from src.config.ConfigurationManager import ConfigurationManager
+from src.utils.HTTPRequestResponseEvaluator import HTTPRequestResponseEvaluator
+from src.utils.Logger import Logger
 from src.utils.TimestampGenerator import TimestampGenerator
 
 class CsisAPI:
@@ -15,10 +17,13 @@ class CsisAPI:
         """This method initializes attributes only once."""
         if not hasattr(self, "_initialized"):  # Ensure it's only initialized once
             self._initialized = True
+            self.__logger = Logger()
+
             self.__configurationManager = ConfigurationManager()
 
             timestampGenerator = TimestampGenerator()
             self.__timestamp = timestampGenerator.get_timestamp(minutes=self.__configurationManager.minutes)
+            self.__logger.info(f"Current timestamp: {self.__timestamp}")
 
     def get_token(self):
         payload = {
@@ -30,11 +35,11 @@ class CsisAPI:
 
         response = requests.post(self.__configurationManager.csis_authentication_url, data=payload)
 
-        if response.status_code == 200:
-            token = response.json().get("access_token")
-            self.__configurationManager.csis_client_token = token
-        else:
-            print(f"Error {response.status_code}: {response.text}")
+        responseEvaluator = HTTPRequestResponseEvaluator()
+        responseEvaluator.evaluate(response)
+
+        token = response.json().get("access_token")
+        self.__configurationManager.csis_client_token = token
 
     def get_tickets_to_be_created(self):
         """Fetch tickets created after a timestamp, that are not closed."""
