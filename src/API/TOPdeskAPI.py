@@ -35,6 +35,7 @@ class TOPdeskAPI:
             "Content-Type": "application/json"
         }
 
+        self.__logger.info(f"Performing a POST request at {url}")
         response = requests.post(
             url,
             auth=(self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),
@@ -63,6 +64,7 @@ class TOPdeskAPI:
             "Content-Type": "application/json"
         }
 
+        self.__logger.info(f"Performing a PATCH request at {url}")
         response = requests.patch(
             url,
             auth=(self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),
@@ -78,6 +80,7 @@ class TOPdeskAPI:
             "Content-Type": "application/json"
         }
 
+        self.__logger.info(f"Performing a PUT request at {url}")
         response = requests.put(
             url,
             auth=(self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),

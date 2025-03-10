@@ -34,6 +34,7 @@ class CsisAPI:
             "scope": "https://api.csis.com/ticket:read https://api.csis.com/ticket:write"
         }
 
+        self.__logger.info(f"Performing a POST request at {self.__configurationManager.csis_authentication_url}")
         response = requests.post(self.__configurationManager.csis_authentication_url, data=payload)
         self.__responseEvaluator.evaluate(response)
 
@@ -77,6 +78,7 @@ class CsisAPI:
 
         url = f"{self.__configurationManager.csis_base_url}/ticket/"
 
+        self.__logger.info(f"Performing a GET request at {url}")
         response = requests.get(url, headers=headers, params=params)
         self.__responseEvaluator.evaluate(response)
 
@@ -85,7 +87,7 @@ class CsisAPI:
     def __get_filtered_tickets(self, fetch_function, timestamp_key, should_have_customer_reference):
         """Fetch and filter tickets based on the given fetch function."""
         offset = 0
-        limit = 2
+        limit = 10
         tickets_ids = []
         tickets = []
 
@@ -132,6 +134,7 @@ class CsisAPI:
 
         url = f"{self.__configurationManager.csis_base_url}/ticket/"
 
+        self.__logger.info(f"Performing a GET request at {url}")
         response = requests.get(url, headers=headers, params=params)
         self.__responseEvaluator.evaluate(response)
 
@@ -146,6 +149,7 @@ class CsisAPI:
 
         url = f"{self.__configurationManager.csis_base_url}/ticket/{external_id}"  # Construct full API URL
 
+        self.__logger.info(f"Performing a GET request at {url}")
         response = requests.get(url, headers=headers)
         self.__responseEvaluator.evaluate(response)
 
@@ -168,6 +172,7 @@ class CsisAPI:
             "Content-Type": "application/json"
         }
 
+        self.__logger.info(f"Performing a PATCH request at {url}")
         response = requests.patch(
             url,
             headers=headers,
@@ -200,6 +205,7 @@ class CsisAPI:
             "Content-Type": "application/json"
         }
 
+        self.__logger.info(f"Performing a GET request at {url}")
         response = requests.get(
             url,
             headers=headers
