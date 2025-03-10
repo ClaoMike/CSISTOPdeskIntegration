@@ -180,13 +180,23 @@ class CsisAPI:
     def attach_comments(self, tickets):
         new_tickets = {}
         for ticket_id in tickets.keys():
-            # get comments
-            comments = self.__get_comments(ticket_id)
+            # get all comments in ticket
+            all_comments = self.__get_comments(ticket_id)
+
+            # save only those that are recent
+            recent_comments = []
+            for i in range(len(all_comments)):
+                timestampGenerator = TimestampGenerator()
+                time_difference = timestampGenerator.get_time_difference_between(self.__timestamp, all_comments[i]["created"]) # in minutes
+                if time_difference < self.__configurationManager.minutes:
+                    recent_comments.append(all_comments[i])
+
+            print(f"Recent comments for ticket {ticket_id}:\n{recent_comments}")
 
             # append comments
             customer_reference = next(iter(tickets[ticket_id]))  # Get the second-level key
             new_tickets[customer_reference] = tickets[ticket_id][customer_reference]
-            new_tickets[customer_reference]["comments"] = comments
+            new_tickets[customer_reference]["comments"] = recent_comments
 
         return new_tickets
 
