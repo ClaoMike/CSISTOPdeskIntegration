@@ -75,29 +75,18 @@ class Logger:
         self.markdown_log.write(text + "\n")
         self.markdown_log.flush()
 
-    def info(self, message, new_section=False, end_section=False):
-        """
-            Logs an info-level message to both the standard log file and the Markdown file.
-
-            In the Markdown file:
-               - If 'newSection' is True, the message is added as a collapsible section header.
-               - If 'endSection' is True, the message is added as info and then the section is closed.
-               - Otherwise, it is logged as a standard bullet point.
-
-            Args:
-               message (str): The message to log.
-               new_section (bool): Start a new collapsible Markdown section. Default: False.
-               end_section (bool): Log the message and end the current Markdown section. Default: False.
-        """
+    def info(self, message):
         self.logger.info(message)
 
-        if new_section:
-            self.__add_markdown_section(f"{message}")
-        elif end_section:
-            self._write_markdown(f"- **INFO**: {message}")
-            self.__end_markdown_section()
-        else:
-            self._write_markdown(f"- **INFO**: {message}")
+    def info_new_section(self, message):
+        self.logger.info(message)
+        self.__add_markdown_section(f"{message}")
+
+
+    def info_end_section(self, message):
+        self.logger.info(message)
+        self._write_markdown(f"- **INFO**: {message}")
+        self.__end_markdown_section()
 
     def warning(self, message):
         """
