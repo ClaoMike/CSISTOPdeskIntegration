@@ -1,6 +1,6 @@
 import requests
-from ConfigurationManager import ConfigurationManager
-from TimestampGenerator import TimestampGenerator
+from src.config.ConfigurationManager import ConfigurationManager
+from src.utils.TimestampGenerator import TimestampGenerator
 
 class CsisAPI:
     _instance = None  # Class variable to store the single instance

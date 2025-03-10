@@ -1,5 +1,5 @@
 import requests
-from ConfigurationManager import ConfigurationManager
+from src.config.ConfigurationManager import ConfigurationManager
 
 class TOPdeskAPI:
     _instance = None  # Singleton instance
