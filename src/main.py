@@ -135,4 +135,13 @@ logger.newline()
 logger.info("Synchronization process completed successfully.")
 logger.close()
 
-# TODO: documentation, test, the rest
+# TODO
+# test
+# test documentation
+# generate runbook
+# test runbook
+# runbook documentation
+# send logs via API
+# documentation
+# visualization diagram
+# write README
