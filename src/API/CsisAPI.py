@@ -42,7 +42,10 @@ class CsisAPI:
 
     def get_updated_tickets(self):
         """Fetch tickets updated after a timestamp."""
-        return self.__get_filtered_tickets(self.__get_updated_tickets_with_offset, "updated_after", should_have_customer_reference=True)
+        tickets = self.__get_filtered_tickets(self.__get_updated_tickets_with_offset, "updated_after", should_have_customer_reference=True)
+        tickets = self.__attach_comments(tickets)
+
+        return tickets
 
     def __get_tickets_with_offset(self, offset, limit):
         """Fetch tickets created after a timestamp, that are not closed."""
@@ -177,11 +180,10 @@ class CsisAPI:
         if response.status_code == 200:
             print("success")
 
-    def attach_comments(self, tickets):
-        new_tickets = {}
-        for ticket_id in tickets.keys():
+    def __attach_comments(self, tickets):
+        for ticket in tickets:
             # get all comments in ticket
-            all_comments = self.__get_comments(ticket_id)
+            all_comments = self.__get_comments(ticket["payload"]["id"])
 
             # save only those that are recent
             recent_comments = []
@@ -191,14 +193,9 @@ class CsisAPI:
                 if time_difference < self.__configurationManager.minutes:
                     recent_comments.append(all_comments[i])
 
-            print(f"Recent comments for ticket {ticket_id}:\n{recent_comments}")
+            ticket["comments"] = recent_comments
 
-            # append comments
-            customer_reference = next(iter(tickets[ticket_id]))  # Get the second-level key
-            new_tickets[customer_reference] = tickets[ticket_id][customer_reference]
-            new_tickets[customer_reference]["comments"] = recent_comments
-
-        return new_tickets
+        return tickets
 
     def __get_comments(self, ticket_id):
         url = f"{self.__configurationManager.csis_base_url}/ticket/{ticket_id}/comment"

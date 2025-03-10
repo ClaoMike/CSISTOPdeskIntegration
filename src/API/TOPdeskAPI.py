@@ -38,3 +38,24 @@ class TOPdeskAPI:
         )
 
         return response.json()
+
+    def update_tickets(self, tickets):
+        for topdesk_id in tickets.keys():
+            url = f"{self.__configurationManager.topdesk_base_url}/incidents/number/{topdesk_id}"
+
+            headers = {
+                "Content-Type": "application/json"
+            }
+
+            response = requests.patch(
+                url,
+                auth=(self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),
+                headers=headers,
+                json=tickets[topdesk_id]
+            )
+
+    def __update_ticket(self, ticket_id, ticket):
+        pass
+
+    def __update_actions(self, ticket_id, actions):
+        pass
