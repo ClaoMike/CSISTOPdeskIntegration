@@ -30,6 +30,7 @@ import requests
 from src.config.ConfigurationManager import ConfigurationManager
 from src.utils.HTTPRequestResponseEvaluator import HTTPRequestResponseEvaluator
 from src.utils.Logger import Logger
+from enum import Enum
 
 
 class TOPdeskAPI:
@@ -67,6 +68,11 @@ class TOPdeskAPI:
             Sends a PUT request to add an action/comment to a ticket.
     """
 
+    class RequestType(Enum):
+        POST = "POST"
+        PATCH = "PATCH"
+        PUT = "PUT"
+
     _instance = None  # Singleton instance
 
     def __new__(cls):
@@ -89,9 +95,11 @@ class TOPdeskAPI:
         """
         if not hasattr(self, "_initialized"):
             self._initialized = True
+
             self.__configurationManager = ConfigurationManager()
             self.__logger = Logger()
             self.__responseEvaluator = HTTPRequestResponseEvaluator()
+
             self.__headers = {
                 "Content-Type": "application/json"
             }
@@ -189,3 +197,28 @@ class TOPdeskAPI:
             json=comment
         )
         self.__responseEvaluator.evaluate(response)
+
+    def __make_request(self, payload, request_type: RequestType, endpoint: str):
+        request_params = {
+            "url": f"{self.__configurationManager.topdesk_base_url}/incidents{endpoint}",
+            "auth": (self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),
+            "headers": self.__headers,
+            "json": payload
+        }
+
+        match request_type:
+            case TOPdeskAPI.RequestType.POST:
+                response = requests.post(**request_params)
+
+            case TOPdeskAPI.RequestType.PUT:
+                response = requests.put(**request_params)
+
+            case TOPdeskAPI.RequestType.PATCH:
+                response = requests.patch(**request_params)
+
+            case _:  # Other cases
+                raise(SystemExit)
+
+        self.__responseEvaluator.evaluate(response)
+
+        return response.json()
