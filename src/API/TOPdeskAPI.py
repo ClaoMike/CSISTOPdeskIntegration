@@ -128,7 +128,14 @@ class TOPdeskAPI:
                 - Keys are TOPdesk ticket IDs.
                 - Values contain "payload" (ticket updates) and "comments" (list of comments).
         """
+        if len(tickets) == 0:
+            return
+
         for topdesk_id, ticket_data in tickets.items():
+            if "payload" not in ticket_data:
+                self.__logger.warning(f"No payload for ticket ID {topdesk_id}")
+                continue
+
             payload = ticket_data["payload"]
             comments = ticket_data["comments"]
 

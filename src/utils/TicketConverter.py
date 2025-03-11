@@ -22,6 +22,7 @@ Usage Example:
     # Convert updated tickets to TOPdesk format
     updated_tickets = converter.convert_updated_tickets_to_TOPdesk_format(updated_csis_tickets)
 """
+from src.utils.Logger import Logger
 
 
 class TicketConverter:
@@ -66,6 +67,7 @@ class TicketConverter:
         """
         if not hasattr(self, "_initialized"):
             self._initialized = True
+            self.__logger = Logger()
 
     def convert_tickets_to_be_created_to_TOPdesk_format(self, tickets):
         """
@@ -83,6 +85,7 @@ class TicketConverter:
             ticket = ticket["payload"]  # Extract ticket details from payload
 
             if {"description", "title", "id", "status", "severity"} - ticket.keys():
+                self.__logger.warning(f"Ticket {ticket} is missing some fields! Please Investigate!")
                 continue
 
             new_ticket = {
