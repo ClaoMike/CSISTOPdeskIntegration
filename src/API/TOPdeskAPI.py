@@ -137,12 +137,13 @@ class TOPdeskAPI:
                 continue
 
             payload = ticket_data["payload"]
-            comments = ticket_data["comments"]
-
             self.__update_ticket(topdesk_id, payload)
 
-            for comment in comments:
-                self.__update_actions(topdesk_id, comment)
+            if "comments" in ticket_data:
+                comments = ticket_data["comments"]
+
+                for comment in comments:
+                    self.__update_actions(topdesk_id, comment)
 
     def __create_ticket(self, ticket):
         """
