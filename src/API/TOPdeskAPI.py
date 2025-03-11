@@ -69,6 +69,14 @@ class TOPdeskAPI:
     """
 
     class RequestType(Enum):
+        """
+            Enum representing the types of HTTP requests supported by the TOPdesk API.
+
+            Attributes:
+                POST: Represents an HTTP POST request (used for creating resources).
+                PATCH: Represents an HTTP PATCH request (used for updating resources partially).
+                PUT: Represents an HTTP PUT request (used for updating or replacing resources).
+        """
         POST = "POST"
         PATCH = "PATCH"
         PUT = "PUT"
@@ -178,6 +186,22 @@ class TOPdeskAPI:
         self.__make_request(payload=comment, request_type=TOPdeskAPI.RequestType.PUT, endpoint=f"/number/{topdesk_id}")
 
     def __make_request(self, payload, request_type: RequestType, endpoint: str = ""):
+        """
+            Makes an HTTP request to the TOPdesk API with the specified request type.
+
+            Args:
+                payload (dict): The JSON payload to send in the request body.
+                request_type (RequestType): The type of HTTP request (POST, PATCH, or PUT).
+                endpoint (str, optional): Additional URL path to append to the incidents endpoint.
+                                          Defaults to an empty string.
+
+            Returns:
+                dict: The JSON response from the API.
+
+            Raises:
+                SystemExit: If an unsupported request type is provided.
+        """
+        # Construct request parameters
         request_params = {
             "url": f"{self.__configurationManager.topdesk_base_url}/incidents{endpoint}",
             "auth": (self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),
@@ -185,8 +209,10 @@ class TOPdeskAPI:
             "json": payload
         }
 
+        # Log the request attempt
         self.__logger.info(f"Performing a {request_type.value} request at {request_params["url"]}")
 
+        # Perform the appropriate HTTP request based on the request type
         match request_type:
             case TOPdeskAPI.RequestType.POST:
                 response = requests.post(**request_params)
@@ -197,9 +223,11 @@ class TOPdeskAPI:
             case TOPdeskAPI.RequestType.PATCH:
                 response = requests.patch(**request_params)
 
-            case _:  # Other cases
+            case _: # Handle invalid request types
                 raise(SystemExit)
 
+        # Evaluate the response (this may log errors and raise exceptions if necessary)
         self.__responseEvaluator.evaluate(response)
 
+        # Return the parsed JSON response
         return response.json()

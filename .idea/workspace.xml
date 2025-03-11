@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="More Unit Tests">
+    <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="Refactor TOPdesk API class">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/API/TOPdeskAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/API/TOPdeskAPI.py" afterDir="false" />
     </list>
@@ -120,7 +120,7 @@
       <workItem from="1741164494564" duration="19723000" />
       <workItem from="1741590953541" duration="21790000" />
       <workItem from="1741613472631" duration="4609000" />
-      <workItem from="1741676622593" duration="12664000" />
+      <workItem from="1741676622593" duration="12838000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit&#10;&#10;- fetching tickets that have not been created in TOPdesk">
       <option name="closed" value="true" />
@@ -402,14 +402,21 @@
       <option name="project" value="LOCAL" />
       <updated>1741689107475</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="Refactor TOPdesk API class">
+      <option name="closed" value="true" />
+      <created>1741689601599</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1741689601599</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Restructure" />
     <MESSAGE value="Fetching the comments" />
     <MESSAGE value="Adding only the recent comments" />
     <MESSAGE value="Refactor&#10;&#10;Attaching comments when first pulling them" />
@@ -434,7 +441,8 @@
     <MESSAGE value="Added some unit tests" />
     <MESSAGE value="Improved tests as I added new logs" />
     <MESSAGE value="More Unit Tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="More Unit Tests" />
+    <MESSAGE value="Refactor TOPdesk API class" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor TOPdesk API class" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_tests_with_coverage.coverage" NAME="Run tests with coverage Coverage Results" MODIFIED="1741689570590" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
