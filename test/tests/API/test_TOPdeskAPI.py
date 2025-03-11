@@ -101,3 +101,51 @@ def test_update_tickets_missing_comments(mock_patch, mock_put, mock_topdesk_api)
     mock_patch.assert_called_once()
     mock_put.assert_not_called()
 
+@patch("requests.put")
+@patch("requests.patch")
+def test_update_tickets_multiple_comments(mock_patch, mock_put, mock_topdesk_api):
+    """Test updating tickets when comments are missing."""
+    updates = {
+        "TICKET_003": {
+            "payload": {"status": "in progress"},
+            "comments": [
+                {"text": "Still investigating"},
+                {"text": "Still investigating"}
+            ]
+        }
+    }
+
+    mock_topdesk_api.update_tickets(updates)
+
+    mock_patch.assert_called_once()
+    assert mock_put.called  # Returns True if it was called at least once
+
+@patch("requests.post")
+def test_private_create_ticket(mock_post, mock_topdesk_api):
+    """Test the private __create_ticket method."""
+    mock_post.return_value.json.return_value = {"id": "TICKET_004"}
+    mock_post.return_value.status_code = 201
+
+    ticket_data = {"title": "Private Test", "description": "Checking private method"}
+    response = mock_topdesk_api._TOPdeskAPI__create_ticket(ticket_data)
+
+    mock_post.assert_called_once()
+    assert response["id"] == "TICKET_004"
+
+@patch("requests.patch")
+def test_private_update_ticket(mock_patch, mock_topdesk_api):
+    """Test the private __update_ticket method."""
+    mock_patch.return_value.status_code = 200
+
+    mock_topdesk_api._TOPdeskAPI__update_ticket("TICKET_005", {"status": "in progress"})
+
+    mock_patch.assert_called_once()
+
+@patch("requests.put")
+def test_private_update_actions(mock_put, mock_topdesk_api):
+    """Test the private __update_actions method."""
+    mock_put.return_value.status_code = 200
+
+    mock_topdesk_api._TOPdeskAPI__update_actions("TICKET_006", {"text": "Added a comment"})
+
+    mock_put.assert_called_once()

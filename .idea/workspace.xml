@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="Improved tests as I added new logs">
+    <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="More Unit Tests">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/API/TOPdeskAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/API/TOPdeskAPI.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/tests/API/test_TOPdeskAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/tests/API/test_TOPdeskAPI.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -121,7 +120,7 @@
       <workItem from="1741164494564" duration="19723000" />
       <workItem from="1741590953541" duration="21790000" />
       <workItem from="1741613472631" duration="4609000" />
-      <workItem from="1741676622593" duration="11935000" />
+      <workItem from="1741676622593" duration="12183000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit&#10;&#10;- fetching tickets that have not been created in TOPdesk">
       <option name="closed" value="true" />
@@ -387,14 +386,21 @@
       <option name="project" value="LOCAL" />
       <updated>1741688033815</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="More Unit Tests">
+      <option name="closed" value="true" />
+      <created>1741688862756</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1741688862756</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Preparing converting tickets that need updating" />
     <MESSAGE value="Restructure" />
     <MESSAGE value="Fetching the comments" />
     <MESSAGE value="Adding only the recent comments" />
@@ -419,10 +425,11 @@
     <MESSAGE value="Prepared function for replacing the current state of making request via the TOPdesk API" />
     <MESSAGE value="Added some unit tests" />
     <MESSAGE value="Improved tests as I added new logs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improved tests as I added new logs" />
+    <MESSAGE value="More Unit Tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="More Unit Tests" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_tests_with_coverage.coverage" NAME="Run tests with coverage Coverage Results" MODIFIED="1741688817556" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_tests_with_coverage.coverage" NAME="Run tests with coverage Coverage Results" MODIFIED="1741689084079" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$CsisAPI.coverage" NAME="CsisAPI Coverage Results" MODIFIED="1741601398925" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/API" />
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$.coverage" NAME=" Coverage Results" MODIFIED="1741688752739" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/tests/API" />
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_main.coverage" NAME="Run main Coverage Results" MODIFIED="1741614030953" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\ClaJec0\PycharmProjects\TOPdeskCsisIntegration" />
