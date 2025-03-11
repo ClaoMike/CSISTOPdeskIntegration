@@ -139,23 +139,6 @@ class CsisAPI:
         for ticket in tickets:
             self.__update_ticket(ticket)
 
-    def __get_tickets_with_offset(self, offset, limit):
-        """
-        Fetches tickets created after a timestamp, excluding closed tickets.
-
-        Args:
-            offset (int): Pagination offset for fetching tickets.
-            limit (int): Number of tickets to fetch per request.
-
-        Returns:
-            dict: JSON response containing ticket data.
-
-        Raises:
-            SystemExit: If the API request fails.
-        """
-        return self.__get_tickets(offset, limit, "created_after",
-                                  ["new", "pending-customer", "pending-csis", "confirmed"])
-
     def __get_updated_tickets_with_offset(self, offset, limit):
         """
         Fetches tickets that were updated after a timestamp.
@@ -170,8 +153,12 @@ class CsisAPI:
         Raises:
             SystemExit: If the API request fails.
         """
-        return self.__get_tickets(offset, limit, "updated_after",
-                                  ["new", "pending-customer", "pending-csis", "confirmed", "closed"])
+        return self.__get_tickets(
+            offset,
+            limit,
+            "updated_after",
+            ["new", "pending-customer", "pending-csis", "confirmed", "closed"]
+        )
 
     def __get_tickets(self, offset, limit, timestamp_key, status_list):
         """
