@@ -92,6 +92,9 @@ class TOPdeskAPI:
             self.__configurationManager = ConfigurationManager()
             self.__logger = Logger()
             self.__responseEvaluator = HTTPRequestResponseEvaluator()
+            self.__headers = {
+                "Content-Type": "application/json"
+            }
 
     def create_tickets(self, tickets):
         """
@@ -107,33 +110,6 @@ class TOPdeskAPI:
         for ticket in tickets:
             created_tickets.append(self.__create_ticket(ticket))
         return created_tickets
-
-    def __create_ticket(self, ticket):
-        """
-        Sends a POST request to create a single ticket in TOPdesk.
-
-        Args:
-            ticket (dict): The ticket data to be sent.
-
-        Returns:
-            dict: The response data of the created ticket.
-        """
-        url = f"{self.__configurationManager.topdesk_base_url}/incidents"
-
-        headers = {
-            "Content-Type": "application/json"
-        }
-
-        self.__logger.info(f"Performing a POST request at {url}")
-        response = requests.post(
-            url,
-            auth=(self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),
-            headers=headers,
-            json=ticket
-        )
-        self.__responseEvaluator.evaluate(response)
-
-        return response.json()
 
     def update_tickets(self, tickets):
         """
@@ -153,6 +129,29 @@ class TOPdeskAPI:
             for comment in comments:
                 self.__update_actions(topdesk_id, comment)
 
+    def __create_ticket(self, ticket):
+        """
+        Sends a POST request to create a single ticket in TOPdesk.
+
+        Args:
+            ticket (dict): The ticket data to be sent.
+
+        Returns:
+            dict: The response data of the created ticket.
+        """
+        url = f"{self.__configurationManager.topdesk_base_url}/incidents"
+
+        self.__logger.info(f"Performing a POST request at {url}")
+        response = requests.post(
+            url,
+            auth=(self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),
+            headers=self.__headers,
+            json=ticket
+        )
+        self.__responseEvaluator.evaluate(response)
+
+        return response.json()
+
     def __update_ticket(self, topdesk_id, payload):
         """
         Sends a PATCH request to update a ticket's status or details.
@@ -163,15 +162,11 @@ class TOPdeskAPI:
         """
         url = f"{self.__configurationManager.topdesk_base_url}/incidents/number/{topdesk_id}"
 
-        headers = {
-            "Content-Type": "application/json"
-        }
-
         self.__logger.info(f"Performing a PATCH request at {url}")
         response = requests.patch(
             url,
             auth=(self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),
-            headers=headers,
+            headers=self.__headers,
             json=payload
         )
         self.__responseEvaluator.evaluate(response)
@@ -186,15 +181,11 @@ class TOPdeskAPI:
         """
         url = f"{self.__configurationManager.topdesk_base_url}/incidents/number/{topdesk_id}"
 
-        headers = {
-            "Content-Type": "application/json"
-        }
-
         self.__logger.info(f"Performing a PUT request at {url}")
         response = requests.put(
             url,
             auth=(self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),
-            headers=headers,
+            headers=self.__headers,
             json=comment
         )
         self.__responseEvaluator.evaluate(response)

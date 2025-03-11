@@ -100,16 +100,6 @@ class Logger:
         # Open the Markdown log file
         self.markdown_log = open(markdown_log_path, "w", encoding="utf-8")
 
-    def _write_markdown(self, text):
-        """
-        Writes text to the Markdown log file and flushes immediately.
-
-        Args:
-            text (str): The text to be written.
-        """
-        self.markdown_log.write(text + "\n")
-        self.markdown_log.flush()
-
     def info(self, message):
         """Logs an INFO-level message."""
         self.logger.info(message)
@@ -196,6 +186,24 @@ class Logger:
 
         self.newline()
 
+    def close(self):
+        """
+        Closes the Markdown log file, indicating that logging has finished.
+        """
+        end_message = "Import successful!"
+        self.info(end_message)
+        self.markdown_log.close()
+
+    def _write_markdown(self, text):
+        """
+        Writes text to the Markdown log file and flushes immediately.
+
+        Args:
+            text (str): The text to be written.
+        """
+        self.markdown_log.write(text + "\n")
+        self.markdown_log.flush()
+
     def __add_markdown_section(self, title):
         """
         Starts a collapsible Markdown section.
@@ -208,11 +216,3 @@ class Logger:
     def __end_markdown_section(self):
         """Closes a collapsible Markdown section."""
         self._write_markdown("</details>\n")
-
-    def close(self):
-        """
-        Closes the Markdown log file, indicating that logging has finished.
-        """
-        end_message = "Import successful!"
-        self.info(end_message)
-        self.markdown_log.close()
