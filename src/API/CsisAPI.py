@@ -129,6 +129,16 @@ class CsisAPI:
 
         return tickets
 
+    def update_tickets(self, tickets):
+        """
+                Updates tickets with new customer references.
+
+                Args:
+                    tickets (list): List of tickets to update.
+                """
+        for ticket in tickets:
+            self.__update_ticket(ticket)
+
     def __get_tickets_with_offset(self, offset, limit):
         """
         Fetches tickets created after a timestamp, excluding closed tickets.
@@ -304,16 +314,6 @@ class CsisAPI:
 
         return response.json()  # Return ticket details as JSON
 
-    def update_tickets(self, tickets):
-        """
-                Updates tickets with new customer references.
-
-                Args:
-                    tickets (list): List of tickets to update.
-                """
-        for ticket in tickets:
-            self.__update_ticket(ticket)
-
     def __update_ticket(self, ticket):
         """
                Updates a single ticket in CSIS.
@@ -397,4 +397,3 @@ class CsisAPI:
 
         # Return list of comments from API response
         return response.json()["payload"]
-
