@@ -155,18 +155,7 @@ class TOPdeskAPI:
         Returns:
             dict: The response data of the created ticket.
         """
-        url = f"{self.__configurationManager.topdesk_base_url}/incidents"
-
-        self.__logger.info(f"Performing a POST request at {url}")
-        response = requests.post(
-            url,
-            auth=(self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),
-            headers=self.__headers,
-            json=ticket
-        )
-        self.__responseEvaluator.evaluate(response)
-
-        return response.json()
+        return self.__make_request(payload=ticket, request_type=TOPdeskAPI.RequestType.POST)
 
     def __update_ticket(self, topdesk_id, payload):
         """
@@ -176,16 +165,7 @@ class TOPdeskAPI:
             topdesk_id (str): The ID of the TOPdesk ticket to update.
             payload (dict): The data to update the ticket with.
         """
-        url = f"{self.__configurationManager.topdesk_base_url}/incidents/number/{topdesk_id}"
-
-        self.__logger.info(f"Performing a PATCH request at {url}")
-        response = requests.patch(
-            url,
-            auth=(self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),
-            headers=self.__headers,
-            json=payload
-        )
-        self.__responseEvaluator.evaluate(response)
+        self.__make_request(payload=payload, request_type=TOPdeskAPI.RequestType.PATCH, endpoint=f"/number/{topdesk_id}")
 
     def __update_actions(self, topdesk_id, comment):
         """
@@ -195,24 +175,17 @@ class TOPdeskAPI:
             topdesk_id (str): The ID of the TOPdesk ticket to update.
             comment (dict): The comment data to add to the ticket.
         """
-        url = f"{self.__configurationManager.topdesk_base_url}/incidents/number/{topdesk_id}"
+        self.__make_request(payload=comment, request_type=TOPdeskAPI.RequestType.PUT, endpoint=f"/number/{topdesk_id}")
 
-        self.__logger.info(f"Performing a PUT request at {url}")
-        response = requests.put(
-            url,
-            auth=(self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),
-            headers=self.__headers,
-            json=comment
-        )
-        self.__responseEvaluator.evaluate(response)
-
-    def __make_request(self, payload, request_type: RequestType, endpoint: str):
+    def __make_request(self, payload, request_type: RequestType, endpoint: str = ""):
         request_params = {
             "url": f"{self.__configurationManager.topdesk_base_url}/incidents{endpoint}",
             "auth": (self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),
             "headers": self.__headers,
             "json": payload
         }
+
+        self.__logger.info(f"Performing a {request_type.value} request at {request_params["url"]}")
 
         match request_type:
             case TOPdeskAPI.RequestType.POST:
