@@ -4,14 +4,18 @@ from src.utils.TicketConverter import TicketConverter  # Import Logger to patch 
 
 @pytest.fixture
 def ticket_converter():
-    """Fixture to provide a singleton TicketConverter instance."""
-    return TicketConverter()
+    """Fixture to provide a singleton TOPdeskAPI instance with mocked dependencies."""
+    with patch("src.utils.Logger.Logger.__new__", return_value=MagicMock()) as mock_logger:
+
+        instance = TicketConverter()
+        yield instance  # Provide the instance for test cases
 
 # 1️⃣ Test Singleton Behavior
 def test_ticket_converter_is_singleton():
     """Test that TicketConverter follows the Singleton pattern."""
-    instance1 = TicketConverter()
-    instance2 = TicketConverter()
+    with patch("src.utils.Logger.Logger.__new__", return_value=MagicMock()):
+        instance1 = TicketConverter()
+        instance2 = TicketConverter()
 
     assert id(instance1) == id(instance2)
 
