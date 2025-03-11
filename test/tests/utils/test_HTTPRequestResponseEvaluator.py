@@ -4,11 +4,6 @@ from requests import Response
 from src.utils.HTTPRequestResponseEvaluator import HTTPRequestResponseEvaluator
 from src.utils.Logger import Logger  # Import Logger to patch it
 
-# @pytest.fixture
-# def evaluator():
-#     """Fixture to create an instance of HTTPRequestResponseEvaluator."""
-#     return HTTPRequestResponseEvaluator()
-
 @pytest.fixture
 def evaluator():
     """Fixture to provide a singleton evaluator instance with a mocked logger."""

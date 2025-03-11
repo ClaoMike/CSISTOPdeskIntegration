@@ -82,6 +82,9 @@ class TicketConverter:
         for ticket in tickets:
             ticket = ticket["payload"]  # Extract ticket details from payload
 
+            if {"description", "title", "id", "status", "severity"} - ticket.keys():
+                continue
+
             new_ticket = {
                 "status": "firstLine",  # Default status for new tickets
                 "request": ticket["description"],  # Full description
