@@ -40,3 +40,24 @@ def test_csis_api_is_singleton(mock_csis_api):
     instance2 = CsisAPI()
 
     assert id(instance1) == id(instance2)
+
+# 2️⃣ Test Token Retrieval
+@patch("requests.post")
+def test_get_token(mock_post, mock_csis_api):
+    """Test if get_token() fetches and stores the authentication token correctly."""
+    mock_post.return_value.json.return_value = {"access_token": "new_mock_token"}
+    mock_post.return_value.status_code = 200
+
+    mock_csis_api.get_token()
+
+    # Ensure the token is updated in ConfigurationManager
+    assert mock_csis_api._CsisAPI__configurationManager.csis_client_token == "new_mock_token"
+    mock_post.assert_called_once_with(
+        "https://mock-csis.com/auth",
+        data={
+            "grant_type": "client_credentials",
+            "client_id": "mock_client_id",
+            "client_secret": "mock_client_secret",
+            "scope": "https://api.csis.com/ticket:read https://api.csis.com/ticket:write"
+        }
+    )

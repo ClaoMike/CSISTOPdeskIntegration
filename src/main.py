@@ -136,6 +136,7 @@ logger.info("Synchronization process completed successfully.")
 logger.close()
 
 # TODO
+# refactor TOPdesk API class
 # test
 # test documentation
 # generate runbook
