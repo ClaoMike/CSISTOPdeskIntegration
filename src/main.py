@@ -135,14 +135,22 @@ logger.newline()
 logger.info("Synchronization process completed successfully.")
 logger.close()
 
-# TODO
-# refactor TOPdesk API class
+# TODO: v1
+# refactor CSIS API class
 # test
 # test documentation
+# variables for logging and minutes
+# enable/disable logging
 # generate runbook
 # test runbook
 # runbook documentation
-# send logs via API
-# documentation
+# generate documentation
 # visualization diagram
 # write README
+# set up Azure Credentials
+# release
+
+# TODO: v2
+# set up folder for storing logs
+# send logs via API
+# release
