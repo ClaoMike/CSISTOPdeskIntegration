@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="Reordered csis api">
+    <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="Remove function not being used anywhere">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/API/CsisAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/API/CsisAPI.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/tests/API/test_CsisAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/tests/API/test_CsisAPI.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +73,7 @@
       <recent name="C:\Users\ClaJec0\PycharmProjects\TOPdeskCsisIntegration\src" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Run main">
+  <component name="RunManager" selected="Python tests.Run tests with coverage">
     <configuration name="Python tests for test_TOPdeskAPI.test_update_tickets_missing_comments" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="TOPdeskCsisIntegration" />
       <option name="ENV_FILES" value="" />
@@ -120,7 +120,7 @@
       <workItem from="1741164494564" duration="19723000" />
       <workItem from="1741590953541" duration="21790000" />
       <workItem from="1741613472631" duration="4609000" />
-      <workItem from="1741676622593" duration="15111000" />
+      <workItem from="1741676622593" duration="18116000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit&#10;&#10;- fetching tickets that have not been created in TOPdesk">
       <option name="closed" value="true" />
@@ -426,14 +426,21 @@
       <option name="project" value="LOCAL" />
       <updated>1741690039147</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Remove function not being used anywhere">
+      <option name="closed" value="true" />
+      <created>1741694414136</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1741694414136</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Refactor&#10;&#10;Attaching comments when first pulling them" />
     <MESSAGE value="Refactor&#10;&#10;Converting CSIS to TOPdesk format" />
     <MESSAGE value="Completed the script" />
     <MESSAGE value="Add logger class" />
@@ -458,13 +465,14 @@
     <MESSAGE value="Refactor TOPdesk API class" />
     <MESSAGE value="Add comments and documentation" />
     <MESSAGE value="Reordered csis api" />
-    <option name="LAST_COMMIT_MESSAGE" value="Reordered csis api" />
+    <MESSAGE value="Remove function not being used anywhere" />
+    <option name="LAST_COMMIT_MESSAGE" value="Remove function not being used anywhere" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_tests_with_coverage.coverage" NAME="Run tests with coverage Coverage Results" MODIFIED="1741689570590" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_tests_with_coverage.coverage" NAME="Run tests with coverage Coverage Results" MODIFIED="1741701189057" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$CsisAPI.coverage" NAME="CsisAPI Coverage Results" MODIFIED="1741601398925" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/API" />
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$.coverage" NAME=" Coverage Results" MODIFIED="1741688752739" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/tests/API" />
-    <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_main.coverage" NAME="Run main Coverage Results" MODIFIED="1741693950345" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\ClaJec0\PycharmProjects\TOPdeskCsisIntegration" />
+    <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_main.coverage" NAME="Run main Coverage Results" MODIFIED="1741700657011" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\ClaJec0\PycharmProjects\TOPdeskCsisIntegration" />
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$ConfigurationManager.coverage" NAME="ConfigurationManager Coverage Results" MODIFIED="1741178430193" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$main.coverage" NAME="main Coverage Results" MODIFIED="1741613077080" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\ClaJec0\PycharmProjects\TOPdeskCsisIntegration" />
   </component>
