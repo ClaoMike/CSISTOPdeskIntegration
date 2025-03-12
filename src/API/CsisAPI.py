@@ -90,6 +90,11 @@ class CsisAPI:
             self.__timestamp = timestampGenerator.get_start_of_the_search_timestamp(minutes=self.__configurationManager.minutes)
             self.__logger.info(f"Current timestamp: {self.__timestamp}")
 
+            self.__headers = {
+                "Authorization": f"Bearer {self.__configurationManager.csis_client_token}",
+                "Content-Type": "application/json"
+            }
+
     def get_token(self):
         """
            Fetches and stores the CSIS authentication token.
@@ -176,10 +181,6 @@ class CsisAPI:
         Raises:
             SystemExit: If the API request fails.
         """
-        headers = {
-            "Authorization": f"Bearer {self.__configurationManager.csis_client_token}",
-            "Content-Type": "application/json"
-        }
 
         params = {
             timestamp_key: self.__timestamp,
@@ -193,7 +194,7 @@ class CsisAPI:
         self.__logger.info(f"Performing a GET request at {url}")
 
         # Send request to fetch tickets
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.get(url, headers=self.__headers, params=params)
         self.__responseEvaluator.evaluate(response)
 
         return response.json()
@@ -256,10 +257,6 @@ class CsisAPI:
         Raises:
             SystemExit: If the API request fails.
         """
-        headers = {
-            "Authorization": f"Bearer {self.__configurationManager.csis_client_token}",
-            "Content-Type": "application/json"
-        }
 
         params = {
             "created_after": self.__timestamp,
@@ -273,7 +270,7 @@ class CsisAPI:
         self.__logger.info(f"Performing a GET request at {url}")
 
         # Send request to fetch tickets
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.get(url, headers=self.__headers, params=params)
         self.__responseEvaluator.evaluate(response)
 
         return response.json()
@@ -288,15 +285,11 @@ class CsisAPI:
         Returns:
             dict: The API response containing ticket details.
         """
-        headers = {
-            "Authorization": f"Bearer {self.__configurationManager.csis_client_token}",
-            "Content-Type": "application/json"
-        }
 
         url = f"{self.__configurationManager.csis_base_url}/ticket/{external_id}"  # Construct full API URL
 
         self.__logger.info(f"Performing a GET request at {url}")
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=self.__headers)
         self.__responseEvaluator.evaluate(response)
 
         return response.json()  # Return ticket details as JSON
@@ -314,15 +307,10 @@ class CsisAPI:
             "customer_reference": ticket["number"],
         }
 
-        headers = {
-            "Authorization": f"Bearer {self.__configurationManager.csis_client_token}",
-            "Content-Type": "application/json"
-        }
-
         self.__logger.info(f"Performing a PATCH request at {url}")
         response = requests.patch(
             url,
-            headers=headers,
+            headers=self.__headers,
             json=payload
         )
         self.__responseEvaluator.evaluate(response)
@@ -368,17 +356,12 @@ class CsisAPI:
                 """
         url = f"{self.__configurationManager.csis_base_url}/ticket/{ticket_id}/comment"
 
-        headers = {
-            "Authorization": f"Bearer {self.__configurationManager.csis_client_token}",
-            "Content-Type": "application/json"
-        }
-
         self.__logger.info(f"Performing a GET request at {url}")
 
         # Send request to fetch comments
         response = requests.get(
             url,
-            headers=headers
+            headers=self.__headers
         )
         self.__responseEvaluator.evaluate(response)
 
