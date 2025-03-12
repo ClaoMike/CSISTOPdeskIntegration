@@ -145,7 +145,15 @@ class CsisAPI:
                     tickets (list): List of tickets to update.
                 """
         for ticket in tickets:
-            self.__update_ticket(ticket)
+            payload = {
+                "customer_reference": ticket["number"],
+            }
+
+            self.__make_request(
+                request_type=RequestType.PATCH,
+                payload=payload,
+                endpoint=f"/{ticket["externalNumber"]}"
+            )
 
     def __get_updated_tickets_with_offset(self, offset, limit):
         """
@@ -273,19 +281,6 @@ class CsisAPI:
             dict: The API response containing ticket details.
         """
         return self.__make_request(request_type=RequestType.GET, endpoint=f"/{external_id}")  # Return ticket details as JSON
-
-    def __update_ticket(self, ticket):
-        """
-               Updates a single ticket in CSIS.
-
-               Args:
-                   ticket (dict): Ticket data containing the external number and customer reference.
-               """
-        payload = {
-            "customer_reference": ticket["number"],
-        }
-
-        self.__make_request(request_type=RequestType.PATCH, payload=payload, endpoint=f"/{ticket["externalNumber"]}")
 
     def __attach_comments(self, tickets):
         """
