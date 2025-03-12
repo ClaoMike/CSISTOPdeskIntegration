@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from src.API.CsisAPI import CsisAPI  # Adjust path if needed
+from src.API.RequestType import RequestType  # Import the enum
 
 @pytest.fixture
 def mock_csis_api():
@@ -61,3 +62,76 @@ def test_get_token(mock_post, mock_csis_api):
             "scope": "https://api.csis.com/ticket:read https://api.csis.com/ticket:write"
         }
     )
+
+@patch.object(CsisAPI, "_CsisAPI__get_filtered_tickets")
+def test_get_tickets_to_be_created(mock_get_filtered_tickets, mock_csis_api):
+    """Test if get_tickets_to_be_created() correctly fetches new tickets."""
+    mock_get_filtered_tickets.return_value = [{"id": "123", "number": "TICKET-123"}]
+
+    tickets = mock_csis_api.get_tickets_to_be_created()
+
+    assert tickets == [{"id": "123", "number": "TICKET-123"}]
+    mock_get_filtered_tickets.assert_called_once_with(
+        mock_csis_api._CsisAPI__get_tickets_with_offset,
+        should_have_customer_reference=False
+    )
+
+@patch.object(CsisAPI, "_CsisAPI__get_filtered_tickets")
+@patch.object(CsisAPI, "_CsisAPI__attach_comments")
+def test_get_updated_tickets(mock_attach_comments, mock_get_filtered_tickets, mock_csis_api):
+    """Test if get_updated_tickets() fetches tickets and attaches comments."""
+    mock_get_filtered_tickets.return_value = [{"id": "456", "number": "TICKET-456"}]
+    mock_attach_comments.return_value = [{"id": "456", "number": "TICKET-456", "comments": ["Test comment"]}]
+
+    tickets = mock_csis_api.get_updated_tickets()
+
+    assert tickets == [{"id": "456", "number": "TICKET-456", "comments": ["Test comment"]}]
+    mock_get_filtered_tickets.assert_called_once_with(
+        mock_csis_api._CsisAPI__get_updated_tickets_with_offset,
+        should_have_customer_reference=True
+    )
+    mock_attach_comments.assert_called_once()
+
+@patch.object(CsisAPI, "_CsisAPI__make_request")
+def test_update_tickets(mock_make_request, mock_csis_api):
+    """Test if update_tickets() correctly updates ticket customer references."""
+    tickets = [{"number": "TICKET-789", "externalNumber": "789"}]
+
+    mock_csis_api.update_tickets(tickets)
+
+    mock_make_request.assert_called_once_with(
+        request_type=RequestType.PATCH,  # Use the actual enum instead of accessing annotations
+        payload={"customer_reference": "TICKET-789"},
+        endpoint="/789"
+    )
+
+@patch.object(CsisAPI, "_CsisAPI__make_request")
+def test_get_ticket(mock_make_request, mock_csis_api):
+    """Test if __get_ticket() correctly fetches ticket details."""
+    mock_make_request.return_value = {"payload": {"id": "123", "number": "TICKET-123"}}
+
+    response = mock_csis_api._CsisAPI__get_ticket("123")
+
+    assert response == {"payload": {"id": "123", "number": "TICKET-123"}}
+    mock_make_request.assert_called_once_with(
+        request_type=RequestType.GET,
+        endpoint="/123"
+    )
+
+@patch.object(CsisAPI, "_CsisAPI__get_comments")
+def test_attach_comments(mock_get_comments, mock_csis_api):
+    """Test if __attach_comments() correctly filters recent comments."""
+    mock_get_comments.return_value = [
+        {"created": "2024-03-11T00:10:00Z", "text": "Comment 1"},
+        {"created": "2024-03-10T23:50:00Z", "text": "Old Comment"}
+    ]
+
+    tickets = [{"payload": {"id": "123"}}]
+
+    filtered_tickets = mock_csis_api._CsisAPI__attach_comments(tickets)
+
+    assert filtered_tickets[0]["comments"] == [
+        {"created": "2024-03-11T00:10:00Z", "text": "Comment 1"},
+        {"created": "2024-03-10T23:50:00Z", "text": "Old Comment"}
+    ]
+    mock_get_comments.assert_called_once_with("123")

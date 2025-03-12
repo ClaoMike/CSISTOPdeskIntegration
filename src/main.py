@@ -136,7 +136,6 @@ logger.info("Synchronization process completed successfully.")
 logger.close()
 
 # TODO: v1
-# refactor CSIS API class
 # test
 # test documentation
 # variables for logging and minutes

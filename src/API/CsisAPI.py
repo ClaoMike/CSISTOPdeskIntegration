@@ -301,8 +301,6 @@ class CsisAPI:
         # Return list of comments from API response
         return response["payload"]
 
-
-
     def __make_request(self, request_type: RequestType, payload=None, params=None, endpoint: str = ""):
         """
             Makes an HTTP request to the TOPdesk API with the specified request type.
