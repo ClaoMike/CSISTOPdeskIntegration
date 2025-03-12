@@ -30,7 +30,7 @@ import requests
 from src.config.ConfigurationManager import ConfigurationManager
 from src.utils.HTTPRequestResponseEvaluator import HTTPRequestResponseEvaluator
 from src.utils.Logger import Logger
-from enum import Enum
+from src.API.RequestType import RequestType
 
 
 class TOPdeskAPI:
@@ -67,19 +67,6 @@ class TOPdeskAPI:
         __update_actions(topdesk_id: str, comment: dict):
             Sends a PUT request to add an action/comment to a ticket.
     """
-
-    class RequestType(Enum):
-        """
-            Enum representing the types of HTTP requests supported by the TOPdesk API.
-
-            Attributes:
-                POST: Represents an HTTP POST request (used for creating resources).
-                PATCH: Represents an HTTP PATCH request (used for updating resources partially).
-                PUT: Represents an HTTP PUT request (used for updating or replacing resources).
-        """
-        POST = "POST"
-        PATCH = "PATCH"
-        PUT = "PUT"
 
     _instance = None  # Singleton instance
 
@@ -163,7 +150,7 @@ class TOPdeskAPI:
         Returns:
             dict: The response data of the created ticket.
         """
-        return self.__make_request(payload=ticket, request_type=TOPdeskAPI.RequestType.POST)
+        return self.__make_request(payload=ticket, request_type=RequestType.POST)
 
     def __update_ticket(self, topdesk_id, payload):
         """
@@ -173,7 +160,7 @@ class TOPdeskAPI:
             topdesk_id (str): The ID of the TOPdesk ticket to update.
             payload (dict): The data to update the ticket with.
         """
-        self.__make_request(payload=payload, request_type=TOPdeskAPI.RequestType.PATCH, endpoint=f"/number/{topdesk_id}")
+        self.__make_request(payload=payload, request_type=RequestType.PATCH, endpoint=f"/number/{topdesk_id}")
 
     def __update_actions(self, topdesk_id, comment):
         """
@@ -183,7 +170,7 @@ class TOPdeskAPI:
             topdesk_id (str): The ID of the TOPdesk ticket to update.
             comment (dict): The comment data to add to the ticket.
         """
-        self.__make_request(payload=comment, request_type=TOPdeskAPI.RequestType.PUT, endpoint=f"/number/{topdesk_id}")
+        self.__make_request(payload=comment, request_type=RequestType.PUT, endpoint=f"/number/{topdesk_id}")
 
     def __make_request(self, payload, request_type: RequestType, endpoint: str = ""):
         """
@@ -214,13 +201,13 @@ class TOPdeskAPI:
 
         # Perform the appropriate HTTP request based on the request type
         match request_type:
-            case TOPdeskAPI.RequestType.POST:
+            case RequestType.POST:
                 response = requests.post(**request_params)
 
-            case TOPdeskAPI.RequestType.PUT:
+            case RequestType.PUT:
                 response = requests.put(**request_params)
 
-            case TOPdeskAPI.RequestType.PATCH:
+            case RequestType.PATCH:
                 response = requests.patch(**request_params)
 
             case _: # Handle invalid request types
