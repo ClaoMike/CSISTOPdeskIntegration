@@ -87,11 +87,13 @@ class CsisAPI:
             self.__configurationManager = ConfigurationManager()
 
             # Generate timestamp for filtering tickets
-            timestampGenerator = TimestampGenerator()
-            self.__timestamp = timestampGenerator.get_start_of_the_search_timestamp(minutes=self.__configurationManager.minutes)
+            timestamp_generator = TimestampGenerator()
+            self.__timestamp = timestamp_generator.get_start_of_the_search_timestamp(minutes=self.__configurationManager.minutes)
             self.__logger.info(f"Current timestamp: {self.__timestamp}")
 
-            self.__headers = {}
+            self.__headers = {
+                "Content-Type": "application/json"
+            }
 
     def get_token(self):
         """
@@ -111,31 +113,7 @@ class CsisAPI:
         token = response.json().get("access_token")
         self.__configurationManager.csis_client_token = token # Store the token for future API calls
 
-        self.__headers = {
-            "Authorization": f"Bearer {self.__configurationManager.csis_client_token}",
-            "Content-Type": "application/json"
-        }
-
-    def get_tickets_to_be_created(self):
-        """
-        Retrieves tickets created after a timestamp that do not have a TOPdesk ID.
-
-        Returns:
-            list: A list of new tickets.
-        """
-        return self.__get_filtered_tickets(self.__get_tickets_with_offset, "created_after", should_have_customer_reference=False)
-
-    def get_updated_tickets(self):
-        """
-        Retrieves updated tickets after a timestamp and attaches recent comments.
-
-        Returns:
-            list: A list of updated tickets with comments.
-        """
-        tickets = self.__get_filtered_tickets(self.__get_updated_tickets_with_offset, "updated_after", should_have_customer_reference=True)
-        tickets = self.__attach_comments(tickets)
-
-        return tickets
+        self.__headers["Authorization"] = f"Bearer {self.__configurationManager.csis_client_token}"
 
     def update_tickets(self, tickets):
         """
@@ -155,60 +133,34 @@ class CsisAPI:
                 endpoint=f"/{ticket["externalNumber"]}"
             )
 
-    def __get_updated_tickets_with_offset(self, offset, limit):
+    def get_tickets_to_be_created(self):
         """
-        Fetches tickets that were updated after a timestamp.
-
-        Args:
-            offset (int): Pagination offset for fetching tickets.
-            limit (int): Number of tickets to fetch per request.
+        Retrieves tickets created after a timestamp that do not have a TOPdesk ID.
 
         Returns:
-            dict: JSON response containing ticket data.
-
-        Raises:
-            SystemExit: If the API request fails.
+            list: A list of new tickets.
         """
-        return self.__get_tickets(
-            offset,
-            limit,
-            "updated_after",
-            ["new", "pending-customer", "pending-csis", "confirmed", "closed"]
-        )
+        return self.__get_filtered_tickets(self.__get_tickets_with_offset, should_have_customer_reference=False)
 
-    def __get_tickets(self, offset, limit, timestamp_key, status_list):
+    def get_updated_tickets(self):
         """
-        Generic method to fetch tickets based on a timestamp filter.
-
-        Args:
-            offset (int): Pagination offset for fetching tickets.
-            limit (int): Number of tickets to fetch per request.
-            timestamp_key (str): The key determining filtering criteria ("created_after" or "updated_after").
-            status_list (list): List of ticket statuses to include in the query.
+        Retrieves updated tickets after a timestamp and attaches recent comments.
 
         Returns:
-            dict: JSON response containing ticket data.
-
-        Raises:
-            SystemExit: If the API request fails.
+            list: A list of updated tickets with comments.
         """
+        tickets = self.__get_filtered_tickets(self.__get_updated_tickets_with_offset, should_have_customer_reference=True)
+        tickets = self.__attach_comments(tickets)
 
-        params = {
-            timestamp_key: self.__timestamp,
-            "status": status_list,
-            "limit": limit,
-            "offset": offset
-        }
+        return tickets
 
-        return self.__make_request(request_type=RequestType.GET, params=params)
 
-    def __get_filtered_tickets(self, fetch_function, timestamp_key, should_have_customer_reference):
+    def __get_filtered_tickets(self, fetch_function, should_have_customer_reference):
         """
         Fetches and filters tickets based on the given fetch function.
 
         Args:
             fetch_function (function): The function to retrieve tickets.
-            timestamp_key (str): The timestamp key for filtering.
             should_have_customer_reference (bool): Determines filtering logic.
 
         Returns:
@@ -270,6 +222,29 @@ class CsisAPI:
 
         return self.__make_request(request_type=RequestType.GET, params=params)
 
+    def __get_updated_tickets_with_offset(self, offset, limit):
+        """
+        Fetches tickets that were updated after a timestamp.
+
+        Args:
+            offset (int): Pagination offset for fetching tickets.
+            limit (int): Number of tickets to fetch per request.
+
+        Returns:
+            dict: JSON response containing ticket data.
+
+        Raises:
+            SystemExit: If the API request fails.
+        """
+        params = {
+            "updated_after": self.__timestamp,
+            "status": ["new", "pending-customer", "pending-csis", "confirmed", "closed"],
+            "limit": limit,
+            "offset": offset
+        }
+
+        return self.__make_request(request_type=RequestType.GET, params=params)
+
     def __get_ticket(self, external_id):
         """
         Fetches ticket details by external_id.
@@ -299,8 +274,8 @@ class CsisAPI:
             # save only those that are recent
             recent_comments = []
             for i in range(len(all_comments)):
-                timestampGenerator = TimestampGenerator()
-                time_difference = timestampGenerator.get_time_difference_between(self.__timestamp, all_comments[i]["created"]) # in minutes
+                timestamp_generator = TimestampGenerator()
+                time_difference = timestamp_generator.get_time_difference_between(self.__timestamp, all_comments[i]["created"]) # in minutes
                 if time_difference < self.__configurationManager.minutes:
                     recent_comments.append(all_comments[i])
 
@@ -374,7 +349,7 @@ class CsisAPI:
                 response = requests.get(**request_params)
 
             case _: # Handle invalid request types
-                raise(SystemExit)
+                raise SystemExit
 
         # Evaluate the response (this may log errors and raise exceptions if necessary)
         self.__responseEvaluator.evaluate(response)

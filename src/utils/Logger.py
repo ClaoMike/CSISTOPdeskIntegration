@@ -190,7 +190,7 @@ class Logger:
         """
         Closes the Markdown log file, indicating that logging has finished.
         """
-        end_message = "Import successful!"
+        end_message = "Script's execution ENDED!"
         self.info(end_message)
         self.markdown_log.close()
 
