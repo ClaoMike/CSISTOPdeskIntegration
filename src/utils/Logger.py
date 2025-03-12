@@ -50,19 +50,19 @@ class Logger:
 
     _instance = None  # Singleton instance
 
-    def __new__(cls):
+    def __new__(cls, *args, **kwargs):  # Accept additional arguments
         """
-        Ensures only one instance of the Logger class exists (Singleton pattern).
+                Ensures only one instance of the Logger class exists (Singleton pattern).
 
-        Returns:
-            Logger: The singleton instance of the Logger.
-        """
+                Returns:
+                    Logger: The singleton instance of the Logger.
+                """
         if cls._instance is None:
             cls._instance = super(Logger, cls).__new__(cls)
-            cls._instance.__initialize()
+            cls._instance.__initialize(*args, **kwargs)  # Pass arguments to __initialize
         return cls._instance
 
-    def __initialize(self, log_dir="logs"):
+    def __initialize(self, log_dir="logs", is_logging=True):
         """
         Initializes the Logger by creating a timestamped log directory and configuring logging.
 
@@ -71,6 +71,11 @@ class Logger:
         """
         if not hasattr(self, "_initialized"):
             self._initialized = True
+
+        self.is_logging = is_logging  # ✅ Store logging state
+
+        if not self.is_logging:
+            return  # ✅ Skip initialization if logging is disabled
 
         # Ensure base log directory exists
         self.log_dir = log_dir
@@ -102,16 +107,25 @@ class Logger:
 
     def info(self, message):
         """Logs an INFO-level message."""
+        if not self.is_logging:
+            return  # ✅ Skip
+
         self.logger.info(message)
         self._write_markdown(f"- **INFO**: {message}")
 
     def info_new_section(self, message):
         """Logs an INFO-level message and starts a new collapsible Markdown section."""
+        if not self.is_logging:
+            return  # ✅ Skip
+
         self.logger.info(message)
         self.__add_markdown_section(message)
 
     def info_end_section(self, message):
         """Logs an INFO-level message and closes the current collapsible Markdown section."""
+        if not self.is_logging:
+            return  # ✅ Skip
+
         self.logger.info(message)
         self._write_markdown(f"- **INFO**: {message}")
         self.__end_markdown_section()
@@ -123,6 +137,9 @@ class Logger:
         Args:
             message (str): The warning message to log.
         """
+        if not self.is_logging:
+            return  # ✅ Skip
+
         self.logger.warning(message)
         self._write_markdown(f"- **WARNING**: {message}")
 
@@ -133,6 +150,9 @@ class Logger:
         Args:
             message (str): The error message to log.
         """
+        if not self.is_logging:
+            return  # ✅ Skip
+
         self.logger.error(message)
         self._write_markdown(f"- **ERROR**: {message}")
 
@@ -140,6 +160,9 @@ class Logger:
         """
         Inserts a newline in both the standard log file and Markdown file for visual separation.
         """
+        if not self.is_logging:
+            return  # ✅ Skip
+
         for handler in self.logger.handlers:
             if isinstance(handler, logging.StreamHandler):
                 handler.stream.write("\n")
@@ -155,6 +178,9 @@ class Logger:
             array (list): List of items to log.
             array_title (str): Title for the section. Default: "No data".
         """
+        if not self.is_logging:
+            return  # ✅ Skip
+
         self.logger.info(f"{array_title} (Count: {len(array)})")
 
         self.__add_markdown_section(f"{array_title} (Count: {len(array)})")
@@ -174,6 +200,9 @@ class Logger:
             dict_data (dict): Dictionary to log.
             dict_title (str): Title for the section. Default: "No data".
         """
+        if not self.is_logging:
+            return  # ✅ Skip
+
         self.logger.info(f"{dict_title} (Count: {len(dict_data)})")
 
         self._write_markdown(f"<details><summary><b>{dict_title} (Count: {len(dict_data)})</b></summary>\n")
@@ -190,6 +219,9 @@ class Logger:
         """
         Closes the Markdown log file, indicating that logging has finished.
         """
+        if not self.is_logging:
+            return  # ✅ Skip
+
         end_message = "Script's execution ENDED!"
         self.info(end_message)
         self.markdown_log.close()

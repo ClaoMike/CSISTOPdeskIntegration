@@ -29,11 +29,15 @@ Usage:
 
 from src.API.CsisAPI import CsisAPI
 from src.API.TOPdeskAPI import TOPdeskAPI
+from src.config.ConfigurationManager import ConfigurationManager
 from src.utils.Logger import Logger
 from src.utils.TicketConverter import TicketConverter
 
+# Initialize configuration
+config = ConfigurationManager()
+
 # Initialize logger
-logger = Logger()
+logger = Logger(is_logging=config.is_logging)
 
 # Initialize API handlers
 csisAPI = CsisAPI()
@@ -136,8 +140,6 @@ logger.info("Synchronization process completed successfully.")
 logger.close()
 
 # TODO: v1
-# variables for logging and minutes
-# enable/disable logging
 # generate runbook
 # test runbook
 # runbook documentation

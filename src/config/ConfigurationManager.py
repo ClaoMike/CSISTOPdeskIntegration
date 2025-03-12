@@ -24,7 +24,6 @@ Usage Example:
 import os
 from dotenv import load_dotenv
 
-
 class ConfigurationManager:
     """
     A Singleton class that manages configuration settings and environment variables.
@@ -72,6 +71,7 @@ class ConfigurationManager:
 
             # General configuration
             self.__minutes = int(os.getenv("MINUTES"))
+            self.__is_logging = os.getenv("IS_LOGGING") in "True"
 
             # CSIS API Credentials
             self.__CSIS_AUTHENTICATION_URL = "https://login.csis.com/oauth2/v2/token"
@@ -87,6 +87,13 @@ class ConfigurationManager:
             self.__TOPdesk_BASE_URL = "https://dlfseeds-test.topdesk.net/tas/api"  # Test environment
             self.__TOPdesk_USERNAME = os.getenv("TOPDESK_USERNAME")
             self.__TOPdesk_PASSWORD = os.getenv("TOPDESK_PASSWORD")
+
+
+
+    @property
+    def is_logging(self):
+        """Retrieves the value of the logging status."""
+        return self.__is_logging
 
     # General configuration variables
     @property
