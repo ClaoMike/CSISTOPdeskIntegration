@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="Refactor TOPdesk API">
+    <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="Unit Tests for TOPdesk API">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/API/CsisAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/API/CsisAPI.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/ConfigurationManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/ConfigurationManager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/tests/API/test_CsisAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/tests/API/test_CsisAPI.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,7 +122,7 @@
       <workItem from="1741590953541" duration="21790000" />
       <workItem from="1741613472631" duration="4609000" />
       <workItem from="1741676622593" duration="21114000" />
-      <workItem from="1741763481309" duration="9674000" />
+      <workItem from="1741763481309" duration="9807000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit&#10;&#10;- fetching tickets that have not been created in TOPdesk">
       <option name="closed" value="true" />
@@ -501,14 +500,21 @@
       <option name="project" value="LOCAL" />
       <updated>1741788887048</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="Unit Tests for TOPdesk API">
+      <option name="closed" value="true" />
+      <created>1741789607514</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1741789607514</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Evaluating responses&#10;&#10;System closes if an error occurs!" />
     <MESSAGE value="Added more logging" />
     <MESSAGE value="Completed logging" />
     <MESSAGE value="Added documentation and comments" />
@@ -533,7 +539,8 @@
     <MESSAGE value="Small CSIS API refactor" />
     <MESSAGE value="Refactor RequestType" />
     <MESSAGE value="Refactor TOPdesk API" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor TOPdesk API" />
+    <MESSAGE value="Unit Tests for TOPdesk API" />
+    <option name="LAST_COMMIT_MESSAGE" value="Unit Tests for TOPdesk API" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_tests_with_coverage.coverage" NAME="Run tests with coverage Coverage Results" MODIFIED="1741789579873" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

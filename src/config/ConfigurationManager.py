@@ -71,7 +71,7 @@ class ConfigurationManager:
             self._initialized = True
 
             # General configuration
-            self.__minutes = 6  # Default time-related setting
+            self.__minutes = int(os.getenv("MINUTES"))
 
             # CSIS API Credentials
             self.__CSIS_AUTHENTICATION_URL = "https://login.csis.com/oauth2/v2/token"

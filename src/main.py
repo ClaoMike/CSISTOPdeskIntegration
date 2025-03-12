@@ -136,8 +136,6 @@ logger.info("Synchronization process completed successfully.")
 logger.close()
 
 # TODO: v1
-# test
-# test documentation
 # variables for logging and minutes
 # enable/disable logging
 # generate runbook
