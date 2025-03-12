@@ -144,6 +144,7 @@ logger.close()
 # test runbook
 # runbook documentation
 # generate documentation
+# fix all warnings and typos
 # visualization diagram
 # write README
 # set up Azure Credentials
