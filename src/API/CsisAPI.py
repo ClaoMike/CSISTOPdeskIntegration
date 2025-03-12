@@ -91,10 +91,7 @@ class CsisAPI:
             self.__timestamp = timestampGenerator.get_start_of_the_search_timestamp(minutes=self.__configurationManager.minutes)
             self.__logger.info(f"Current timestamp: {self.__timestamp}")
 
-            self.__headers = {
-                "Authorization": f"Bearer {self.__configurationManager.csis_client_token}",
-                "Content-Type": "application/json"
-            }
+            self.__headers = {}
 
     def get_token(self):
         """
@@ -113,6 +110,11 @@ class CsisAPI:
 
         token = response.json().get("access_token")
         self.__configurationManager.csis_client_token = token # Store the token for future API calls
+
+        self.__headers = {
+            "Authorization": f"Bearer {self.__configurationManager.csis_client_token}",
+            "Content-Type": "application/json"
+        }
 
     def get_tickets_to_be_created(self):
         """
@@ -190,15 +192,7 @@ class CsisAPI:
             "offset": offset
         }
 
-        url = f"{self.__configurationManager.csis_base_url}/ticket/"
-
-        self.__logger.info(f"Performing a GET request at {url}")
-
-        # Send request to fetch tickets
-        response = requests.get(url, headers=self.__headers, params=params)
-        self.__responseEvaluator.evaluate(response)
-
-        return response.json()
+        return self.__make_request(request_type=RequestType.GET, params=params)
 
     def __get_filtered_tickets(self, fetch_function, timestamp_key, should_have_customer_reference):
         """
@@ -266,15 +260,7 @@ class CsisAPI:
             "offset": offset
         }
 
-        url = f"{self.__configurationManager.csis_base_url}/ticket/"
-
-        self.__logger.info(f"Performing a GET request at {url}")
-
-        # Send request to fetch tickets
-        response = requests.get(url, headers=self.__headers, params=params)
-        self.__responseEvaluator.evaluate(response)
-
-        return response.json()
+        return self.__make_request(request_type=RequestType.GET, params=params)
 
     def __get_ticket(self, external_id):
         """
@@ -286,14 +272,7 @@ class CsisAPI:
         Returns:
             dict: The API response containing ticket details.
         """
-
-        url = f"{self.__configurationManager.csis_base_url}/ticket/{external_id}"  # Construct full API URL
-
-        self.__logger.info(f"Performing a GET request at {url}")
-        response = requests.get(url, headers=self.__headers)
-        self.__responseEvaluator.evaluate(response)
-
-        return response.json()  # Return ticket details as JSON
+        return self.__make_request(request_type=RequestType.GET, endpoint=f"/{external_id}")  # Return ticket details as JSON
 
     def __update_ticket(self, ticket):
         """
@@ -302,19 +281,11 @@ class CsisAPI:
                Args:
                    ticket (dict): Ticket data containing the external number and customer reference.
                """
-        url = f"{self.__configurationManager.csis_base_url}/ticket/{ticket["externalNumber"]}"  # Construct full API URL
-
         payload = {
             "customer_reference": ticket["number"],
         }
 
-        self.__logger.info(f"Performing a PATCH request at {url}")
-        response = requests.patch(
-            url,
-            headers=self.__headers,
-            json=payload
-        )
-        self.__responseEvaluator.evaluate(response)
+        self.__make_request(request_type=RequestType.PATCH, payload=payload, endpoint=f"/{ticket["externalNumber"]}")
 
     def __attach_comments(self, tickets):
         """
@@ -355,16 +326,63 @@ class CsisAPI:
                 Raises:
                     SystemExit: If the API request fails.
                 """
-        url = f"{self.__configurationManager.csis_base_url}/ticket/{ticket_id}/comment"
-
-        self.__logger.info(f"Performing a GET request at {url}")
-
-        # Send request to fetch comments
-        response = requests.get(
-            url,
-            headers=self.__headers
-        )
-        self.__responseEvaluator.evaluate(response)
+        response = self.__make_request(request_type=RequestType.GET, endpoint=f"/{ticket_id}/comment")
 
         # Return list of comments from API response
-        return response.json()["payload"]
+        return response["payload"]
+
+
+
+    def __make_request(self, request_type: RequestType, payload=None, params=None, endpoint: str = ""):
+        """
+            Makes an HTTP request to the TOPdesk API with the specified request type.
+
+            Args:
+                payload (dict): The JSON payload to send in the request body.
+                request_type (RequestType): The type of HTTP request (POST, PATCH, or PUT).
+                endpoint (str, optional): Additional URL path to append to the incidents endpoint.
+                                          Defaults to an empty string.
+
+            Returns:
+                dict: The JSON response from the API.
+
+            Raises:
+                SystemExit: If an unsupported request type is provided.
+        """
+        # Construct request parameters
+        request_params = {
+            "url": f"{self.__configurationManager.csis_base_url}/ticket{endpoint}",
+            "headers": self.__headers,
+        }
+
+        if payload is not None:
+            request_params["json"] = payload
+
+        if params is not None:
+            request_params["params"] = params
+
+        # Log the request attempt
+        self.__logger.info(f"Performing a {request_type.value} request at {request_params["url"]}")
+
+        # Perform the appropriate HTTP request based on the request type
+        match request_type:
+            case RequestType.POST:
+                response = requests.post(**request_params)
+
+            case RequestType.PUT:
+                response = requests.put(**request_params)
+
+            case RequestType.PATCH:
+                response = requests.patch(**request_params)
+
+            case RequestType.GET:
+                response = requests.get(**request_params)
+
+            case _: # Handle invalid request types
+                raise(SystemExit)
+
+        # Evaluate the response (this may log errors and raise exceptions if necessary)
+        self.__responseEvaluator.evaluate(response)
+
+        # Return the parsed JSON response
+        return response.json()
