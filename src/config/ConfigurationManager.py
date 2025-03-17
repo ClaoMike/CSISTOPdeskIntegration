@@ -127,6 +127,7 @@ class ConfigurationManager:
         """Retrieves the CSIS client token, which is set dynamically after authentication."""
         return self.__CSIS_CLIENT_TOKEN
 
+    # noinspection PyAttributeOutsideInit
     @csis_client_token.setter
     def csis_client_token(self, new_token):
         """

@@ -33,6 +33,7 @@ def test_evaluate_success(evaluator):
     evaluator.evaluate(mock_response)
 
     # Ensure success is logged
+    # noinspection PyUnresolvedReferences
     evaluator._HTTPRequestResponseEvaluator__logger.info.assert_called_once_with(
         "Request was successful! Status code: 200"
     )
@@ -50,7 +51,9 @@ def test_evaluate_failure(evaluator):
         evaluator.evaluate(mock_response)
 
     # Ensure error logging happens before SystemExit
+    # noinspection PyUnresolvedReferences
     evaluator._HTTPRequestResponseEvaluator__logger.error.assert_called_once_with(
         "Error 500: Internal Server Error"
     )
+    # noinspection PyUnresolvedReferences
     evaluator._HTTPRequestResponseEvaluator__logger.close.assert_called_once()

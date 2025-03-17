@@ -127,6 +127,7 @@ def test_private_create_ticket(mock_post, mock_topdesk_api):
     mock_post.return_value.status_code = 201
 
     ticket_data = {"title": "Private Test", "description": "Checking private method"}
+    # noinspection PyUnresolvedReferences
     response = mock_topdesk_api._TOPdeskAPI__create_ticket(ticket_data)
 
     mock_post.assert_called_once()
@@ -137,6 +138,7 @@ def test_private_update_ticket(mock_patch, mock_topdesk_api):
     """Test the private __update_ticket method."""
     mock_patch.return_value.status_code = 200
 
+    # noinspection PyUnresolvedReferences
     mock_topdesk_api._TOPdeskAPI__update_ticket("TICKET_005", {"status": "in progress"})
 
     mock_patch.assert_called_once()
@@ -146,6 +148,7 @@ def test_private_update_actions(mock_put, mock_topdesk_api):
     """Test the private __update_actions method."""
     mock_put.return_value.status_code = 200
 
+    # noinspection PyUnresolvedReferences
     mock_topdesk_api._TOPdeskAPI__update_actions("TICKET_006", {"text": "Added a comment"})
 
     mock_put.assert_called_once()
