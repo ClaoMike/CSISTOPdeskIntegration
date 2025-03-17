@@ -65,6 +65,7 @@ class TimestampGenerator:
         if not hasattr(self, "_initialized"):
             self._initialized = True
 
+    # noinspection PyMethodMayBeStatic
     def get_start_of_the_search_timestamp(self, minutes: int) -> str:
         """
         Generates a timestamp representing the current UTC time minus the specified minutes.
@@ -83,6 +84,7 @@ class TimestampGenerator:
         new_time = datetime.datetime.utcnow() - datetime.timedelta(minutes=minutes)
         return new_time.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"  # Trim to 3 decimal places
 
+    # noinspection PyMethodMayBeStatic
     def get_time_difference_between(self, t1: str, t2: str) -> int:
         """
         Calculates the absolute difference in minutes between two ISO 8601 timestamps.
