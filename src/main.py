@@ -140,7 +140,6 @@ logger.info("Synchronization process completed successfully.")
 logger.close()
 
 # TODO: v1
-# write README
 # generate documentation
 # set up Azure Credentials
 # set up Azure Automations
