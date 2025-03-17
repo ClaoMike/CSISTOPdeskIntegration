@@ -27,6 +27,7 @@ Usage Example:
 
 import datetime
 import math
+from datetime import datetime, timedelta, UTC
 
 
 class TimestampGenerator:
@@ -81,7 +82,7 @@ class TimestampGenerator:
             >>> generator.get_start_of_the_search_timestamp(10)
             "2025-03-10T09:38:59.060Z"
         """
-        new_time = datetime.datetime.utcnow() - datetime.timedelta(minutes=minutes)
+        new_time =  datetime.now(UTC) - timedelta(minutes=minutes)
         return new_time.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"  # Trim to 3 decimal places
 
     # noinspection PyMethodMayBeStatic
@@ -101,8 +102,8 @@ class TimestampGenerator:
             >>> generator.get_time_difference_between("2025-03-10T09:48:59.060325", "2025-03-10T10:00:00.000000")
             11
         """
-        dt1 = datetime.datetime.fromisoformat(t1)
-        dt2 = datetime.datetime.fromisoformat(t2)
+        dt1 = datetime.fromisoformat(t1)
+        dt2 = datetime.fromisoformat(t2)
 
         # Compute difference
         diff = dt2 - dt1

@@ -140,7 +140,6 @@ logger.info("Synchronization process completed successfully.")
 logger.close()
 
 # TODO: v1
-# fix all warnings and typos
 # visualization diagram
 # write README
 # generate documentation
