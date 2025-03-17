@@ -5,7 +5,7 @@ from src.utils.TicketConverter import TicketConverter  # Import Logger to patch 
 @pytest.fixture
 def ticket_converter():
     """Fixture to provide a singleton TOPdeskAPI instance with mocked dependencies."""
-    with patch("src.utils.Logger.Logger.__new__", return_value=MagicMock()) as mock_logger:
+    with patch("src.utils.Logger.Logger.__new__", return_value=MagicMock()):
 
         instance = TicketConverter()
         yield instance  # Provide the instance for test cases

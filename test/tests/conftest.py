@@ -1,4 +1,4 @@
-def pytest_sessionfinish(session, exitstatus):
+def pytest_sessionfinish():
     print("\nAll tests finished. Running cleanup tasks...")
     # Add your cleanup code here
 

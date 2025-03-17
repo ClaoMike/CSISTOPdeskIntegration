@@ -11,10 +11,10 @@ def mock_topdesk_api():
             return_value=MagicMock()) as mock_config, \
         patch(
             "src.utils.Logger.Logger.__new__",
-            return_value=MagicMock()) as mock_logger, \
+            return_value=MagicMock()), \
         patch(
             "src.utils.HTTPRequestResponseEvaluator.HTTPRequestResponseEvaluator.__new__",
-            return_value=MagicMock()) as mock_evaluator):
+            return_value=MagicMock())):
 
         # Mock ConfigurationManager values
         mock_config.return_value.topdesk_base_url = "https://mock-topdesk.com"
