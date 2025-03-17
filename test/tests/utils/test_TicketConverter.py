@@ -22,7 +22,7 @@ def test_ticket_converter_is_singleton():
 # 2️⃣ Test Ticket Creation Conversion
 def test_convert_tickets_to_be_created_to_TOPdesk_format(ticket_converter):
     """Test if tickets are correctly converted to the TOPdesk format."""
-    id = "12345"
+    ticket_id = "12345"
     description = "This is a test ticket description."
 
     title = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
@@ -31,7 +31,7 @@ def test_convert_tickets_to_be_created_to_TOPdesk_format(ticket_converter):
     csis_tickets = [
         {
             "payload": {
-                "id": id,
+                "id": ticket_id,
                 "title": title,
                 "description": description,
                 "status": "new",
@@ -45,7 +45,7 @@ def test_convert_tickets_to_be_created_to_TOPdesk_format(ticket_converter):
     assert len(converted_tickets) == 1
     assert converted_tickets[0]["request"] == description
     assert converted_tickets[0]["briefDescription"] == trimmed_title # at most 80 characters on the title!
-    assert converted_tickets[0]["externalNumber"] == id
+    assert converted_tickets[0]["externalNumber"] == ticket_id
 
     assert converted_tickets[0]["processingStatus"]["id"] == "b20abac9-6114-4907-882a-9b40802abc48"  # "new" → "Registered"
     assert converted_tickets[0]["priority"]["id"] == "3702a267-fc6d-46c9-9a4e-5b834aa6ed4d"  # "high" → High priority

@@ -211,7 +211,7 @@ class TOPdeskAPI:
                 response = requests.patch(**request_params)
 
             case _: # Handle invalid request types
-                raise(SystemExit)
+                raise SystemExit
 
         # Evaluate the response (this may log errors and raise exceptions if necessary)
         self.__responseEvaluator.evaluate(response)
