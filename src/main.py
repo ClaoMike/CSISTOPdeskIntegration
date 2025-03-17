@@ -119,7 +119,7 @@ logger.newline()
 # Convert CSIS updated tickets to TOPdesk format
 tickets_to_be_updated = ticketConverter.convert_updated_tickets_to_TOPdesk_format(tickets_to_be_updated)
 
-logger.array(tickets_to_be_updated, array_title="CSIS Tickets recently updated (TOPdesk format)")
+logger.dictionary(tickets_to_be_updated, dict_title="CSIS Tickets recently updated (TOPdesk format)")
 logger.info_end_section(message="DONE Converting the fetched recently updated tickets")
 logger.newline()
 
@@ -140,14 +140,12 @@ logger.info("Synchronization process completed successfully.")
 logger.close()
 
 # TODO: v1
-# generate runbook
-# test runbook
-# runbook documentation
-# generate documentation
 # fix all warnings and typos
 # visualization diagram
 # write README
+# generate documentation
 # set up Azure Credentials
+# set up Azure Automations
 # release
 
 # TODO: v2

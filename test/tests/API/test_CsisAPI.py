@@ -45,6 +45,7 @@ def test_csis_api_is_singleton(mock_csis_api):
 # 2️⃣ Test Token Retrieval
 @patch("requests.post")
 def test_get_token(mock_post, mock_csis_api):
+    # noinspection GrazieInspection
     """Test if get_token() fetches and stores the authentication token correctly."""
     mock_post.return_value.json.return_value = {"access_token": "new_mock_token"}
     mock_post.return_value.status_code = 200
@@ -65,6 +66,7 @@ def test_get_token(mock_post, mock_csis_api):
 
 @patch.object(CsisAPI, "_CsisAPI__get_filtered_tickets")
 def test_get_tickets_to_be_created(mock_get_filtered_tickets, mock_csis_api):
+    # noinspection GrazieInspection
     """Test if get_tickets_to_be_created() correctly fetches new tickets."""
     mock_get_filtered_tickets.return_value = [{"id": "123", "number": "TICKET-123"}]
 
@@ -79,6 +81,7 @@ def test_get_tickets_to_be_created(mock_get_filtered_tickets, mock_csis_api):
 @patch.object(CsisAPI, "_CsisAPI__get_filtered_tickets")
 @patch.object(CsisAPI, "_CsisAPI__attach_comments")
 def test_get_updated_tickets(mock_attach_comments, mock_get_filtered_tickets, mock_csis_api):
+    # noinspection GrazieInspection
     """Test if get_updated_tickets() fetches tickets and attaches comments."""
     mock_get_filtered_tickets.return_value = [{"id": "456", "number": "TICKET-456"}]
     mock_attach_comments.return_value = [{"id": "456", "number": "TICKET-456", "comments": ["Test comment"]}]
