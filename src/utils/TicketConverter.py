@@ -121,10 +121,10 @@ class TicketConverter:
                     "id": "04ad4d05-8824-4abe-b79c-25361aedb2a7"
                 },
                 "processingStatus": {
-                    "id": self.__convert_csis_to_topdesk_status(ticket["status"])
+                    "id": TicketConverter.__convert_csis_to_topdesk_status(ticket["status"])
                 },
                 "priority": {
-                    "id": self.__convert_severity_to_priority(ticket["severity"])
+                    "id": TicketConverter.__convert_severity_to_priority(ticket["severity"])
                 }
             }
 
@@ -150,10 +150,10 @@ class TicketConverter:
 
             new_payload = {
                 "processingStatus": {
-                    "id": self.__convert_csis_to_topdesk_status(payload["status"])
+                    "id": TicketConverter.__convert_csis_to_topdesk_status(payload["status"])
                 },
                 "priority": {
-                    "id": self.__convert_severity_to_priority(payload["severity"])
+                    "id": TicketConverter.__convert_severity_to_priority(payload["severity"])
                 }
             }
 
@@ -172,7 +172,7 @@ class TicketConverter:
 
         return new_tickets
 
-    def __convert_severity_to_priority(self, severity):
+    def __convert_severity_to_priority(severity):
         """
         Maps CSIS severity levels to TOPdesk priority IDs.
 
@@ -194,7 +194,7 @@ class TicketConverter:
             case _:
                 return "e5355405-1795-4543-963d-897cf0b6ea37"  # Default normal priority
 
-    def __convert_csis_to_topdesk_status(self, status):
+    def __convert_csis_to_topdesk_status(status):
         """
         Maps CSIS status values to TOPdesk processing status IDs.
 
