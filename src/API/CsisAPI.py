@@ -130,7 +130,7 @@ class CsisAPI:
             self.__make_request(
                 request_type=RequestType.PATCH,
                 payload=payload,
-                endpoint=f"/{ticket["externalNumber"]}"
+                endpoint=f"/{ticket['externalNumber']}"
             )
 
     def get_tickets_to_be_created(self):
@@ -330,7 +330,7 @@ class CsisAPI:
             request_params["params"] = params
 
         # Log the request attempt
-        self.__logger.info(f"Performing a {request_type.value} request at {request_params["url"]}")
+        self.__logger.info(f"Performing a {request_type.value} request at {request_params['url']}")
 
         # Perform the appropriate HTTP request based on the request type
         match request_type:

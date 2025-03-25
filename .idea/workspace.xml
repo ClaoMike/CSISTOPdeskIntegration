@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="Add functional diagram">
-      <change afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
+    <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="Add README file and license">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/API/CsisAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/API/CsisAPI.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/API/TOPdeskAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/API/TOPdeskAPI.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,6 +130,8 @@
       <workItem from="1741763481309" duration="10446000" />
       <workItem from="1741790378298" duration="939000" />
       <workItem from="1742196000547" duration="7519000" />
+      <workItem from="1742372650725" duration="38000" />
+      <workItem from="1742891843308" duration="1333000" />
     </task>
     <task id="LOCAL-00011" summary="Fetching the comments">
       <option name="closed" value="true" />
@@ -559,7 +560,7 @@
     <option name="LAST_COMMIT_MESSAGE" value="Add functional diagram" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_tests_with_coverage.coverage" NAME="Run tests with coverage Coverage Results" MODIFIED="1742208285738" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_tests_with_coverage.coverage" NAME="Run tests with coverage Coverage Results" MODIFIED="1742893103757" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$CsisAPI.coverage" NAME="CsisAPI Coverage Results" MODIFIED="1741601398925" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/API" />
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$.coverage" NAME=" Coverage Results" MODIFIED="1741688752739" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/tests/API" />
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_main.coverage" NAME="Run main Coverage Results" MODIFIED="1741790877420" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\ClaJec0\PycharmProjects\TOPdeskCsisIntegration" />
