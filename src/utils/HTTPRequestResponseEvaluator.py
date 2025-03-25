@@ -80,12 +80,23 @@ class HTTPRequestResponseEvaluator:
         Raises:
             SystemExit: If the status code is not in the 2xx range.
         """
-        match response.status_code:
-            case _ if 200 <= response.status_code < 300:
-                # Log success message
-                self.__logger.info(f"Request was successful! Status code: {response.status_code}")
-            case _:
-                # Log error details and stop execution
-                self.__logger.error(f"Error {response.status_code}: {response.text}")
-                self.__logger.close()
-                raise SystemExit
+        # PYTHON 3.10 only
+        # match response.status_code:
+        #     case _ if 200 <= response.status_code < 300:
+        #         # Log success message
+        #         self.__logger.info(f"Request was successful! Status code: {response.status_code}")
+        #     case _:
+        #         # Log error details and stop execution
+        #         self.__logger.error(f"Error {response.status_code}: {response.text}")
+        #         self.__logger.close()
+        #         raise SystemExit
+
+        if 200 <= response.status_code < 300:
+            # Log success message
+            self.__logger.info(f"Request was successful! Status code: {response.status_code}")
+        else:
+            # Log error details and stop execution
+            self.__logger.error(f"Error {response.status_code}: {response.text}")
+            self.__logger.close()
+            raise SystemExit
+

@@ -200,18 +200,31 @@ class TOPdeskAPI:
         self.__logger.info(f"Performing a {request_type.value} request at {request_params['url']}")
 
         # Perform the appropriate HTTP request based on the request type
-        match request_type:
-            case RequestType.POST:
-                response = requests.post(**request_params)
+        #PYTHON 3.10 and above
+        # match request_type:
+        #     case RequestType.POST:
+        #         response = requests.post(**request_params)
+        #
+        #     case RequestType.PUT:
+        #         response = requests.put(**request_params)
+        #
+        #     case RequestType.PATCH:
+        #         response = requests.patch(**request_params)
+        #
+        #     case _: # Handle invalid request types
+        #         raise SystemExit
 
-            case RequestType.PUT:
-                response = requests.put(**request_params)
+        if request_type == RequestType.POST:
+            response = requests.post(**request_params)
 
-            case RequestType.PATCH:
-                response = requests.patch(**request_params)
+        elif request_type == RequestType.PUT:
+            response = requests.put(**request_params)
 
-            case _: # Handle invalid request types
-                raise SystemExit
+        elif request_type == RequestType.PATCH:
+            response = requests.patch(**request_params)
+
+        else:
+            raise SystemExit("Invalid request type")
 
         # Evaluate the response (this may log errors and raise exceptions if necessary)
         self.__responseEvaluator.evaluate(response)

@@ -184,17 +184,31 @@ class TicketConverter:
         Returns:
             str: Corresponding TOPdesk priority ID.
         """
-        match severity:
-            case "na" | "false-positive" | "info" | "medium":  # Normal priority
-                return "e5355405-1795-4543-963d-897cf0b6ea37"
-            case "low":  # Low priority
-                return "f4f41126-f799-4517-a1a9-0f6c2d4db677"
-            case "high":  # High priority
-                return "3702a267-fc6d-46c9-9a4e-5b834aa6ed4d"
-            case "critical":  # Critical priority
-                return "106aac53-8a26-421a-b954-5d0fdc34d78a"
-            case _:
-                return "e5355405-1795-4543-963d-897cf0b6ea37"  # Default normal priority
+        # PYTHON 3.10 and above
+        # match severity:
+        #     case "na" | "false-positive" | "info" | "medium":  # Normal priority
+        #         return "e5355405-1795-4543-963d-897cf0b6ea37"
+        #     case "low":  # Low priority
+        #         return "f4f41126-f799-4517-a1a9-0f6c2d4db677"
+        #     case "high":  # High priority
+        #         return "3702a267-fc6d-46c9-9a4e-5b834aa6ed4d"
+        #     case "critical":  # Critical priority
+        #         return "106aac53-8a26-421a-b954-5d0fdc34d78a"
+        #     case _:
+        #         return "e5355405-1795-4543-963d-897cf0b6ea37"  # Default normal priority
+
+        priority_map = {
+            "na": "e5355405-1795-4543-963d-897cf0b6ea37",
+            "false-positive": "e5355405-1795-4543-963d-897cf0b6ea37",
+            "info": "e5355405-1795-4543-963d-897cf0b6ea37",
+            "medium": "e5355405-1795-4543-963d-897cf0b6ea37",
+            "low": "f4f41126-f799-4517-a1a9-0f6c2d4db677",
+            "high": "3702a267-fc6d-46c9-9a4e-5b834aa6ed4d",
+            "critical": "106aac53-8a26-421a-b954-5d0fdc34d78a",
+        }
+
+        # Default to "normal priority" if severity not found
+        return priority_map.get(severity, "e5355405-1795-4543-963d-897cf0b6ea37")
 
     # noinspection PyMethodParameters
     def convert_csis_to_topdesk_status(status):
@@ -207,14 +221,26 @@ class TicketConverter:
         Returns:
             str: Corresponding TOPdesk processing status ID.
         """
-        match status:
-            case "new":  # Registered
-                return "b20abac9-6114-4907-882a-9b40802abc48"
-            case "pending-customer":  # In Progress
-                return "a4515d1f-a690-421a-b8a5-95ac9c32890e"
-            case "pending-csis":  # Waiting for external input
-                return "438ab0fe-819e-47fd-a5ff-1aef4271f4bd"
-            case "closed":  # Closed
-                return "dcc7e8ec-87e8-4fe9-b119-44f3417ed3b7"
-            case _:
-                return "b20abac9-6114-4907-882a-9b40802abc48"  # Default: Registered
+        # PYTHON 3.10 and above
+        # match status:
+        #     case "new":  # Registered
+        #         return "b20abac9-6114-4907-882a-9b40802abc48"
+        #     case "pending-customer":  # In Progress
+        #         return "a4515d1f-a690-421a-b8a5-95ac9c32890e"
+        #     case "pending-csis":  # Waiting for external input
+        #         return "438ab0fe-819e-47fd-a5ff-1aef4271f4bd"
+        #     case "closed":  # Closed
+        #         return "dcc7e8ec-87e8-4fe9-b119-44f3417ed3b7"
+        #     case _:
+        #         return "b20abac9-6114-4907-882a-9b40802abc48"  # Default: Registered
+
+        status_map = {
+            "new": "b20abac9-6114-4907-882a-9b40802abc48",
+            "pending-customer": "a4515d1f-a690-421a-b8a5-95ac9c32890e",
+            "pending-csis": "438ab0fe-819e-47fd-a5ff-1aef4271f4bd",
+            "closed": "dcc7e8ec-87e8-4fe9-b119-44f3417ed3b7",
+        }
+
+        # Default: Registered
+        return status_map.get(status, "b20abac9-6114-4907-882a-9b40802abc48")
+
