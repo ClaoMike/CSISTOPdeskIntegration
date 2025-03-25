@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="Add README file and license">
+    <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="Change some double quotes to single quotes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/API/CsisAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/API/CsisAPI.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/API/TOPdeskAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/API/TOPdeskAPI.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,15 +129,7 @@
       <workItem from="1741790378298" duration="939000" />
       <workItem from="1742196000547" duration="7519000" />
       <workItem from="1742372650725" duration="38000" />
-      <workItem from="1742891843308" duration="1333000" />
-    </task>
-    <task id="LOCAL-00011" summary="Fetching the comments">
-      <option name="closed" value="true" />
-      <created>1741600454304</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1741600454304</updated>
+      <workItem from="1742891843308" duration="3187000" />
     </task>
     <task id="LOCAL-00012" summary="Adding only the recent comments">
       <option name="closed" value="true" />
@@ -525,14 +515,21 @@
       <option name="project" value="LOCAL" />
       <updated>1742211635178</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="Change some double quotes to single quotes">
+      <option name="closed" value="true" />
+      <created>1742893390491</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1742893390491</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Prepared Unit tests for TicketConverter" />
     <MESSAGE value="Fix test to not create logs, using mocks" />
     <MESSAGE value="Unit Tests for the TicketConverter class" />
     <MESSAGE value="Some reordering&#10;Some refactoring - TOPdesk requests headers&#10;Prepared files for more unit tests" />
@@ -557,7 +554,8 @@
     <MESSAGE value="Fix some warnings" />
     <MESSAGE value="Fix all warnings" />
     <MESSAGE value="Add functional diagram" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add functional diagram" />
+    <MESSAGE value="Change some double quotes to single quotes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Change some double quotes to single quotes" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_tests_with_coverage.coverage" NAME="Run tests with coverage Coverage Results" MODIFIED="1742893103757" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
