@@ -27,7 +27,7 @@ Usage Example:
 
 import datetime
 import math
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timedelta, timezone
 
 
 class TimestampGenerator:
@@ -82,7 +82,7 @@ class TimestampGenerator:
             >>> generator.get_start_of_the_search_timestamp(10)
             "2025-03-10T09:38:59.060Z"
         """
-        new_time =  datetime.now(UTC) - timedelta(minutes=minutes)
+        new_time = datetime.now(timezone.utc) - timedelta(minutes=minutes)
         return new_time.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"  # Trim to 3 decimal places
 
     # noinspection PyMethodMayBeStatic

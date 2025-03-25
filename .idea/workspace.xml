@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="Switched to 3.8">
+    <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="Converted match cases to if-elif-else statements">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/API/CsisAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/API/CsisAPI.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/API/TOPdeskAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/API/TOPdeskAPI.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/HTTPRequestResponseEvaluator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/HTTPRequestResponseEvaluator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/TicketConverter.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/TicketConverter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/TimestampGenerator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/TimestampGenerator.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,15 +130,7 @@
       <workItem from="1741790378298" duration="939000" />
       <workItem from="1742196000547" duration="7519000" />
       <workItem from="1742372650725" duration="38000" />
-      <workItem from="1742891843308" duration="3691000" />
-    </task>
-    <task id="LOCAL-00013" summary="Refactor&#10;&#10;Attaching comments when first pulling them">
-      <option name="closed" value="true" />
-      <created>1741603347995</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1741603347995</updated>
+      <workItem from="1742891843308" duration="4013000" />
     </task>
     <task id="LOCAL-00014" summary="Refactor&#10;&#10;Converting CSIS to TOPdesk format">
       <option name="closed" value="true" />
@@ -527,14 +516,21 @@
       <option name="project" value="LOCAL" />
       <updated>1742895315353</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="Converted match cases to if-elif-else statements">
+      <option name="closed" value="true" />
+      <created>1742895807798</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1742895807798</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Unit Tests for the TicketConverter class" />
     <MESSAGE value="Some reordering&#10;Some refactoring - TOPdesk requests headers&#10;Prepared files for more unit tests" />
     <MESSAGE value="Prepared function for replacing the current state of making request via the TOPdesk API" />
     <MESSAGE value="Added some unit tests" />
@@ -559,13 +555,14 @@
     <MESSAGE value="Add functional diagram" />
     <MESSAGE value="Change some double quotes to single quotes" />
     <MESSAGE value="Switched to 3.8" />
-    <option name="LAST_COMMIT_MESSAGE" value="Switched to 3.8" />
+    <MESSAGE value="Converted match cases to if-elif-else statements" />
+    <option name="LAST_COMMIT_MESSAGE" value="Converted match cases to if-elif-else statements" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_tests_with_coverage.coverage" NAME="Run tests with coverage Coverage Results" MODIFIED="1742895288205" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_tests_with_coverage.coverage" NAME="Run tests with coverage Coverage Results" MODIFIED="1742895830848" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$CsisAPI.coverage" NAME="CsisAPI Coverage Results" MODIFIED="1741601398925" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/API" />
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$.coverage" NAME=" Coverage Results" MODIFIED="1741688752739" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/tests/API" />
-    <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_main.coverage" NAME="Run main Coverage Results" MODIFIED="1742895272244" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\ClaJec0\PycharmProjects\TOPdeskCsisIntegration" />
+    <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_main.coverage" NAME="Run main Coverage Results" MODIFIED="1742895999455" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\ClaJec0\PycharmProjects\TOPdeskCsisIntegration" />
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$ConfigurationManager.coverage" NAME="ConfigurationManager Coverage Results" MODIFIED="1741178430193" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$main.coverage" NAME="main Coverage Results" MODIFIED="1741613077080" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\ClaJec0\PycharmProjects\TOPdeskCsisIntegration" />
   </component>
