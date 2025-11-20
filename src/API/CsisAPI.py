@@ -29,7 +29,7 @@ Usage Example:
 """
 
 import requests
-from src.config.ConfigurationManager import ConfigurationManager
+from src.ConfigurationManager import ConfigurationManager
 from src.utils.HTTPRequestResponseEvaluator import HTTPRequestResponseEvaluator
 from src.utils.TimestampGenerator import TimestampGenerator
 from src.API.RequestType import RequestType

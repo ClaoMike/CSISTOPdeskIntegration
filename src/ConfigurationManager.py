@@ -1,5 +1,4 @@
-import os
-from dotenv import load_dotenv
+import automationassets
 import re
 from datetime import datetime, timezone
 
@@ -22,6 +21,9 @@ def datetime_to_ms_timestamp(dt):
     millis = int((dt - epoch).total_seconds() * 1000)
     return f"/Date({millis})/"
 
+def hide_data(s: str) -> str:
+    return re.sub(r'.', '*', s)
+
 class ConfigurationManager:
     _instance = None  # Singleton instance
 
@@ -35,32 +37,42 @@ class ConfigurationManager:
         if not hasattr(self, "_initialized"):
             self._initialized = True
 
+            print("Preparing script configuration...")
+
             # General configuration
+            self.__LAST_NEW_TICKETS_TIMESTAMP = format_to_iso_z(
+                parse_ms_timestamp(automationassets.get_automation_variable("CSIS_LAST_NEW_TICKETS_TIMESTAMP")))
+            self.__LAST_UPDATES_TIMESTAMP = format_to_iso_z(
+                parse_ms_timestamp(automationassets.get_automation_variable("CSIS_LAST_UPDATES_TIMESTAMP")))
             minutes_str = automationassets.get_automation_variable("CSIS_MINUTES")
             self.__minutes = int(minutes_str)
-            print(f"MINUTES: {self.__minutes}")
 
-            # CSIS API Credentials
+            # CSIS data
             self.__CSIS_AUTHENTICATION_URL = "https://login.csis.com/oauth2/v2/token"
             self.__CSIS_BASE_URL = "https://api.csis.com/tickets/1.0"
             self.__CSIS_CLIENT_ID = automationassets.get_automation_variable("CSIS_CLIENT_ID")
             self.__CSIS_CLIENT_SECRET = automationassets.get_automation_variable("CSIS_CLIENT_SECRET")
             self.__CSIS_CLIENT_TOKEN = ""  # Token is set dynamically
 
-            self.__LAST_NEW_TICKETS_TIMESTAMP = format_to_iso_z(
-                parse_ms_timestamp(automationassets.get_automation_variable("CSIS_LAST_NEW_TICKETS_TIMESTAMP")))
-            self.__LAST_UPDATES_TIMESTAMP = format_to_iso_z(
-                parse_ms_timestamp(automationassets.get_automation_variable("CSIS_LAST_UPDATES_TIMESTAMP")))
-
-            print(f"Last new tickets timestamp: {self.__LAST_NEW_TICKETS_TIMESTAMP}")
-            print(f"Last updates timestamp: {self.__LAST_UPDATES_TIMESTAMP}")
-
-            # TOPdesk API Credentials
-            self.__TOPdesk_BASE_URL = "https://dlfseeds.topdesk.net/tas/api"
-
+            # TOPdesk data
             cred = automationassets.get_automation_credential("CREDENTIAL_TOPDESK_API")
             self.__TOPdesk_USERNAME = cred["username"]
             self.__TOPdesk_PASSWORD = cred["password"]
+            self.__TOPdesk_BASE_URL = "https://dlfseeds.topdesk.net/tas/api"
+
+            # Logs
+            print(f"Last new tickets timestamp: {self.__LAST_NEW_TICKETS_TIMESTAMP}")
+            print(f"Last updates timestamp: {self.__LAST_UPDATES_TIMESTAMP}")
+            print(f"MINUTES: {self.__minutes}")
+            print(f"CSIS authentication url: {self.__CSIS_AUTHENTICATION_URL}")
+            print(f"CSIS base url: {self.__CSIS_BASE_URL}")
+            print(f"CSIS client ID: {hide_data(self.__CSIS_CLIENT_ID)}")
+            print(f"CSIS client secret: {hide_data(self.__CSIS_CLIENT_SECRET)}")
+            print(f"TOPdesk username: {self.__TOPdesk_USERNAME}")
+            print(f"TOPdesk password: {self.__TOPdesk_PASSWORD}")
+            print(f"TOPdesk base url: {self.__TOPdesk_BASE_URL}")
+
+            print("Script configuration loaded successfully.")
 
     @property
     def last_new_tickets_timestamp(self):

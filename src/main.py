@@ -2,7 +2,7 @@
 # from src.API.TOPdeskAPI import TOPdeskAPI
 # from src.utils.TicketConverter import TicketConverter
 # from datetime import datetime
-from src.config.ConfigurationManager import ConfigurationManager
+from ConfigurationManager import ConfigurationManager
 
 # Initialize configuration
 config = ConfigurationManager()
