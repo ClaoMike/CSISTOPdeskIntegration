@@ -1,26 +1,3 @@
-"""
-ConfigurationManager Module
----------------------------
-
-This module provides a `ConfigurationManager` class that handles environment variables 
-and configuration settings for both CSIS and TOPdesk.
-
-The class:
-- Implements a Singleton pattern to ensure only one instance is created.
-- Loads environment variables from a `.env` file using `dotenv`.
-- Stores API credentials and settings required for CSIS and TOPdesk integration.
-
-Usage Example:
---------------
-    from configuration_manager import ConfigurationManager
-
-    config = ConfigurationManager()
-
-    # Access configuration values
-    csis_url = config.csis_base_url
-    topdesk_username = config.topdesk_username
-"""
-
 import os
 from dotenv import load_dotenv
 import re
@@ -46,46 +23,15 @@ def datetime_to_ms_timestamp(dt):
     return f"/Date({millis})/"
 
 class ConfigurationManager:
-    """
-    A Singleton class that manages configuration settings and environment variables.
-
-    Features:
-    - Loads `.env` variables using `dotenv`.
-    - Stores API credentials for CSIS and TOPdesk.
-    - Provides getters and setters for necessary configuration attributes.
-
-    Attributes:
-        _instance (ConfigurationManager): Singleton instance of the class.
-        __minutes (int): General configuration value representing time in minutes.
-        __CSIS_* (str): CSIS API authentication and base URL information.
-        __TOPdesk_* (str): TOPdesk API credentials and base URL.
-
-    Methods:
-        csis_client_token (getter/setter):
-            Retrieves or updates the CSIS client token.
-    """
-
     _instance = None  # Singleton instance
 
     def __new__(cls):
-        """
-        Ensures only one instance of the class exists (Singleton pattern).
-
-        Returns:
-            ConfigurationManager: The singleton instance.
-        """
         if cls._instance is None:
             cls._instance = super(ConfigurationManager, cls).__new__(cls)
             cls._instance.__initialize()  # Call internal initialization
         return cls._instance
 
     def __initialize(self):
-        """
-        Initializes configuration variables only once.
-
-        This ensures that environment variables are loaded and API credentials 
-        are stored without multiple instances being created.
-        """
         if not hasattr(self, "_initialized"):
             self._initialized = True
 
@@ -110,9 +56,7 @@ class ConfigurationManager:
             print(f"Last updates timestamp: {self.__LAST_UPDATES_TIMESTAMP}")
 
             # TOPdesk API Credentials
-            # Uncomment for production
             self.__TOPdesk_BASE_URL = "https://dlfseeds.topdesk.net/tas/api"
-            # self.__TOPdesk_BASE_URL = "https://dlfseeds-test.topdesk.net/tas/api"  # Test environment
 
             cred = automationassets.get_automation_credential("CREDENTIAL_TOPDESK_API")
             self.__TOPdesk_USERNAME = cred["username"]
