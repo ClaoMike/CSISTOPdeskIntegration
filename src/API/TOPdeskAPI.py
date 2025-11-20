@@ -29,9 +29,8 @@ Usage Example:
 import requests
 from src.config.ConfigurationManager import ConfigurationManager
 from src.utils.HTTPRequestResponseEvaluator import HTTPRequestResponseEvaluator
-from src.utils.Logger import Logger
 from src.API.RequestType import RequestType
-
+from typing import Optional
 
 class TOPdeskAPI:
     """
@@ -47,7 +46,6 @@ class TOPdeskAPI:
     Attributes:
         _instance (TOPdeskAPI): Singleton instance of the class.
         __configurationManager (ConfigurationManager): Instance for retrieving API credentials.
-        __logger (Logger): Logger instance for recording API interactions.
         __responseEvaluator (HTTPRequestResponseEvaluator): Instance for evaluating HTTP responses.
 
     Methods:
@@ -92,12 +90,30 @@ class TOPdeskAPI:
             self._initialized = True
 
             self.__configurationManager = ConfigurationManager()
-            self.__logger = Logger()
             self.__responseEvaluator = HTTPRequestResponseEvaluator()
 
             self.__headers = {
                 "Content-Type": "application/json"
             }
+
+    def get_ticket(self, ticket_id: str):
+        return self.__make_request(request_type=RequestType.GET, endpoint=f"/number/{ticket_id}")
+
+    def get_ticket_requests(self, ticket_id: str):
+        ticket = self.get_ticket(ticket_id=ticket_id)
+        ticket_id = ticket["id"]
+
+        return self.__make_request(
+            request_type=RequestType.GET,
+            endpoint=f"/id/{ticket_id}/requests"
+        )
+
+    def get_ticket_last_request(self, ticket_id: str):
+        req = self.get_ticket_requests(ticket_id=ticket_id)
+        if req is not None and len(req) != 0:
+            return req[0].get("memoText")
+
+        return None
 
     def create_tickets(self, tickets):
         """
@@ -111,7 +127,20 @@ class TOPdeskAPI:
         """
         created_tickets = []
         for ticket in tickets:
-            created_tickets.append(self.__create_ticket(ticket))
+            # create the TOPdesk ticket
+            created_topdesk_ticket = self.__create_ticket(ticket)
+            # save the response
+            created_tickets.append(created_topdesk_ticket)
+            # extract the topdesk id
+            topdesk_id = created_topdesk_ticket["number"]
+            # put comments if any
+            if "comments" in ticket:
+                comments = ticket["comments"]
+
+                for comment in comments:
+                    self.__update_actions(topdesk_id, comment)
+
+        # return the TOPdesk ticket(s)
         return created_tickets
 
     def update_tickets(self, tickets):
@@ -128,7 +157,7 @@ class TOPdeskAPI:
 
         for topdesk_id, ticket_data in tickets.items():
             if "payload" not in ticket_data:
-                self.__logger.warning(f"No payload for ticket ID {topdesk_id}")
+                print(f"No payload for ticket ID {topdesk_id}")
                 continue
 
             payload = ticket_data["payload"]
@@ -172,7 +201,7 @@ class TOPdeskAPI:
         """
         self.__make_request(payload=comment, request_type=RequestType.PUT, endpoint=f"/number/{topdesk_id}")
 
-    def __make_request(self, payload, request_type: RequestType, endpoint: str = ""):
+    def __make_request(self, request_type: RequestType, endpoint: str = "", payload: Optional[dict] = None):
         """
             Makes an HTTP request to the TOPdesk API with the specified request type.
 
@@ -192,30 +221,23 @@ class TOPdeskAPI:
         request_params = {
             "url": f"{self.__configurationManager.topdesk_base_url}/incidents{endpoint}",
             "auth": (self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),
-            "headers": self.__headers,
-            "json": payload
         }
 
+        # Only add JSON payload if provided
+        if payload is not None:
+            request_params["json"] = payload
+            request_params["headers"] = self.__headers
+
         # Log the request attempt
-        self.__logger.info(f"Performing a {request_type.value} request at {request_params['url']}")
+        print(f"Performing a {request_type.value} request at {request_params['url']}")
+        print(f"Payload: {payload}")
 
         # Perform the appropriate HTTP request based on the request type
-        #PYTHON 3.10 and above
-        # match request_type:
-        #     case RequestType.POST:
-        #         response = requests.post(**request_params)
-        #
-        #     case RequestType.PUT:
-        #         response = requests.put(**request_params)
-        #
-        #     case RequestType.PATCH:
-        #         response = requests.patch(**request_params)
-        #
-        #     case _: # Handle invalid request types
-        #         raise SystemExit
-
         if request_type == RequestType.POST:
             response = requests.post(**request_params)
+
+        elif request_type == RequestType.GET:
+            response = requests.get(**request_params)
 
         elif request_type == RequestType.PUT:
             response = requests.put(**request_params)

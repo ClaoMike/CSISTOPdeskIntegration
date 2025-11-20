@@ -23,6 +23,27 @@ Usage Example:
 
 import os
 from dotenv import load_dotenv
+import re
+from datetime import datetime, timezone
+
+def parse_ms_timestamp(ms_timestamp):
+    match = re.search(r'/Date\((\d+)\)/', ms_timestamp)
+    if match:
+        millis = int(match.group(1))
+        return datetime.fromtimestamp(millis / 1000.0, tz=timezone.utc)
+    else:
+        return None
+
+def format_to_iso_z(dt):
+    if dt is None:
+        return None
+    return dt.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'  # Truncate microseconds to milliseconds
+
+def datetime_to_ms_timestamp(dt):
+    """Convert datetime (UTC) to milliseconds since epoch, in Azure's /Date(...) format"""
+    epoch = datetime(1970, 1, 1, tzinfo=timezone.utc)
+    millis = int((dt - epoch).total_seconds() * 1000)
+    return f"/Date({millis})/"
 
 class ConfigurationManager:
     """
@@ -66,29 +87,46 @@ class ConfigurationManager:
         are stored without multiple instances being created.
         """
         if not hasattr(self, "_initialized"):
-            load_dotenv()  # Load environment variables from .env file
             self._initialized = True
 
             # General configuration
-            self.__minutes = int(os.getenv("MINUTES"))
-            self.__is_logging = os.getenv("IS_LOGGING") in "True"
+            minutes_str = automationassets.get_automation_variable("CSIS_MINUTES")
+            self.__minutes = int(minutes_str)
+            print(f"MINUTES: {self.__minutes}")
 
             # CSIS API Credentials
             self.__CSIS_AUTHENTICATION_URL = "https://login.csis.com/oauth2/v2/token"
             self.__CSIS_BASE_URL = "https://api.csis.com/tickets/1.0"
-            self.__CSIS_CLIENT_ID = os.getenv("CSIS_CLIENT_ID")
-            self.__CSIS_CLIENT_SECRET = os.getenv("CSIS_CLIENT_SECRET")
+            self.__CSIS_CLIENT_ID = automationassets.get_automation_variable("CSIS_CLIENT_ID")
+            self.__CSIS_CLIENT_SECRET = automationassets.get_automation_variable("CSIS_CLIENT_SECRET")
             self.__CSIS_CLIENT_TOKEN = ""  # Token is set dynamically
+
+            self.__LAST_NEW_TICKETS_TIMESTAMP = format_to_iso_z(
+                parse_ms_timestamp(automationassets.get_automation_variable("CSIS_LAST_NEW_TICKETS_TIMESTAMP")))
+            self.__LAST_UPDATES_TIMESTAMP = format_to_iso_z(
+                parse_ms_timestamp(automationassets.get_automation_variable("CSIS_LAST_UPDATES_TIMESTAMP")))
+
+            print(f"Last new tickets timestamp: {self.__LAST_NEW_TICKETS_TIMESTAMP}")
+            print(f"Last updates timestamp: {self.__LAST_UPDATES_TIMESTAMP}")
 
             # TOPdesk API Credentials
             # Uncomment for production
-            # self.__TOPdesk_BASE_URL = "https://dlfseeds.topdesk.net/tas/api" 
+            self.__TOPdesk_BASE_URL = "https://dlfseeds.topdesk.net/tas/api"
+            # self.__TOPdesk_BASE_URL = "https://dlfseeds-test.topdesk.net/tas/api"  # Test environment
 
-            self.__TOPdesk_BASE_URL = "https://dlfseeds-test.topdesk.net/tas/api"  # Test environment
-            self.__TOPdesk_USERNAME = os.getenv("TOPDESK_USERNAME")
-            self.__TOPdesk_PASSWORD = os.getenv("TOPDESK_PASSWORD")
+            cred = automationassets.get_automation_credential("CREDENTIAL_TOPDESK_API")
+            self.__TOPdesk_USERNAME = cred["username"]
+            self.__TOPdesk_PASSWORD = cred["password"]
 
+    @property
+    def last_new_tickets_timestamp(self):
+        """Retrieves the value of the last fetch of new created tickets."""
+        return self.__LAST_NEW_TICKETS_TIMESTAMP
 
+    @property
+    def last_updates_timestamp(self):
+        """Retrieves the value of the last fetch of new updates."""
+        return self.__LAST_UPDATES_TIMESTAMP
 
     @property
     def is_logging(self):

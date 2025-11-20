@@ -21,7 +21,6 @@ Usage Example:
 """
 
 from requests import Response
-from src.utils.Logger import Logger
 
 
 class HTTPRequestResponseEvaluator:
@@ -31,11 +30,9 @@ class HTTPRequestResponseEvaluator:
     Features:
     - Logs HTTP responses with different severity levels.
     - Stops execution if a request fails (non-2xx status codes).
-    - Uses the `Logger` class to store logs.
 
     Attributes:
         _instance (HTTPRequestResponseEvaluator): Singleton instance of the class.
-        __logger (Logger): Logger instance for recording request responses.
 
     Methods:
         evaluate(response: Response):
@@ -64,7 +61,6 @@ class HTTPRequestResponseEvaluator:
         """
         if not hasattr(self, "_initialized"):
             self._initialized = True
-            self.__logger = Logger()
 
     def evaluate(self, response: Response):
         """
@@ -80,23 +76,11 @@ class HTTPRequestResponseEvaluator:
         Raises:
             SystemExit: If the status code is not in the 2xx range.
         """
-        # PYTHON 3.10 only
-        # match response.status_code:
-        #     case _ if 200 <= response.status_code < 300:
-        #         # Log success message
-        #         self.__logger.info(f"Request was successful! Status code: {response.status_code}")
-        #     case _:
-        #         # Log error details and stop execution
-        #         self.__logger.error(f"Error {response.status_code}: {response.text}")
-        #         self.__logger.close()
-        #         raise SystemExit
 
         if 200 <= response.status_code < 300:
             # Log success message
-            self.__logger.info(f"Request was successful! Status code: {response.status_code}")
+            print(f"Request was successful! Status code: {response.status_code}")
         else:
             # Log error details and stop execution
-            self.__logger.error(f"Error {response.status_code}: {response.text}")
-            self.__logger.close()
+            print(f"Error {response.status_code}: {response.text}")
             raise SystemExit
-

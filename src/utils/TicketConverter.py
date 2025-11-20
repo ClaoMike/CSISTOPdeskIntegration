@@ -1,30 +1,3 @@
-"""
-TicketConverter Module
-----------------------
-
-This module defines the `TicketConverter` class, which is responsible for converting tickets
-from the CSIS format to the TOPdesk format. It ensures proper mappings for:
-- Ticket status
-- Ticket priority
-- Ticket attributes and structure
-
-The class follows the Singleton pattern to ensure only one instance exists.
-
-Usage Example:
---------------
-    from ticket_converter import TicketConverter
-
-    converter = TicketConverter()
-
-    # Convert tickets to be created in TOPdesk format
-    formatted_tickets = converter.convert_tickets_to_be_created_to_TOPdesk_format(csis_tickets)
-
-    # Convert updated tickets to TOPdesk format
-    updated_tickets = converter.convert_updated_tickets_to_TOPdesk_format(updated_csis_tickets)
-"""
-from src.utils.Logger import Logger
-
-
 class TicketConverter:
     """
     A Singleton class to convert CSIS tickets into the TOPdesk ticket format.
@@ -67,7 +40,6 @@ class TicketConverter:
         """
         if not hasattr(self, "_initialized"):
             self._initialized = True
-            self.__logger = Logger()
 
     def convert_tickets_to_be_created_to_TOPdesk_format(self, tickets):
         """
@@ -85,12 +57,12 @@ class TicketConverter:
             ticket = ticket["payload"]  # Extract ticket details from payload
 
             if {"description", "title", "id", "status", "severity"} - ticket.keys():
-                self.__logger.warning(f"Ticket {ticket} is missing some fields! Please Investigate!")
+                print(f"Ticket {ticket} is missing some fields! Please Investigate!")
                 continue
 
             new_ticket = {
                 "status": "firstLine",  # Default status for new tickets
-                "request": ticket["description"],  # Full description
+                "request": ticket["description"].replace('\n', '<br>'),  # Full description, TOPdesk does not render new line chars, but it does render break lines
                 "caller": {
                     "dynamicName": "ecrime"
                 },
@@ -120,7 +92,7 @@ class TicketConverter:
                 "entryType": {
                     "id": "04ad4d05-8824-4abe-b79c-25361aedb2a7"
                 },
-                "processingStatus": {
+                "processingStatus": { 
                     "id": TicketConverter.convert_csis_to_topdesk_status(ticket["status"])
                 },
                 "priority": {
@@ -147,19 +119,30 @@ class TicketConverter:
 
         for ticket in tickets:
             payload = ticket["payload"]
-            comments = ticket["comments"]
+            comments = ticket["comments"]            
 
             new_payload = {
-                "processingStatus": {
-                    "id": TicketConverter.convert_csis_to_topdesk_status(payload["status"])
-                },
+                
                 "priority": {
                     "id": TicketConverter.convert_severity_to_priority(payload["severity"])
                 }
             }
+            new_payload["processingStatus"] = {"id": TicketConverter.convert_csis_to_topdesk_status(payload["status"])}
+
+            # we should update the description only if it has changed
+            current_csis_description = payload["description"].replace('\n', '<br/>')
+            current_csis_description = current_csis_description.replace('&#x20;', ' ')
+
+            topdesk_ticket_id = payload["customer_reference"]
+            current_topdesk_description = TOPdeskAPI().get_ticket_last_request(ticket_id=topdesk_ticket_id)
+            print(f"Ticket: {topdesk_ticket_id}\n\nCSIS description:\n{current_csis_description}\n\nTOPdesk description:\n{current_topdesk_description}")
+            if current_csis_description != current_topdesk_description:
+                print("Updating description")
+                new_payload["request"] = current_csis_description  # Full description, TOPdesk does not render new line chars, but it does render break lines
 
             new_comments = []
             for comment in comments:
+                comment['text'] = comment['text'].replace('\n', '<br>') # format
                 new_comment = {
                     "action": f"<b>Creator:</b> {comment['creator']}<br>{comment['text']}"
                 }
@@ -170,6 +153,8 @@ class TicketConverter:
                 "payload": new_payload,
                 "comments": new_comments
             }
+
+            print(new_payload)
 
         return new_tickets
 
@@ -184,25 +169,11 @@ class TicketConverter:
         Returns:
             str: Corresponding TOPdesk priority ID.
         """
-        # PYTHON 3.10 and above
-        # match severity:
-        #     case "na" | "false-positive" | "info" | "medium":  # Normal priority
-        #         return "e5355405-1795-4543-963d-897cf0b6ea37"
-        #     case "low":  # Low priority
-        #         return "f4f41126-f799-4517-a1a9-0f6c2d4db677"
-        #     case "high":  # High priority
-        #         return "3702a267-fc6d-46c9-9a4e-5b834aa6ed4d"
-        #     case "critical":  # Critical priority
-        #         return "106aac53-8a26-421a-b954-5d0fdc34d78a"
-        #     case _:
-        #         return "e5355405-1795-4543-963d-897cf0b6ea37"  # Default normal priority
 
         priority_map = {
-            "na": "e5355405-1795-4543-963d-897cf0b6ea37",
-            "false-positive": "e5355405-1795-4543-963d-897cf0b6ea37",
             "info": "e5355405-1795-4543-963d-897cf0b6ea37",
-            "medium": "e5355405-1795-4543-963d-897cf0b6ea37",
             "low": "f4f41126-f799-4517-a1a9-0f6c2d4db677",
+            "medium": "e5355405-1795-4543-963d-897cf0b6ea37",
             "high": "3702a267-fc6d-46c9-9a4e-5b834aa6ed4d",
             "critical": "106aac53-8a26-421a-b954-5d0fdc34d78a",
         }
@@ -221,26 +192,15 @@ class TicketConverter:
         Returns:
             str: Corresponding TOPdesk processing status ID.
         """
-        # PYTHON 3.10 and above
-        # match status:
-        #     case "new":  # Registered
-        #         return "b20abac9-6114-4907-882a-9b40802abc48"
-        #     case "pending-customer":  # In Progress
-        #         return "a4515d1f-a690-421a-b8a5-95ac9c32890e"
-        #     case "pending-csis":  # Waiting for external input
-        #         return "438ab0fe-819e-47fd-a5ff-1aef4271f4bd"
-        #     case "closed":  # Closed
-        #         return "dcc7e8ec-87e8-4fe9-b119-44f3417ed3b7"
-        #     case _:
-        #         return "b20abac9-6114-4907-882a-9b40802abc48"  # Default: Registered
 
         status_map = {
-            "new": "b20abac9-6114-4907-882a-9b40802abc48",
-            "pending-customer": "a4515d1f-a690-421a-b8a5-95ac9c32890e",
-            "pending-csis": "438ab0fe-819e-47fd-a5ff-1aef4271f4bd",
-            "closed": "dcc7e8ec-87e8-4fe9-b119-44f3417ed3b7",
+            "new": "b20abac9-6114-4907-882a-9b40802abc48", # registered
+            "in-progress": "a4515d1f-a690-421a-b8a5-95ac9c32890e", # in progress
+            "pending-customer": "a4515d1f-a690-421a-b8a5-95ac9c32890e", # in progress
+            "pending-csis": "438ab0fe-819e-47fd-a5ff-1aef4271f4bd", # waiting external
+            "confirmed": "a4515d1f-a690-421a-b8a5-95ac9c32890e", # in progress
+            "closed": "dcc7e8ec-87e8-4fe9-b119-44f3417ed3b7", # closed / or  "e4b20e27-26bf-42e0-884a-2a4525e8ea4d", # solved
         }
 
         # Default: Registered
         return status_map.get(status, "b20abac9-6114-4907-882a-9b40802abc48")
-

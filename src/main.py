@@ -30,14 +30,13 @@ Usage:
 from src.API.CsisAPI import CsisAPI
 from src.API.TOPdeskAPI import TOPdeskAPI
 from src.config.ConfigurationManager import ConfigurationManager
-from src.utils.Logger import Logger
 from src.utils.TicketConverter import TicketConverter
+from datetime import datetime
 
 # Initialize configuration
+print("Initialize configuration")
 config = ConfigurationManager()
-
-# Initialize logger
-logger = Logger(is_logging=config.is_logging)
+print("DONE Initialize configuration")
 
 # Initialize API handlers
 csisAPI = CsisAPI()
@@ -48,104 +47,91 @@ ticketConverter = TicketConverter()
 # STEP 1: Get CSIS Access Token
 # ==========================
 
-logger.info_new_section(message="Fetching the CSIS access token")
-logger.newline()
+print("Fetching the CSIS access token")
 
 csisAPI.get_token()
 
-logger.info_end_section(message="DONE Fetching the CSIS access token")
-logger.newline()
+print("DONE Fetching the CSIS access token")
 
 # ==========================
 # STEP 2: Create New Tickets
 # ==========================
 
-logger.info_new_section(message="Fetching recently created tickets from CSIS")
-logger.newline()
+print("Fetching recently created tickets from CSIS")
 
 # Identify new tickets in CSIS (those without a customer reference)
 tickets_to_be_created = csisAPI.get_tickets_to_be_created()
 
-logger.array(tickets_to_be_created, array_title="CSIS Tickets to be created")
-logger.info_end_section(message="DONE Fetching recently created tickets from CSIS")
-logger.newline()
+now = datetime.utcnow().replace(tzinfo=timezone.utc)
+now_as_azure_string = datetime_to_ms_timestamp(now)
+automationassets.set_automation_variable("CSIS_LAST_NEW_TICKETS_TIMESTAMP", now_as_azure_string)
+print(f"New tickets timestamp: {now}")
 
-logger.info_new_section(message="Converting the fetched recently-created tickets from CSIS to TOPdesk format")
-logger.newline()
+print("CSIS Tickets to be created")
+print(tickets_to_be_created)
+print("DONE Fetching recently created tickets from CSIS")
+
+print("Converting the fetched recently-created tickets from CSIS to TOPdesk format")
 
 # Convert CSIS ticket format to TOPdesk ticket format
 tickets_to_be_created = ticketConverter.convert_tickets_to_be_created_to_TOPdesk_format(tickets_to_be_created)
 
-logger.array(tickets_to_be_created, array_title="CSIS Tickets to be created (TOPdesk format)")
-logger.info_end_section(message="DONE Converting fetched recently-created tickets from CSIS")
-logger.newline()
+print("CSIS Tickets to be created (TOPdesk format)")
+print(tickets_to_be_created)
+print("DONE Converting fetched recently-created tickets from CSIS")
 
-logger.info_new_section(message="Creating the converted tickets in TOPdesk")
-logger.newline()
+print("Creating the converted tickets in TOPdesk")
 
 # Create the tickets in TOPdesk
 created_tickets = topdeskAPI.create_tickets(tickets_to_be_created)
 
-logger.array(created_tickets, array_title="CSIS Tickets created in TOPdesk")
-logger.info_end_section(message="DONE Creating the converted tickets in TOPdesk")
-logger.newline()
+print("CSIS Tickets created in TOPdesk")
+print(created_tickets)
+print("DONE Creating the converted tickets in TOPdesk")
 
-logger.info_new_section(message="Updating the CSIS tickets with the TOPdesk's IDs")
-logger.newline()
+print("Updating the CSIS tickets with the TOPdesk's IDs")
 
 # Update CSIS tickets with the corresponding TOPdesk ticket IDs
 csisAPI.update_tickets(created_tickets)
 
-logger.info_end_section(message="DONE Updating the CSIS tickets with the TOPdesk's IDs")
-logger.newline()
+print("DONE Updating the CSIS tickets with the TOPdesk's IDs")
 
 # ==========================
 # STEP 3: Update Existing Tickets
 # ==========================
 
-logger.info_new_section(message="Fetching the CSIS tickets that have been recently updated")
-logger.newline()
+print("Fetching the CSIS tickets that have been recently updated")
 
 # Fetch CSIS tickets that have been modified recently
 tickets_to_be_updated = csisAPI.get_updated_tickets()
 
-logger.array(tickets_to_be_updated, array_title="CSIS Tickets recently updated")
-logger.info_end_section(message="DONE Fetching the CSIS tickets that have been recently updated")
-logger.newline()
+now = datetime.utcnow().replace(tzinfo=timezone.utc)
+now_as_azure_string = datetime_to_ms_timestamp(now)
+automationassets.set_automation_variable("CSIS_LAST_UPDATES_TIMESTAMP", now_as_azure_string)
+print(f"Updates timestamp: {now}")
 
-logger.info_new_section(message="Converting the fetched recently updated tickets")
-logger.newline()
+print("CSIS Tickets recently updated")
+print(tickets_to_be_updated)
+print("DONE Fetching the CSIS tickets that have been recently updated")
+
+print("Converting the fetched recently updated tickets")
 
 # Convert CSIS updated tickets to TOPdesk format
 tickets_to_be_updated = ticketConverter.convert_updated_tickets_to_TOPdesk_format(tickets_to_be_updated)
 
-logger.dictionary(tickets_to_be_updated, dict_title="CSIS Tickets recently updated (TOPdesk format)")
-logger.info_end_section(message="DONE Converting the fetched recently updated tickets")
-logger.newline()
+print("CSIS Tickets recently updated (TOPdesk format)")
+print(tickets_to_be_updated)
+print("DONE Converting the fetched recently updated tickets")
 
-logger.info_new_section(message="Updating the converted fetched-recently-updated tickets")
+print("Updating the converted fetched-recently-updated tickets")
 
 # Push updates to TOPdesk
 topdeskAPI.update_tickets(tickets_to_be_updated)
 
-logger.newline()
-logger.info_end_section(message="DONE Updating the converted fetched-recently-updated tickets")
-logger.newline()
+print("DONE Updating the converted fetched-recently-updated tickets")
 
 # ==========================
 # END OF PROCESS
 # ==========================
 
-logger.info("Synchronization process completed successfully.")
-logger.close()
-
-# TODO: v1
-# generate documentation
-# set up Azure Credentials
-# set up Azure Automations
-# release
-
-# TODO: v2
-# set up folder for storing logs
-# send logs via API
-# release
+print("Synchronization process completed successfully.")

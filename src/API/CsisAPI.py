@@ -31,9 +31,9 @@ Usage Example:
 import requests
 from src.config.ConfigurationManager import ConfigurationManager
 from src.utils.HTTPRequestResponseEvaluator import HTTPRequestResponseEvaluator
-from src.utils.Logger import Logger
 from src.utils.TimestampGenerator import TimestampGenerator
 from src.API.RequestType import RequestType
+from datetime import datetime
 
 class CsisAPI:
     """
@@ -41,23 +41,17 @@ class CsisAPI:
 
         Features:
         - Fetches authentication tokens for API access.
-        - Retrieves newly created and updated tickets.
-        - Updates CSIS tickets with customer references.
-        - Fetches and attaches recent comments to tickets.
-
-        Attributes:
-            _instance (CsisAPI): Singleton instance of the class.
-            __logger (Logger): Logger instance for recording API interactions.
-            __responseEvaluator (HTTPRequestResponseEvaluator): Evaluates API responses.
-            __configurationManager (ConfigurationManager): Retrieves API credentials.
-            __timestamp (str): The timestamp for filtering ticket queries.
+        - Retrieves created and updated tickets.
+        - Updates CSIS tickets with customer references (TOPdesk IDs).
+        - Fetches and attaches comments to tickets.
 
         Methods:
             get_token():
                 Fetches and stores the CSIS authentication token.
 
             get_tickets_to_be_created() -> list:
-                Retrieves tickets created after a timestamp.
+                Retrieves tickets that recently have been updated to Pending Customer or Confirmed and,
+                have not been created in TOPdesk already, after a timestamp.
 
             get_updated_tickets() -> list:
                 Retrieves updated tickets after a timestamp and attaches recent comments.
@@ -69,7 +63,7 @@ class CsisAPI:
                 Fetches and filters tickets based on creation or update timestamp.
         """
 
-    _instance = None # Singleton instance
+    _instance = None  # Singleton instance
 
     def __new__(cls):
         """Ensures only one instance of the class exists (Singleton pattern)."""
@@ -82,14 +76,11 @@ class CsisAPI:
         """Initializes API credentials, logging, and response evaluation."""
         if not hasattr(self, "_initialized"):
             self._initialized = True
-            self.__logger = Logger()
             self.__responseEvaluator = HTTPRequestResponseEvaluator()
             self.__configurationManager = ConfigurationManager()
 
             # Generate timestamp for filtering tickets
             timestamp_generator = TimestampGenerator()
-            self.__timestamp = timestamp_generator.get_start_of_the_search_timestamp(minutes=self.__configurationManager.minutes)
-            self.__logger.info(f"Current timestamp: {self.__timestamp}")
 
             self.__headers = {
                 "Content-Type": "application/json"
@@ -106,12 +97,12 @@ class CsisAPI:
             "scope": "https://api.csis.com/ticket:read https://api.csis.com/ticket:write"
         }
 
-        self.__logger.info(f"Performing a POST request at {self.__configurationManager.csis_authentication_url}")
+        print(f"Performing a POST request at {self.__configurationManager.csis_authentication_url}")
         response = requests.post(self.__configurationManager.csis_authentication_url, data=payload)
         self.__responseEvaluator.evaluate(response)
 
         token = response.json().get("access_token")
-        self.__configurationManager.csis_client_token = token # Store the token for future API calls
+        self.__configurationManager.csis_client_token = token  # Store the token for future API calls
 
         self.__headers["Authorization"] = f"Bearer {self.__configurationManager.csis_client_token}"
 
@@ -140,7 +131,10 @@ class CsisAPI:
         Returns:
             list: A list of new tickets.
         """
-        return self.__get_filtered_tickets(self.__get_tickets_with_offset, should_have_customer_reference=False)
+        tickets = self.__get_filtered_tickets(self.__get_tickets_with_offset, should_have_customer_reference=False)
+        tickets = self.__attach_comments(tickets, recent=False)
+
+        return tickets
 
     def get_updated_tickets(self):
         """
@@ -149,11 +143,11 @@ class CsisAPI:
         Returns:
             list: A list of updated tickets with comments.
         """
-        tickets = self.__get_filtered_tickets(self.__get_updated_tickets_with_offset, should_have_customer_reference=True)
+        tickets = self.__get_filtered_tickets(self.__get_updated_tickets_with_offset,
+                                              should_have_customer_reference=True)
         tickets = self.__attach_comments(tickets)
 
         return tickets
-
 
     def __get_filtered_tickets(self, fetch_function, should_have_customer_reference):
         """
@@ -214,13 +208,19 @@ class CsisAPI:
         """
 
         params = {
-            "created_after": self.__timestamp,
-            "status": ["new", "pending-customer", "pending-csis", "confirmed"],  # Ensure 'closed' is excluded
+            "updated_after": self.__configurationManager.last_new_tickets_timestamp,
+            # Ensure the values in { "new",  "pending-csis", "closed" } are excluded
+            # As of 19/11/2025, after the latest CSIS changes, where are tickets are changed to cases,
+            # and cases now include alerts and incidents.
+            # we only convert to topdesk those that are Pending Customer and/or Confirmed.
+            "status": ["pending-customer", "confirmed"],
             "limit": limit,
             "offset": offset
         }
+        response = self.__make_request(request_type=RequestType.GET, params=params)
+        print(response)
 
-        return self.__make_request(request_type=RequestType.GET, params=params)
+        return response
 
     def __get_updated_tickets_with_offset(self, offset, limit):
         """
@@ -237,7 +237,7 @@ class CsisAPI:
             SystemExit: If the API request fails.
         """
         params = {
-            "updated_after": self.__timestamp,
+            "updated_after": self.__configurationManager.last_updates_timestamp,
             "status": ["new", "pending-customer", "pending-csis", "confirmed", "closed"],
             "limit": limit,
             "offset": offset
@@ -255,9 +255,10 @@ class CsisAPI:
         Returns:
             dict: The API response containing ticket details.
         """
-        return self.__make_request(request_type=RequestType.GET, endpoint=f"/{external_id}")  # Return ticket details as JSON
+        return self.__make_request(request_type=RequestType.GET,
+                                   endpoint=f"/{external_id}")  # Return ticket details as JSON
 
-    def __attach_comments(self, tickets):
+    def __attach_comments(self, tickets, recent=True):
         """
                 Attaches recent comments to each ticket.
 
@@ -267,17 +268,33 @@ class CsisAPI:
                 Returns:
                     list: List of tickets with attached recent comments.
                 """
+
+        if recent:
+            last_update = datetime.fromisoformat(
+                self.__configurationManager.last_updates_timestamp.replace("Z", "+00:00")
+            )
+
         for ticket in tickets:
             # get all comments in ticket
             all_comments = self.__get_comments(ticket["payload"]["id"])
 
             # save only those that are recent
             recent_comments = []
-            for i in range(len(all_comments)):
-                timestamp_generator = TimestampGenerator()
-                time_difference = timestamp_generator.get_time_difference_between(self.__timestamp, all_comments[i]["created"]) # in minutes
-                if time_difference < self.__configurationManager.minutes:
-                    recent_comments.append(all_comments[i])
+            for comment in all_comments:
+                if recent:
+                    comment_created = datetime.fromisoformat(comment["created"])
+                comment_text = comment['text']
+
+                if recent:
+                    print(f"Last Update Timestamp: {last_update}")
+                print(f"Comment timestamp: {comment_created}")
+
+                if not comment_text.startswith("[TOPdesk]"):
+                    if recent:  # if recent we filter them based on date, otherwise not
+                        if last_update < comment_created:
+                            recent_comments.append(comment)
+                    else:
+                        recent_comments.append(comment)
 
             ticket["comments"] = recent_comments
 
@@ -330,24 +347,7 @@ class CsisAPI:
             request_params["params"] = params
 
         # Log the request attempt
-        self.__logger.info(f"Performing a {request_type.value} request at {request_params['url']}")
-
-        # PYTHON 3.10 and above
-        # match request_type:
-        #     case RequestType.POST:
-        #         response = requests.post(**request_params)
-        #
-        #     case RequestType.PUT:
-        #         response = requests.put(**request_params)
-        #
-        #     case RequestType.PATCH:
-        #         response = requests.patch(**request_params)
-        #
-        #     case RequestType.GET:
-        #         response = requests.get(**request_params)
-        #
-        #     case _: # Handle invalid request types
-        #         raise SystemExit
+        print(f"Performing a {request_type.value} request at {request_params['url']}")
 
         # Perform the appropriate HTTP request based on the request type
         if request_type == RequestType.POST:

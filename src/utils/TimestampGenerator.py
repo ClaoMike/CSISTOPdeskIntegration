@@ -102,6 +102,9 @@ class TimestampGenerator:
             >>> generator.get_time_difference_between("2025-03-10T09:48:59.060325", "2025-03-10T10:00:00.000000")
             11
         """
+        t1 = t1.replace("Z", "+00:00")
+        t2 = t2.replace("Z", "+00:00")
+
         dt1 = datetime.fromisoformat(t1)
         dt2 = datetime.fromisoformat(t2)
 
