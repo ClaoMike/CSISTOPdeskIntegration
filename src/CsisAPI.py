@@ -58,24 +58,30 @@ class CsisAPI:
         - do not have a TOPdesk ID;
         - along with their comments;
         """
+        print("Getting tickets to_be_created")
 
         # get filtered tickets
+
         tickets = self.__get_filtered_tickets(
             ConfigurationManager().last_new_tickets_timestamp,
             ["pending-customer", "confirmed"]
         )
+        print(f"All tickets: {tickets}")
 
         # get their details
         tickets = self.__get_details_for_tickets(tickets)
+        print(f"Detailed tickets: {tickets}")
 
         # filter out those that have been created in TOPdesk already
         _, tickets = self.__filter_tickets_by_customer_reference(tickets)
+        print(f"Tickets without customer referene: {tickets}")
 
         # get comments
         for ticket in tickets:
             ticket["comments"] = self.__get_comments(ticket["id"])
 
-        print(tickets)
+        print(f"All tickets that must be created in TOPdesk: {tickets}")
+
 
         return tickets
 
@@ -104,7 +110,7 @@ class CsisAPI:
             payload = response.json()["payload"]
 
             for ticket in payload["page"]:
-                tickets.append(ticket["id"])
+                tickets.append(ticket)
 
             if not payload.get("has_next", False):
                 break
@@ -142,7 +148,7 @@ class CsisAPI:
         response = requests.get(url=url, headers=self.__headers)
         HttpResponseEvaluator.evaluate(response)
 
-        return response.json()
+        return response.json()["payload"]
 
     def __get_comments(self, ticket_id):
         """
@@ -153,10 +159,7 @@ class CsisAPI:
         response = requests.get(url=url, headers=self.__headers)
         HttpResponseEvaluator.evaluate(response)
 
-        return response.json()
-
-        # Return list of comments from API response
-        return response["payload"]
+        return response.json()["payload"]
 
     # def __attach_comments(self, tickets, recent=True):
     #     """
