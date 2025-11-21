@@ -1,14 +1,14 @@
 from ConfigurationManager import ConfigurationManager
 from CsisAPI import CsisAPI
+from TOPdeskAPI import TOPdeskAPI
+from src.TimestampUtils import TimestampUtils
 
 # Initialize configurations
 config = ConfigurationManager()
 
 # Initialize API handlers
 csisAPI = CsisAPI()
-
-# topdeskAPI = TOPdeskAPI()
-# ticketConverter = TicketConverter()
+topdeskAPI = TOPdeskAPI()
 
 # Get CSIS Access Token
 config.csis_client_token = CsisAPI.get_token()
@@ -16,11 +16,8 @@ csisAPI.set_authorization_token()
 
 # Identify CSIS tickets that need to be created in TOPdesk
 tickets = csisAPI.get_tickets_to_be_created()
+TimestampUtils.save_current_date_as(config.last_new_tickets_timestamp_key)
 
-# now = datetime.utcnow().replace(tzinfo=timezone.utc)
-# now_as_azure_string = datetime_to_ms_timestamp(now)
-# automationassets.set_automation_variable("CSIS_LAST_NEW_TICKETS_TIMESTAMP", now_as_azure_string)
-#
 # # Convert CSIS ticket format to TOPdesk ticket format
 # tickets_to_be_created = ticketConverter.convert_tickets_to_be_created_to_TOPdesk_format(tickets_to_be_created)
 #
@@ -46,7 +43,3 @@ tickets = csisAPI.get_tickets_to_be_created()
 #
 # # Push updates to TOPdesk
 # topdeskAPI.update_tickets(tickets_to_be_updated)
-#
-# # ==========================
-# # END OF PROCESS
-# # ==========================

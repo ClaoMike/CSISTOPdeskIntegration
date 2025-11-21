@@ -5,6 +5,9 @@ def get_automation_variable(key: str) -> str:
     load_dotenv()
     return os.getenv(key)
 
+def set_automation_variable(key: str, value: str):
+    pass
+
 def get_automation_credential(key: str) -> dict[str, str]:
     load_dotenv()
     if key == "CREDENTIAL_TOPDESK_API":

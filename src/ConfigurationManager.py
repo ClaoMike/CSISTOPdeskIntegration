@@ -1,26 +1,6 @@
 import automationassets
 import re
-from datetime import datetime, timezone
-# from CsisAPI import CsisAPI
-
-def parse_ms_timestamp(ms_timestamp):
-    match = re.search(r'/Date\((\d+)\)/', ms_timestamp)
-    if match:
-        millis = int(match.group(1))
-        return datetime.fromtimestamp(millis / 1000.0, tz=timezone.utc)
-    else:
-        return None
-
-def format_to_iso_z(dt):
-    if dt is None:
-        return None
-    return dt.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'  # Truncate microseconds to milliseconds
-
-def datetime_to_ms_timestamp(dt):
-    """Convert datetime (UTC) to milliseconds since epoch, in Azure's /Date(...) format"""
-    epoch = datetime(1970, 1, 1, tzinfo=timezone.utc)
-    millis = int((dt - epoch).total_seconds() * 1000)
-    return f"/Date({millis})/"
+from TimestampUtils import TimestampUtils
 
 class ConfigurationManager:
     _instance = None  # Singleton instance
@@ -38,22 +18,27 @@ class ConfigurationManager:
             print("Preparing script configuration...")
 
             # General configuration
-            self.__LAST_NEW_TICKETS_TIMESTAMP = format_to_iso_z(
-                parse_ms_timestamp(automationassets.get_automation_variable("CSIS_LAST_NEW_TICKETS_TIMESTAMP")))
-            self.__LAST_UPDATES_TIMESTAMP = format_to_iso_z(
-                parse_ms_timestamp(automationassets.get_automation_variable("CSIS_LAST_UPDATES_TIMESTAMP")))
-            minutes_str = automationassets.get_automation_variable("CSIS_MINUTES")
-            self.__minutes = int(minutes_str)
+            self.__LAST_NEW_TICKETS_TIMESTAMP_KEY   = "CSIS_LAST_NEW_TICKETS_TIMESTAMP"
+            self.__LAST_UPDATES_TIMESTAMP_KEY       = "CSIS_LAST_UPDATES_TIMESTAMP"
+
+            self.__LAST_NEW_TICKETS_TIMESTAMP = TimestampUtils.parse_Azure_Date_to_iso(
+                automationassets.get_automation_variable(self.__LAST_NEW_TICKETS_TIMESTAMP_KEY)
+            )
+            self.__LAST_UPDATES_TIMESTAMP = TimestampUtils.parse_Azure_Date_to_iso(
+                automationassets.get_automation_variable("CSIS_LAST_UPDATES_TIMESTAMP")
+            )
+            minutes_str     = automationassets.get_automation_variable("CSIS_MINUTES")
+            self.__minutes  = int(minutes_str)
 
             # CSIS data
-            self.__CSIS_AUTHENTICATION_URL = "https://login.csis.com/oauth2/v2/token"
-            self.__CSIS_BASE_URL = "https://api.csis.com/tickets"
-            self.__CSIS_CLIENT_ID = automationassets.get_automation_variable("CSIS_CLIENT_ID")
-            self.__CSIS_CLIENT_SECRET = automationassets.get_automation_variable("CSIS_CLIENT_SECRET")
-            self.__CSIS_CLIENT_TOKEN = ""
+            self.__CSIS_AUTHENTICATION_URL  = "https://login.csis.com/oauth2/v2/token"
+            self.__CSIS_BASE_URL            = "https://api.csis.com/tickets"
+            self.__CSIS_CLIENT_ID           = automationassets.get_automation_variable("CSIS_CLIENT_ID")
+            self.__CSIS_CLIENT_SECRET       = automationassets.get_automation_variable("CSIS_CLIENT_SECRET")
+            self.__CSIS_CLIENT_TOKEN        = ""
 
             # TOPdesk data
-            cred = automationassets.get_automation_credential("CREDENTIAL_TOPDESK_API")
+            cred                    = automationassets.get_automation_credential("CREDENTIAL_TOPDESK_API")
             self.__TOPdesk_USERNAME = cred["username"]
             self.__TOPdesk_PASSWORD = cred["password"]
             self.__TOPdesk_BASE_URL = "https://dlfseeds.topdesk.net/tas/api"
@@ -78,9 +63,19 @@ class ConfigurationManager:
         return self.__LAST_NEW_TICKETS_TIMESTAMP
 
     @property
+    def last_new_tickets_timestamp_key(self):
+        """Retrieves the key of the last fetch of new created tickets object in Azure automations."""
+        return self.__LAST_NEW_TICKETS_TIMESTAMP_KEY
+
+    @property
     def last_updates_timestamp(self):
         """Retrieves the value of the last fetch of new updates."""
         return self.__LAST_UPDATES_TIMESTAMP
+
+    @property
+    def last_updates_timestamp_key(self):
+        """Retrieves the key of the last fetch of new updates object in Azure automations."""
+        return self.__LAST_UPDATES_TIMESTAMP_KEY
 
     @property
     def is_logging(self):

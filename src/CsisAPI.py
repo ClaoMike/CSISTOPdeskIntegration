@@ -1,9 +1,9 @@
 import requests
 from ConfigurationManager import ConfigurationManager
 from HttpResponseEvaluator import HttpResponseEvaluator
-from src.utils.TimestampGenerator import TimestampGenerator
+from TimestampUtils import TimestampUtils
 from HttpResponseEvaluator import RequestType
-from datetime import datetime
+
 
 class CsisAPI:
     _instance = None  # Singleton instance
@@ -17,9 +17,6 @@ class CsisAPI:
     def __initialize(self):
         if not hasattr(self, "_initialized"):
             self._initialized = True
-
-            # Generate timestamp for filtering tickets
-            timestamp_generator = TimestampGenerator()
 
             self.__headers = {
                 "Content-Type": "application/json"
@@ -61,7 +58,6 @@ class CsisAPI:
         print("Getting tickets to_be_created")
 
         # get filtered tickets
-
         tickets = self.__get_filtered_tickets(
             ConfigurationManager().last_new_tickets_timestamp,
             ["pending-customer", "confirmed"]
@@ -81,7 +77,6 @@ class CsisAPI:
             ticket["comments"] = self.__get_comments(ticket["id"])
 
         print(f"All tickets that must be created in TOPdesk: {tickets}")
-
 
         return tickets
 
