@@ -1,34 +1,5 @@
-"""
-TOPdeskAPI Module
------------------
-
-This module provides the `TOPdeskAPI` class for interacting with the TOPdesk API.
-
-The class:
-- Implements a Singleton pattern to ensure only one instance is created.
-- Provides methods to create, update, and add actions to TOPdesk incidents.
-- Uses `ConfigurationManager` to retrieve API credentials.
-- Logs API requests using `Logger`.
-- Evaluates HTTP responses using `HTTPRequestResponseEvaluator`.
-
-Usage Example:
---------------
-    from topdesk_api import TOPdeskAPI
-
-    topdesk = TOPdeskAPI()
-
-    # Create tickets in TOPdesk
-    tickets = [{"title": "Example Ticket", "description": "This is a test ticket"}]
-    response = topdesk.create_tickets(tickets)
-
-    # Update existing tickets
-    updates = {"TICKET_ID": {"payload": {"status": "resolved"}, "comments": [{"text": "Issue fixed"}]}}
-    topdesk.update_tickets(updates)
-"""
-
 import requests
 from src.ConfigurationManager import ConfigurationManager
-from src.utils.HTTPRequestResponseEvaluator import HTTPRequestResponseEvaluator
 from src.API.RequestType import RequestType
 from typing import Optional
 

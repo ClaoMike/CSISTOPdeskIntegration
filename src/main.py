@@ -14,13 +14,9 @@ csisAPI = CsisAPI()
 config.csis_client_token = CsisAPI.get_token()
 csisAPI.set_authorization_token()
 
-# # ==========================
-# # STEP 2: Create New Tickets
-# # ==========================
-#
-# # Identify new tickets in CSIS (those without a customer reference)
-# tickets_to_be_created = csisAPI.get_tickets_to_be_created()
-#
+# Identify CSIS tickets that need to be created in TOPdesk
+tickets = csisAPI.get_tickets_to_be_created()
+
 # now = datetime.utcnow().replace(tzinfo=timezone.utc)
 # now_as_azure_string = datetime_to_ms_timestamp(now)
 # automationassets.set_automation_variable("CSIS_LAST_NEW_TICKETS_TIMESTAMP", now_as_azure_string)

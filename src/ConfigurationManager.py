@@ -47,7 +47,7 @@ class ConfigurationManager:
 
             # CSIS data
             self.__CSIS_AUTHENTICATION_URL = "https://login.csis.com/oauth2/v2/token"
-            self.__CSIS_BASE_URL = "https://api.csis.com/tickets/1.0"
+            self.__CSIS_BASE_URL = "https://api.csis.com/tickets"
             self.__CSIS_CLIENT_ID = automationassets.get_automation_variable("CSIS_CLIENT_ID")
             self.__CSIS_CLIENT_SECRET = automationassets.get_automation_variable("CSIS_CLIENT_SECRET")
             self.__CSIS_CLIENT_TOKEN = ""

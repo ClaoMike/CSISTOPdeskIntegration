@@ -5,11 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="Update gitignore">
+      <change afterPath="$PROJECT_DIR$/src/HttpResponseEvaluator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/API/CsisAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/CsisAPI.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/API/RequestType.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/API/TOPdeskAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/TOPdeskAPI.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ConfigurationManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ConfigurationManager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CsisAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/CsisAPI.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/HTTPRequestResponseEvaluator.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
