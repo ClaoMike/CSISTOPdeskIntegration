@@ -1,23 +1,19 @@
-# from src.API.CsisAPI import CsisAPI
-# from src.API.TOPdeskAPI import TOPdeskAPI
-# from src.utils.TicketConverter import TicketConverter
-# from datetime import datetime
 from ConfigurationManager import ConfigurationManager
+from CsisAPI import CsisAPI
 
-# Initialize configuration
+# Initialize configurations
 config = ConfigurationManager()
 
-# # Initialize API handlers
-# csisAPI = CsisAPI()
+# Initialize API handlers
+csisAPI = CsisAPI()
+
 # topdeskAPI = TOPdeskAPI()
 # ticketConverter = TicketConverter()
-#
-# # ==========================
-# # STEP 1: Get CSIS Access Token
-# # ==========================
-#
-# csisAPI.get_token()
-#
+
+# Get CSIS Access Token
+config.csis_client_token = CsisAPI.get_token()
+csisAPI.set_authorization_token()
+
 # # ==========================
 # # STEP 2: Create New Tickets
 # # ==========================

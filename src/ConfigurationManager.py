@@ -1,6 +1,7 @@
 import automationassets
 import re
 from datetime import datetime, timezone
+# from CsisAPI import CsisAPI
 
 def parse_ms_timestamp(ms_timestamp):
     match = re.search(r'/Date\((\d+)\)/', ms_timestamp)
@@ -20,9 +21,6 @@ def datetime_to_ms_timestamp(dt):
     epoch = datetime(1970, 1, 1, tzinfo=timezone.utc)
     millis = int((dt - epoch).total_seconds() * 1000)
     return f"/Date({millis})/"
-
-def hide_data(s: str) -> str:
-    return re.sub(r'.', '*', s)
 
 class ConfigurationManager:
     _instance = None  # Singleton instance
@@ -52,7 +50,7 @@ class ConfigurationManager:
             self.__CSIS_BASE_URL = "https://api.csis.com/tickets/1.0"
             self.__CSIS_CLIENT_ID = automationassets.get_automation_variable("CSIS_CLIENT_ID")
             self.__CSIS_CLIENT_SECRET = automationassets.get_automation_variable("CSIS_CLIENT_SECRET")
-            self.__CSIS_CLIENT_TOKEN = ""  # Token is set dynamically
+            self.__CSIS_CLIENT_TOKEN = ""
 
             # TOPdesk data
             cred = automationassets.get_automation_credential("CREDENTIAL_TOPDESK_API")
@@ -66,8 +64,8 @@ class ConfigurationManager:
             print(f"MINUTES: {self.__minutes}")
             print(f"CSIS authentication url: {self.__CSIS_AUTHENTICATION_URL}")
             print(f"CSIS base url: {self.__CSIS_BASE_URL}")
-            print(f"CSIS client ID: {hide_data(self.__CSIS_CLIENT_ID)}")
-            print(f"CSIS client secret: {hide_data(self.__CSIS_CLIENT_SECRET)}")
+            print(f"CSIS client ID: {ConfigurationManager.hide_data(self.__CSIS_CLIENT_ID)}")
+            print(f"CSIS client secret: {ConfigurationManager.hide_data(self.__CSIS_CLIENT_SECRET)}")
             print(f"TOPdesk username: {self.__TOPdesk_USERNAME}")
             print(f"TOPdesk password: {self.__TOPdesk_PASSWORD}")
             print(f"TOPdesk base url: {self.__TOPdesk_BASE_URL}")
@@ -153,3 +151,7 @@ class ConfigurationManager:
     def topdesk_password(self):
         """Retrieves the TOPdesk password from environment variables."""
         return self.__TOPdesk_PASSWORD
+
+    @staticmethod
+    def hide_data(s: str) -> str:
+        return re.sub(r'.', '*', s)
