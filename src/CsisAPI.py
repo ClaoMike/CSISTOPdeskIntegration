@@ -140,21 +140,6 @@ class CsisAPI:
 
         return recent_comments
 
-    # def __attach_comments():
-    #     for ticket in tickets:
-    #         recent_comments = []
-    #         for comment in all_comments:
-    #             if not comment_text.startswith("[TOPdesk]"):
-    #                 if recent:  # if recent we filter them based on date, otherwise not
-    #                     if last_update < comment_created:
-    #                         recent_comments.append(comment)
-    #                 else:
-    #                     recent_comments.append(comment)
-    #
-    #         ticket["comments"] = recent_comments
-    #
-    #     return tickets
-
     def update_tickets_with_customer_reference(self, tickets):
         """
         Updates tickets with new customer references.

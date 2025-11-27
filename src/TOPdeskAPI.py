@@ -73,57 +73,77 @@ class TOPdeskAPI:
         response = requests.put(url=url, headers=self.__headers, auth=self.__auth, json=comment)
         HttpResponseEvaluator.evaluate(response)
 
-    # def get_ticket(self, ticket_id: str):
-    #     return self.__make_request(request_type=RequestType.GET, endpoint=f"/number/{ticket_id}")
-    #
-    # def get_ticket_requests(self, ticket_id: str):
-    #     ticket = self.get_ticket(ticket_id=ticket_id)
-    #     ticket_id = ticket["id"]
-    #
-    #     return self.__make_request(
-    #         request_type=RequestType.GET,
-    #         endpoint=f"/id/{ticket_id}/requests"
-    #     )
-    #
-    # def get_ticket_last_request(self, ticket_id: str):
-    #     req = self.get_ticket_requests(ticket_id=ticket_id)
-    #     if req is not None and len(req) != 0:
-    #         return req[0].get("memoText")
-    #
-    #     return None
+    def update_tickets(self, tickets):
+        """
+        Sends PATCH and PUT requests to update tickets and add comments.
+        """
+        if len(tickets) == 0:
+            return
 
-    # def update_tickets(self, tickets):
-    #     """
-    #     Sends PATCH and PUT requests to update tickets and add comments.
-    #
-    #     Args:
-    #         tickets (dict): A dictionary where:
-    #             - Keys are TOPdesk ticket IDs.
-    #             - Values contain "payload" (ticket updates) and "comments" (list of comments).
-    #     """
-    #     if len(tickets) == 0:
-    #         return
-    #
-    #     for topdesk_id, ticket_data in tickets.items():
-    #         if "payload" not in ticket_data:
-    #             print(f"No payload for ticket ID {topdesk_id}")
-    #             continue
-    #
-    #         payload = ticket_data["payload"]
-    #         self.__update_ticket(topdesk_id, payload)
-    #
-    #         if "comments" in ticket_data:
-    #             comments = ticket_data["comments"]
-    #
-    #             for comment in comments:
-    #                 self.__update_actions(topdesk_id, comment)
+        for ticket in tickets:
+            topdesk_number = ticket["customer_reference"]
+            topdesk_current_ticket = self.__get_ticket(topdesk_number)
+            print(topdesk_current_ticket)
 
-    # def __update_ticket(self, topdesk_id, payload):
-    #     """
-    #     Sends a PATCH request to update a ticket's status or details.
-    #
-    #     Args:
-    #         topdesk_id (str): The ID of the TOPdesk ticket to update.
-    #         payload (dict): The data to update the ticket with.
-    #     """
-    #     self.__make_request(payload=payload, request_type=RequestType.PATCH, endpoint=f"/number/{topdesk_id}")
+            topdesk_current_ticket_id = topdesk_current_ticket["id"]
+            topdesk_current_ticket_requests = self.__get_ticket_requests(topdesk_current_ticket_id)
+            print(topdesk_current_ticket_requests)
+
+            last_topdesk_description = self.__get_ticket_last_request(topdesk_current_ticket_requests)
+            print(last_topdesk_description)
+
+            new_description = None
+            current_csis_description = ticket["description"].replace('\n', '<br/>').replace('&#x20;', ' ')
+            if last_topdesk_description is not None and last_topdesk_description != current_csis_description:
+                new_description = current_csis_description
+
+            # convert CSIS to TOPdesk format
+            topdesk_formatted = TicketConverter.convert_updated_ticket_to_TOPdesk_format(ticket, new_description=new_description)
+            print(topdesk_formatted)
+
+            self.__update_ticket(topdesk_number, topdesk_formatted)
+
+            # add comments, if any
+            # if "comments" in ticket:
+            #     for comment in ticket["comments"]:
+            #         self.__update_actions(
+            #             topdesk_id,
+            #             TicketConverter.convert_CSIS_comment_to_TOPdesk_format(comment)
+            #         )
+
+    def __get_ticket_requests(self, ticket_id: str):
+        url = f"{ConfigurationManager().topdesk_base_url}/incidents/id/{ticket_id}/requests"
+
+        HttpResponseEvaluator.announce_request(url, RequestType.GET)
+        response = requests.get(url=url, headers=self.__headers, auth=self.__auth)
+        HttpResponseEvaluator.evaluate(response)
+
+        return response.json()
+
+    def __get_ticket_last_request(self, req):
+        if req is not None and len(req) != 0:
+            return req[0].get("memoText")
+
+        return None
+
+    def __update_ticket(self, topdesk_id, payload):
+        """
+        Sends a PATCH request to update a ticket's status or details.
+        """
+        url = f"{ConfigurationManager().topdesk_base_url}/incidents/number/{topdesk_id}"
+
+        HttpResponseEvaluator.announce_request(url, RequestType.PATCH, json=payload)
+        response = requests.patch(url=url, headers=self.__headers, auth=self.__auth, json=payload)
+        HttpResponseEvaluator.evaluate(response)
+
+    def __get_ticket(self, ticket_id: str):
+        """
+        Sends a PATCH request to update a ticket's status or details.
+        """
+        url = f"{ConfigurationManager().topdesk_base_url}/incidents/number/{ticket_id}"
+
+        HttpResponseEvaluator.announce_request(url, RequestType.GET)
+        response = requests.get(url=url, headers=self.__headers, auth=self.__auth)
+        HttpResponseEvaluator.evaluate(response)
+
+        return response.json()

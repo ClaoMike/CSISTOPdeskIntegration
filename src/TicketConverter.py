@@ -63,59 +63,22 @@ class TicketConverter:
 
         return new_comment
 
-    # # noinspection PyMethodMayBeStatic
-    # def convert_updated_tickets_to_TOPdesk_format(self, tickets):
-    #     """
-    #     Converts updated CSIS tickets into the TOPdesk format.
-    #
-    #     Args:
-    #         tickets (list): A list of CSIS ticket dictionaries with updates.
-    #
-    #     Returns:
-    #         dict: A dictionary of converted tickets with their customer references.
-    #     """
-    #     new_tickets = {}
-    #
-    #     for ticket in tickets:
-    #         payload = ticket["payload"]
-    #         comments = ticket["comments"]
-    #
-    #         new_payload = {
-    #
-    #             "priority": {
-    #                 "id": TicketConverter.convert_severity_to_priority(payload["severity"])
-    #             }
-    #         }
-    #         new_payload["processingStatus"] = {"id": TicketConverter.convert_csis_to_topdesk_status(payload["status"])}
-    #
-    #         # we should update the description only if it has changed
-    #         current_csis_description = payload["description"].replace('\n', '<br/>')
-    #         current_csis_description = current_csis_description.replace('&#x20;', ' ')
-    #
-    #         topdesk_ticket_id = payload["customer_reference"]
-    #         current_topdesk_description = TOPdeskAPI().get_ticket_last_request(ticket_id=topdesk_ticket_id)
-    #         print(f"Ticket: {topdesk_ticket_id}\n\nCSIS description:\n{current_csis_description}\n\nTOPdesk description:\n{current_topdesk_description}")
-    #         if current_csis_description != current_topdesk_description:
-    #             print("Updating description")
-    #             new_payload["request"] = current_csis_description  # Full description, TOPdesk does not render new line chars, but it does render break lines
-    #
-    #         new_comments = []
-    #         for comment in comments:
-    #             comment['text'] = comment['text'].replace('\n', '<br>') # format
-    #             new_comment = {
-    #                 "action": f"<b>Creator:</b> {comment['creator']}<br>{comment['text']}"
-    #             }
-    #             new_comments.append(new_comment)
-    #
-    #         new_comments.reverse()  # Reverse to maintain chronological order
-    #         new_tickets[payload["customer_reference"]] = {
-    #             "payload": new_payload,
-    #             "comments": new_comments
-    #         }
-    #
-    #         print(new_payload)
-    #
-    #     return new_tickets
+    @staticmethod
+    def convert_updated_ticket_to_TOPdesk_format(ticket, new_description=None):
+        """
+        Converts updated CSIS ticket into the TOPdesk format.
+        """
+        new_payload = {
+            "priority": {
+                "id": TicketConverter.convert_severity_to_priority(ticket["severity"])
+            }
+        }
+        new_payload["processingStatus"] = {"id": TicketConverter.convert_csis_to_topdesk_status(ticket["status"])}
+
+        if new_description is not None:
+            new_payload["request"] = new_description  # Full description, TOPdesk does not render new line chars, but it does render break lines
+
+        return new_payload
 
     @staticmethod
     def convert_severity_to_priority(severity):

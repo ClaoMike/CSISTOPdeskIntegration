@@ -26,14 +26,8 @@ csisAPI.update_tickets_with_customer_reference(created_tickets)
 ########################################################################################################################
 # Fetch CSIS tickets that have been modified recently
 tickets_to_be_updated = csisAPI.get_tickets_to_be_updated()
+TimestampUtils.save_current_date_as(config.last_updates_timestamp_key)
 
-# now = datetime.utcnow().replace(tzinfo=timezone.utc)
-# now_as_azure_string = datetime_to_ms_timestamp(now)
-# automationassets.set_automation_variable("CSIS_LAST_UPDATES_TIMESTAMP", now_as_azure_string)
-
-# Convert CSIS updated tickets to TOPdesk format
-# tickets_to_be_updated = ticketConverter.convert_updated_tickets_to_TOPdesk_format(tickets_to_be_updated)
-
-# Push updates to TOPdesk'';'
-# topdeskAPI.update_tickets(tickets_to_be_updated)
+# Push updates to TOPdesk
+topdeskAPI.update_tickets(tickets_to_be_updated)
 ########################################################################################################################
