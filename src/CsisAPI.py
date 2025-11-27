@@ -131,7 +131,9 @@ class CsisAPI:
 
         recent_comments = []
         for comment in comments:
-            comment_date = TimestampUtils.convert_UTC_z_to_ISO8601(TimestampUtils.convert_csis_time_to_UTC_z(comment["created"]))
+            comment_date = TimestampUtils.convert_UTC_z_to_ISO8601(
+                TimestampUtils.convert_csis_time_to_UTC_z(comment["created"])
+            )
 
             if comment_date >= last_updated_timestamp:
                 recent_comments.append(comment)

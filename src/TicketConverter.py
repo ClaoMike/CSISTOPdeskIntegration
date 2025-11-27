@@ -9,7 +9,8 @@ class TicketConverter:
 
         new_ticket = {
             "status": "firstLine",  # Default status for new tickets
-            "request": ticket["description"].replace('\n', '<br>'),  # Full description, TOPdesk does not render new line chars, but it does render break lines
+            # Full description, TOPdesk does not render new line chars, but it does render break lines
+            "request": ticket["description"].replace('\n', '<br>'),
             "caller": {
                 "dynamicName": "ecrime"
             },
@@ -70,7 +71,8 @@ class TicketConverter:
         new_payload["processingStatus"] = {"id": TicketConverter.convert_csis_to_topdesk_status(ticket["status"])}
 
         if new_description is not None:
-            new_payload["request"] = new_description  # Full description, TOPdesk does not render new line chars, but it does render break lines
+            # Full description, TOPdesk does not render new line chars, but it does render break lines
+            new_payload["request"] = new_description
 
         return new_payload
 
@@ -97,7 +99,8 @@ class TicketConverter:
             "pending-customer": "a4515d1f-a690-421a-b8a5-95ac9c32890e", # in progress
             "pending-csis": "438ab0fe-819e-47fd-a5ff-1aef4271f4bd", # waiting external
             "confirmed": "a4515d1f-a690-421a-b8a5-95ac9c32890e", # in progress
-            "closed": "dcc7e8ec-87e8-4fe9-b119-44f3417ed3b7", # closed / or  "e4b20e27-26bf-42e0-884a-2a4525e8ea4d", # solved
+            "closed": "dcc7e8ec-87e8-4fe9-b119-44f3417ed3b7", # closed
+            # or  "e4b20e27-26bf-42e0-884a-2a4525e8ea4d", # solved
         }
 
         # Default: Registered

@@ -1,6 +1,5 @@
 import requests
 from ConfigurationManager import ConfigurationManager
-from typing import Optional
 from HttpResponseEvaluator import RequestType, HttpResponseEvaluator
 from src.TicketConverter import TicketConverter
 
@@ -22,7 +21,10 @@ class TOPdeskAPI:
             self.__auth = (cm.topdesk_username, cm.topdesk_password)
 
     def create_tickets(self, tickets):
-        """For each ticket, create its TOPdesk representation. For each created ticket, put its comments, if any. Then return the ids."""
+        """
+        For each ticket, create its TOPdesk representation.
+        For each created ticket, put its comments, if any. Then return the ids.
+        """
         created_tickets = []
         for ticket in tickets:
             # convert CSIS to TOPdesk format
@@ -71,7 +73,10 @@ class TOPdeskAPI:
                 new_description = current_csis_description
 
             # convert CSIS to TOPdesk format
-            topdesk_formatted = TicketConverter.convert_updated_ticket_to_TOPdesk_format(ticket, new_description=new_description)
+            topdesk_formatted = TicketConverter.convert_updated_ticket_to_TOPdesk_format(
+                ticket,
+                new_description=new_description
+            )
 
             self.__update_ticket(topdesk_number, topdesk_formatted)
 

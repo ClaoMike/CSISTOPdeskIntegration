@@ -1,4 +1,3 @@
-from ConfigurationManager import ConfigurationManager
 from enum import Enum
 
 class RequestType(Enum):
@@ -19,7 +18,8 @@ class HttpResponseEvaluator:
     def evaluate(response, hide_response=False):
         if 200 <= response.status_code < 300:
             if hide_response:
-                print(f"Request was successful ({response.status_code}): {ConfigurationManager.hide_data(response.text)}")
+                print(f"Request was successful ({response.status_code}): "
+                      + "{ConfigurationManager.hide_data(response.text)}")
             else:
                 print(f"Request was successful ({response.status_code}): {response.text}")
             print("##################\n")
