@@ -6,8 +6,37 @@ import re
 import requests
 from enum import Enum
 import datetime
-import math
 from datetime import datetime, timedelta, timezone
+from abc import ABC, abstractmethod
+
+########################################################################################################################
+
+class Singleton(ABC):
+    _instances = {}  # one instance per subclass
+
+    def __new__(cls, *args, **kwargs):
+        if cls is Singleton:
+            raise TypeError("Singleton is abstract; subclass it instead.")
+
+        # One instance per subclass
+        if cls not in cls._instances:
+            instance = super().__new__(cls)
+            cls._instances[cls] = instance
+            instance._initialized = False
+        return cls._instances[cls]
+
+    def __init__(self, *args, **kwargs):
+        # Only run initialization once per instance
+        if getattr(self, "_initialized", False):
+            return
+
+        self._initialized = True
+        self._init_singleton(*args, **kwargs)
+
+    @abstractmethod
+    def _init_singleton(self, *args, **kwargs):
+        """Subclasses implement their one-time initialization here."""
+        pass
 
 ########################################################################################################################
 
@@ -63,57 +92,46 @@ class TimestampUtils:
 
 ########################################################################################################################
 
-class ConfigurationManager:
-    _instance = None  # Singleton instance
+class ConfigurationManager(Singleton):
+    def _init_singleton(self):
+        print("Preparing script configuration...")
 
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(ConfigurationManager, cls).__new__(cls)
-            cls._instance.__initialize()  # Call internal initialization
-        return cls._instance
+        # General configuration
+        self.__LAST_NEW_TICKETS_TIMESTAMP_KEY   = "CSIS_LAST_NEW_TICKETS_TIMESTAMP"
+        self.__LAST_UPDATES_TIMESTAMP_KEY       = "CSIS_LAST_UPDATES_TIMESTAMP"
 
-    def __initialize(self):
-        if not hasattr(self, "_initialized"):
-            self._initialized = True
+        self.__LAST_NEW_TICKETS_TIMESTAMP = TimestampUtils.parse_Azure_Date_to_iso(
+            automationassets.get_automation_variable(self.__LAST_NEW_TICKETS_TIMESTAMP_KEY)
+        )
+        self.__LAST_UPDATES_TIMESTAMP = TimestampUtils.parse_Azure_Date_to_iso(
+            automationassets.get_automation_variable("CSIS_LAST_UPDATES_TIMESTAMP")
+        )
 
-            print("Preparing script configuration...")
+        # CSIS data
+        self.__CSIS_AUTHENTICATION_URL  = "https://login.csis.com/oauth2/v2/token"
+        self.__CSIS_BASE_URL            = "https://api.csis.com/tickets"
+        self.__CSIS_CLIENT_ID           = automationassets.get_automation_variable("CSIS_CLIENT_ID")
+        self.__CSIS_CLIENT_SECRET       = automationassets.get_automation_variable("CSIS_CLIENT_SECRET")
+        self.__CSIS_CLIENT_TOKEN        = ""
 
-            # General configuration
-            self.__LAST_NEW_TICKETS_TIMESTAMP_KEY   = "CSIS_LAST_NEW_TICKETS_TIMESTAMP"
-            self.__LAST_UPDATES_TIMESTAMP_KEY       = "CSIS_LAST_UPDATES_TIMESTAMP"
+        # TOPdesk data
+        cred                    = automationassets.get_automation_credential("CREDENTIAL_TOPDESK_API")
+        self.__TOPdesk_USERNAME = cred["username"]
+        self.__TOPdesk_PASSWORD = cred["password"]
+        self.__TOPdesk_BASE_URL = "https://dlfseeds.topdesk.net/tas/api"
 
-            self.__LAST_NEW_TICKETS_TIMESTAMP = TimestampUtils.parse_Azure_Date_to_iso(
-                automationassets.get_automation_variable(self.__LAST_NEW_TICKETS_TIMESTAMP_KEY)
-            )
-            self.__LAST_UPDATES_TIMESTAMP = TimestampUtils.parse_Azure_Date_to_iso(
-                automationassets.get_automation_variable("CSIS_LAST_UPDATES_TIMESTAMP")
-            )
+        # Logs
+        print(f"Last new tickets timestamp: {self.__LAST_NEW_TICKETS_TIMESTAMP}")
+        print(f"Last updates timestamp: {self.__LAST_UPDATES_TIMESTAMP}")
+        print(f"CSIS authentication url: {self.__CSIS_AUTHENTICATION_URL}")
+        print(f"CSIS base url: {self.__CSIS_BASE_URL}")
+        print(f"CSIS client ID: {ConfigurationManager.hide_data(self.__CSIS_CLIENT_ID)}")
+        print(f"CSIS client secret: {ConfigurationManager.hide_data(self.__CSIS_CLIENT_SECRET)}")
+        print(f"TOPdesk username: {self.__TOPdesk_USERNAME}")
+        print(f"TOPdesk password: {self.__TOPdesk_PASSWORD}")
+        print(f"TOPdesk base url: {self.__TOPdesk_BASE_URL}")
 
-            # CSIS data
-            self.__CSIS_AUTHENTICATION_URL  = "https://login.csis.com/oauth2/v2/token"
-            self.__CSIS_BASE_URL            = "https://api.csis.com/tickets"
-            self.__CSIS_CLIENT_ID           = automationassets.get_automation_variable("CSIS_CLIENT_ID")
-            self.__CSIS_CLIENT_SECRET       = automationassets.get_automation_variable("CSIS_CLIENT_SECRET")
-            self.__CSIS_CLIENT_TOKEN        = ""
-
-            # TOPdesk data
-            cred                    = automationassets.get_automation_credential("CREDENTIAL_TOPDESK_API")
-            self.__TOPdesk_USERNAME = cred["username"]
-            self.__TOPdesk_PASSWORD = cred["password"]
-            self.__TOPdesk_BASE_URL = "https://dlfseeds.topdesk.net/tas/api"
-
-            # Logs
-            print(f"Last new tickets timestamp: {self.__LAST_NEW_TICKETS_TIMESTAMP}")
-            print(f"Last updates timestamp: {self.__LAST_UPDATES_TIMESTAMP}")
-            print(f"CSIS authentication url: {self.__CSIS_AUTHENTICATION_URL}")
-            print(f"CSIS base url: {self.__CSIS_BASE_URL}")
-            print(f"CSIS client ID: {ConfigurationManager.hide_data(self.__CSIS_CLIENT_ID)}")
-            print(f"CSIS client secret: {ConfigurationManager.hide_data(self.__CSIS_CLIENT_SECRET)}")
-            print(f"TOPdesk username: {self.__TOPdesk_USERNAME}")
-            print(f"TOPdesk password: {self.__TOPdesk_PASSWORD}")
-            print(f"TOPdesk base url: {self.__TOPdesk_BASE_URL}")
-
-            print("Script configuration loaded successfully.")
+        print("Script configuration loaded successfully.")
 
     @property
     def last_new_tickets_timestamp(self):
@@ -224,20 +242,9 @@ class HttpResponseEvaluator:
 
 ########################################################################################################################
 
-class CsisAPI:
-    _instance = None  # Singleton instance
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(CsisAPI, cls).__new__(cls)
-            cls._instance.__initialize()
-        return cls._instance
-
-    def __initialize(self):
-        if not hasattr(self, "_initialized"):
-            self._initialized = True
-
-            self.__headers = { "Content-Type": "application/json" }
+class CsisAPI(Singleton):
+    def _init_singleton(self):
+        self.__headers = { "Content-Type": "application/json" }
 
     @staticmethod
     def get_token():
@@ -558,19 +565,8 @@ class TicketConverter:
 
 ########################################################################################################################
 
-class TOPdeskAPI:
-    _instance = None  # Singleton instance
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(TOPdeskAPI, cls).__new__(cls)
-            cls._instance.__initialize()
-        return cls._instance
-
-    def __initialize(self):
-        if not hasattr(self, "_initialized"):
-            self._initialized = True
-
+class TOPdeskAPI(Singleton):
+    def _init_singleton(self):
             cm = ConfigurationManager()
             self.__headers = { "Content-Type": "application/json" }
             self.__auth = (cm.topdesk_username, cm.topdesk_password)
