@@ -9,17 +9,6 @@ class TimestampUtils:
     def get_start_of_the_search_timestamp(minutes: int) -> str:
         """
         Generates a timestamp representing the current UTC time minus the specified minutes.
-
-        Args:
-            minutes (int): The number of minutes to subtract from the current UTC time.
-
-        Returns:
-            str: The generated timestamp in ISO 8601 format (trimmed to 3 decimal places).
-
-        Example:
-            >>> generator = TimestampGenerator()
-            >>> generator.get_start_of_the_search_timestamp(10)
-            "2025-03-10T09:38:59.060Z"
         """
         new_time = datetime.now(timezone.utc) - timedelta(minutes=minutes)
         return new_time.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"  # Trim to 3 decimal places
@@ -35,18 +24,6 @@ class TimestampUtils:
     def get_time_difference_between(t1: str, t2: str) -> int:
         """
         Calculates the absolute difference in minutes between two ISO 8601 timestamps.
-
-        Args:
-            t1 (str): The first timestamp (ISO 8601 format).
-            t2 (str): The second timestamp (ISO 8601 format).
-
-        Returns:
-            int: The absolute difference between the two timestamps in minutes.
-
-        Example:
-            >>> generator = TimestampGenerator()
-            >>> generator.get_time_difference_between("2025-03-10T09:48:59.060325", "2025-03-10T10:00:00.000000")
-            11
         """
         t1 = t1.replace("Z", "+00:00")
         t2 = t2.replace("Z", "+00:00")

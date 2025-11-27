@@ -3,7 +3,6 @@ from ConfigurationManager import ConfigurationManager
 from HttpResponseEvaluator import RequestType, HttpResponseEvaluator
 from src.TimestampUtils import TimestampUtils
 
-
 class CsisAPI:
     _instance = None  # Singleton instance
 
