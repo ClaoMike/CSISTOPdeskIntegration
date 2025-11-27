@@ -1,9 +1,6 @@
 import requests
 from ConfigurationManager import ConfigurationManager
-from HttpResponseEvaluator import HttpResponseEvaluator
-from TimestampUtils import TimestampUtils
-from HttpResponseEvaluator import RequestType
-
+from HttpResponseEvaluator import RequestType, HttpResponseEvaluator
 
 class CsisAPI:
     _instance = None  # Singleton instance
@@ -18,9 +15,7 @@ class CsisAPI:
         if not hasattr(self, "_initialized"):
             self._initialized = True
 
-            self.__headers = {
-                "Content-Type": "application/json"
-            }
+            self.__headers = { "Content-Type": "application/json" }
 
     @staticmethod
     def get_token():

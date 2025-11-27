@@ -19,7 +19,7 @@ tickets = csisAPI.get_tickets_to_be_created()
 TimestampUtils.save_current_date_as(config.last_new_tickets_timestamp_key)
 
 # TODO: Create the tickets in TOPdesk
-# created_tickets = topdeskAPI.create_tickets(tickets_to_be_created)
+created_tickets = topdeskAPI.create_tickets(tickets)
 
 # TODO: Update CSIS tickets with the corresponding TOPdesk ticket IDs
 # csisAPI.update_tickets(created_tickets)
@@ -38,6 +38,6 @@ TimestampUtils.save_current_date_as(config.last_new_tickets_timestamp_key)
 # Convert CSIS updated tickets to TOPdesk format
 # tickets_to_be_updated = ticketConverter.convert_updated_tickets_to_TOPdesk_format(tickets_to_be_updated)
 
-# Push updates to TOPdesk
+# Push updates to TOPdesk'';'
 # topdeskAPI.update_tickets(tickets_to_be_updated)
 ########################################################################################################################
