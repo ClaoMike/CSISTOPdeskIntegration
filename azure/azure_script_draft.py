@@ -1,3 +1,5 @@
+########################################################################################################################
+
 from src import automationassets # dev
 # import automationassets # prod
 import re
@@ -7,12 +9,12 @@ import datetime
 import math
 from datetime import datetime, timedelta, timezone
 
+########################################################################################################################
+
 class TimestampUtils:
     @staticmethod
     def get_start_of_the_search_timestamp(minutes: int) -> str:
-        """
-        Generates a timestamp representing the current UTC time minus the specified minutes.
-        """
+        """Generates a timestamp representing the current UTC time minus the specified minutes."""
         new_time = datetime.now(timezone.utc) - timedelta(minutes=minutes)
         return new_time.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"  # Trim to 3 decimal places
 
@@ -25,9 +27,7 @@ class TimestampUtils:
 
     @staticmethod
     def get_time_difference_between(t1: str, t2: str) -> int:
-        """
-        Calculates the absolute difference in minutes between two ISO 8601 timestamps.
-        """
+        """Calculates the absolute difference in minutes between two ISO 8601 timestamps."""
         t1 = t1.replace("Z", "+00:00")
         t2 = t2.replace("Z", "+00:00")
 
@@ -77,6 +77,8 @@ class TimestampUtils:
         now = datetime.utcnow().replace(tzinfo=timezone.utc)
         now_as_azure_string = TimestampUtils.datetime_to_ms_timestamp(now)
         automationassets.set_automation_variable(key, now_as_azure_string)
+
+########################################################################################################################
 
 class ConfigurationManager:
     _instance = None  # Singleton instance
@@ -179,15 +181,7 @@ class ConfigurationManager:
     # noinspection PyAttributeOutsideInit
     @csis_client_token.setter
     def csis_client_token(self, new_token):
-        """
-        Updates the CSIS client token dynamically.
-
-        Args:
-            new_token (str): The new CSIS client token.
-
-        Raises:
-            ValueError: If the new token is not a string.
-        """
+        """Updates the CSIS client token dynamically."""
         if isinstance(new_token, str):
             self.__CSIS_CLIENT_TOKEN = new_token
         else:
@@ -213,11 +207,15 @@ class ConfigurationManager:
     def hide_data(s: str) -> str:
         return re.sub(r'.', '*', s)
 
+########################################################################################################################
+
 class RequestType(Enum):
     POST = "POST"
     PATCH = "PATCH"
     PUT = "PUT"
     GET = "GET"
+
+########################################################################################################################
 
 class HttpResponseEvaluator:
     @staticmethod
@@ -231,7 +229,8 @@ class HttpResponseEvaluator:
     def evaluate(response, hide_response=False):
         if 200 <= response.status_code < 300:
             if hide_response:
-                print(f"Request was successful ({response.status_code}): {ConfigurationManager.hide_data(response.text)}")
+                print(f"Request was successful ({response.status_code}): "
+                      + "{ConfigurationManager.hide_data(response.text)}")
             else:
                 print(f"Request was successful ({response.status_code}): {response.text}")
             print("##################\n")
@@ -239,6 +238,8 @@ class HttpResponseEvaluator:
             print(f"Error {response.status_code}: {response.text}")
             print("##################\n")
             raise SystemExit
+
+########################################################################################################################
 
 class CsisAPI:
     _instance = None  # Singleton instance
@@ -257,9 +258,7 @@ class CsisAPI:
 
     @staticmethod
     def get_token():
-        """
-           Fetches and stores the CSIS authentication token.
-        """
+        """Fetches and stores the CSIS authentication token."""
         cm = ConfigurationManager()
         payload = {
             "grant_type": "client_credentials",
@@ -357,9 +356,7 @@ class CsisAPI:
         return tickets
 
     def update_tickets_with_customer_reference(self, tickets):
-        """
-        Updates tickets with new customer references.
-        """
+        """Updates tickets with new customer references."""
         for ticket in tickets:
             payload = {
                 "customer_reference": ticket["topdesk_id"],
@@ -372,7 +369,9 @@ class CsisAPI:
 
         recent_comments = []
         for comment in comments:
-            comment_date = TimestampUtils.convert_UTC_z_to_ISO8601(TimestampUtils.convert_csis_time_to_UTC_z(comment["created"]))
+            comment_date = TimestampUtils.convert_UTC_z_to_ISO8601(
+                TimestampUtils.convert_csis_time_to_UTC_z(comment["created"])
+            )
 
             if comment_date >= last_updated_timestamp:
                 recent_comments.append(comment)
@@ -388,9 +387,7 @@ class CsisAPI:
         return recent_comments
 
     def __update_ticket(self, ticket_id, payload):
-        """
-        Updates ticket.
-        """
+        """Updates ticket."""
         url = f"{ConfigurationManager().csis_base_url}/1.0/ticket/{ticket_id}"
 
         HttpResponseEvaluator.announce_request(url, RequestType.PATCH, json=payload)
@@ -398,9 +395,7 @@ class CsisAPI:
         HttpResponseEvaluator.evaluate(response)
 
     def __get_filtered_tickets(self, updated_after, status):
-        """
-        Fetches filtered tickets, by status and update after time.
-        """
+        """Fetches filtered tickets, by status and update after time."""
         offset = 0
         limit = 10
         tickets = []
@@ -451,10 +446,7 @@ class CsisAPI:
         return tickets_with_customer_reference, tickets_without_customer_reference
 
     def __get_ticket(self, external_id):
-        """
-        Fetches ticket details by external_id.
-        """
-
+        """Fetches ticket details by external_id."""
         url = f"{ConfigurationManager().csis_base_url}/1.1/ticket/{external_id}"
         HttpResponseEvaluator.announce_request(url, RequestType.GET)
         response = requests.get(url=url, headers=self.__headers)
@@ -463,9 +455,7 @@ class CsisAPI:
         return response.json()["payload"]
 
     def __get_comments(self, ticket_id):
-        """
-            Fetches comments associated with a specific ticket.
-        """
+        """Fetches comments associated with a specific ticket."""
         url = f"{ConfigurationManager().csis_base_url}/1.0/ticket/{ticket_id}/comment"
         HttpResponseEvaluator.announce_request(url, RequestType.GET)
         response = requests.get(url=url, headers=self.__headers)
@@ -473,12 +463,12 @@ class CsisAPI:
 
         return response.json()["payload"]
 
+########################################################################################################################
+
 class TicketConverter:
     @staticmethod
     def convert_CSIS_ticket_to_be_created_to_TOPdesk_format(ticket):
-        """
-        Converts CSIS-created ticket into the TOPdesk ticket format.
-        """
+        """Converts CSIS-created ticket into the TOPdesk ticket format."""
 
         if {"description", "title", "id", "status", "severity"} - ticket.keys():
             print(f"Ticket {ticket} is missing some fields! Please Investigate!")
@@ -486,7 +476,8 @@ class TicketConverter:
 
         new_ticket = {
             "status": "firstLine",  # Default status for new tickets
-            "request": ticket["description"].replace('\n', '<br>'),  # Full description, TOPdesk does not render new line chars, but it does render break lines
+            # Full description, TOPdesk does not render new line chars, but it does render break lines
+            "request": ticket["description"].replace('\n', '<br>'),
             "caller": {
                 "dynamicName": "ecrime"
             },
@@ -528,9 +519,7 @@ class TicketConverter:
 
     @staticmethod
     def convert_CSIS_comment_to_TOPdesk_format(comment):
-        """
-        Converts CSIS comment into the TOPdesk format.
-        """
+        """Converts CSIS comment into the TOPdesk format."""
         formmated_comment = comment['text'].replace('\n', '<br>') # format
         new_comment = {
             "action": f"<b>Creator:</b> {comment['creator']}<br>{formmated_comment}"
@@ -540,9 +529,7 @@ class TicketConverter:
 
     @staticmethod
     def convert_updated_ticket_to_TOPdesk_format(ticket, new_description=None):
-        """
-        Converts updated CSIS ticket into the TOPdesk format.
-        """
+        """Converts updated CSIS ticket into the TOPdesk format."""
         new_payload = {
             "priority": {
                 "id": TicketConverter.convert_severity_to_priority(ticket["severity"])
@@ -551,16 +538,14 @@ class TicketConverter:
         new_payload["processingStatus"] = {"id": TicketConverter.convert_csis_to_topdesk_status(ticket["status"])}
 
         if new_description is not None:
-            new_payload["request"] = new_description  # Full description, TOPdesk does not render new line chars, but it does render break lines
+            # Full description, TOPdesk does not render new line chars, but it does render break lines
+            new_payload["request"] = new_description
 
         return new_payload
 
     @staticmethod
     def convert_severity_to_priority(severity):
-        """
-        Maps CSIS severity levels to TOPdesk priority IDs.
-        """
-
+        """Maps CSIS severity levels to TOPdesk priority IDs."""
         priority_map = {
             "info": "e5355405-1795-4543-963d-897cf0b6ea37",
             "low": "f4f41126-f799-4517-a1a9-0f6c2d4db677",
@@ -574,20 +559,21 @@ class TicketConverter:
 
     @staticmethod
     def convert_csis_to_topdesk_status(status):
-        """
-        Maps CSIS status values to TOPdesk processing status IDs.
-        """
+        """Maps CSIS status values to TOPdesk processing status IDs."""
         status_map = {
             "new": "b20abac9-6114-4907-882a-9b40802abc48", # registered
             "in-progress": "a4515d1f-a690-421a-b8a5-95ac9c32890e", # in progress
             "pending-customer": "a4515d1f-a690-421a-b8a5-95ac9c32890e", # in progress
             "pending-csis": "438ab0fe-819e-47fd-a5ff-1aef4271f4bd", # waiting external
             "confirmed": "a4515d1f-a690-421a-b8a5-95ac9c32890e", # in progress
-            "closed": "dcc7e8ec-87e8-4fe9-b119-44f3417ed3b7", # closed / or  "e4b20e27-26bf-42e0-884a-2a4525e8ea4d", # solved
+            "closed": "dcc7e8ec-87e8-4fe9-b119-44f3417ed3b7", # closed
+            # or  "e4b20e27-26bf-42e0-884a-2a4525e8ea4d", # solved
         }
 
         # Default: Registered
         return status_map.get(status, "b20abac9-6114-4907-882a-9b40802abc48")
+
+########################################################################################################################
 
 class TOPdeskAPI:
     _instance = None  # Singleton instance
@@ -608,7 +594,8 @@ class TOPdeskAPI:
 
     def create_tickets(self, tickets):
         """
-        For each ticket, create its TOPdesk representation. For each created ticket, put its comments, if any. Then return the ids.
+        For each ticket, create its TOPdesk representation.
+        For each created ticket, put its comments, if any. Then return the ids.
         """
         created_tickets = []
         for ticket in tickets:
@@ -636,9 +623,7 @@ class TOPdeskAPI:
         return created_tickets
 
     def update_tickets(self, tickets):
-        """
-        Sends PATCH and PUT requests to update tickets and add comments.
-        """
+        """Sends PATCH and PUT requests to update tickets and add comments."""
         if len(tickets) == 0:
             return
 
@@ -660,7 +645,10 @@ class TOPdeskAPI:
                 new_description = current_csis_description
 
             # convert CSIS to TOPdesk format
-            topdesk_formatted = TicketConverter.convert_updated_ticket_to_TOPdesk_format(ticket, new_description=new_description)
+            topdesk_formatted = TicketConverter.convert_updated_ticket_to_TOPdesk_format(
+                ticket,
+                new_description=new_description
+            )
 
             self.__update_ticket(topdesk_number, topdesk_formatted)
 
@@ -673,9 +661,7 @@ class TOPdeskAPI:
                     )
 
     def __create_ticket(self, ticket):
-        """
-        Sends a POST request to create a single ticket in TOPdesk.
-        """
+        """Sends a POST request to create a single ticket in TOPdesk."""
         url = f"{ConfigurationManager().topdesk_base_url}/incidents"
 
         HttpResponseEvaluator.announce_request(url, RequestType.POST, json=ticket)
@@ -685,9 +671,7 @@ class TOPdeskAPI:
         return response.json()
 
     def __update_actions(self, topdesk_id, comment):
-        """
-        Sends a PUT request to add an action or comment to a ticket.
-        """
+        """Sends a PUT request to add an action or comment to a ticket."""
         url = f"{ConfigurationManager().topdesk_base_url}/incidents/number/{topdesk_id}"
 
         HttpResponseEvaluator.announce_request(url, RequestType.PUT, json=comment)
@@ -710,9 +694,7 @@ class TOPdeskAPI:
         return None
 
     def __update_ticket(self, topdesk_id, payload):
-        """
-        Sends a PATCH request to update a ticket's status or details.
-        """
+        """Sends a PATCH request to update a ticket's status or details."""
         url = f"{ConfigurationManager().topdesk_base_url}/incidents/number/{topdesk_id}"
 
         HttpResponseEvaluator.announce_request(url, RequestType.PATCH, json=payload)
@@ -720,9 +702,7 @@ class TOPdeskAPI:
         HttpResponseEvaluator.evaluate(response)
 
     def __get_ticket(self, ticket_id: str):
-        """
-        Sends a PATCH request to update a ticket's status or details.
-        """
+        """Sends a PATCH request to update a ticket's status or details."""
         url = f"{ConfigurationManager().topdesk_base_url}/incidents/number/{ticket_id}"
 
         HttpResponseEvaluator.announce_request(url, RequestType.GET)

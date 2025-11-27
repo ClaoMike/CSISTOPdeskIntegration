@@ -4,7 +4,6 @@ from typing import Optional
 from HttpResponseEvaluator import RequestType, HttpResponseEvaluator
 from src.TicketConverter import TicketConverter
 
-
 class TOPdeskAPI:
     _instance = None  # Singleton instance
 
