@@ -120,6 +120,17 @@ class CsisAPI:
 
         return tickets
 
+    def update_tickets_with_customer_reference(self, tickets):
+        """
+        Updates tickets with new customer references.
+        """
+        for ticket in tickets:
+            payload = {
+                "customer_reference": ticket["topdesk_id"],
+            }
+
+            self.__update_ticket( ticket["csis_id"], payload)
+
     def __filter_comments_by_date(self, comments):
         last_updated_timestamp = TimestampUtils.convert_UTC_z_to_ISO8601(ConfigurationManager().last_updates_timestamp)
 
@@ -139,17 +150,6 @@ class CsisAPI:
                 recent_comments.append(comment)
 
         return recent_comments
-
-    def update_tickets_with_customer_reference(self, tickets):
-        """
-        Updates tickets with new customer references.
-        """
-        for ticket in tickets:
-            payload = {
-                "customer_reference": ticket["topdesk_id"],
-            }
-
-            self.__update_ticket( ticket["csis_id"], payload)
 
     def __update_ticket(self, ticket_id, payload):
         """

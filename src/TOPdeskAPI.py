@@ -51,28 +51,6 @@ class TOPdeskAPI:
 
         return created_tickets
 
-    def __create_ticket(self, ticket):
-        """
-        Sends a POST request to create a single ticket in TOPdesk.
-        """
-        url = f"{ConfigurationManager().topdesk_base_url}/incidents"
-
-        HttpResponseEvaluator.announce_request(url, RequestType.POST, json=ticket)
-        response = requests.post(url=url, headers=self.__headers, auth=self.__auth, json=ticket)
-        HttpResponseEvaluator.evaluate(response)
-
-        return response.json()
-
-    def __update_actions(self, topdesk_id, comment):
-        """
-        Sends a PUT request to add an action or comment to a ticket.
-        """
-        url = f"{ConfigurationManager().topdesk_base_url}/incidents/number/{topdesk_id}"
-
-        HttpResponseEvaluator.announce_request(url, RequestType.PUT, json=comment)
-        response = requests.put(url=url, headers=self.__headers, auth=self.__auth, json=comment)
-        HttpResponseEvaluator.evaluate(response)
-
     def update_tickets(self, tickets):
         """
         Sends PATCH and PUT requests to update tickets and add comments.
@@ -109,6 +87,28 @@ class TOPdeskAPI:
                         topdesk_number,
                         TicketConverter.convert_CSIS_comment_to_TOPdesk_format(comment)
                     )
+
+    def __create_ticket(self, ticket):
+        """
+        Sends a POST request to create a single ticket in TOPdesk.
+        """
+        url = f"{ConfigurationManager().topdesk_base_url}/incidents"
+
+        HttpResponseEvaluator.announce_request(url, RequestType.POST, json=ticket)
+        response = requests.post(url=url, headers=self.__headers, auth=self.__auth, json=ticket)
+        HttpResponseEvaluator.evaluate(response)
+
+        return response.json()
+
+    def __update_actions(self, topdesk_id, comment):
+        """
+        Sends a PUT request to add an action or comment to a ticket.
+        """
+        url = f"{ConfigurationManager().topdesk_base_url}/incidents/number/{topdesk_id}"
+
+        HttpResponseEvaluator.announce_request(url, RequestType.PUT, json=comment)
+        response = requests.put(url=url, headers=self.__headers, auth=self.__auth, json=comment)
+        HttpResponseEvaluator.evaluate(response)
 
     def __get_ticket_requests(self, ticket_id: str):
         url = f"{ConfigurationManager().topdesk_base_url}/incidents/id/{ticket_id}/requests"
