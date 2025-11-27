@@ -2,19 +2,10 @@ import requests
 from ConfigurationManager import ConfigurationManager
 from HttpResponseEvaluator import RequestType, HttpResponseEvaluator
 from src.TicketConverter import TicketConverter
+from Singleton import Singleton
 
-class TOPdeskAPI:
-    _instance = None  # Singleton instance
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(TOPdeskAPI, cls).__new__(cls)
-            cls._instance.__initialize()
-        return cls._instance
-
-    def __initialize(self):
-        if not hasattr(self, "_initialized"):
-            self._initialized = True
+class TOPdeskAPI(Singleton):
+    def _init_singleton(self):
 
             cm = ConfigurationManager()
             self.__headers = { "Content-Type": "application/json" }
