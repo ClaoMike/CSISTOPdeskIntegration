@@ -81,17 +81,17 @@ class TOPdeskAPI:
             return
 
         for ticket in tickets:
+            # extract TOPdesk ticket number from the CSIS ticket
             topdesk_number = ticket["customer_reference"]
+            # Get the TOPdesk ticket
             topdesk_current_ticket = self.__get_ticket(topdesk_number)
-            print(topdesk_current_ticket)
-
+            # Extract the TOPdesk ticket ID
             topdesk_current_ticket_id = topdesk_current_ticket["id"]
+            # Get the list of all descriptions of the TOPdesk ticket
             topdesk_current_ticket_requests = self.__get_ticket_requests(topdesk_current_ticket_id)
-            print(topdesk_current_ticket_requests)
-
+            # Extract the last one
             last_topdesk_description = self.__get_ticket_last_request(topdesk_current_ticket_requests)
-            print(last_topdesk_description)
-
+            # check if the last description is different from the current CSIS description
             new_description = None
             current_csis_description = ticket["description"].replace('\n', '<br/>').replace('&#x20;', ' ')
             if last_topdesk_description is not None and last_topdesk_description != current_csis_description:
@@ -99,7 +99,6 @@ class TOPdeskAPI:
 
             # convert CSIS to TOPdesk format
             topdesk_formatted = TicketConverter.convert_updated_ticket_to_TOPdesk_format(ticket, new_description=new_description)
-            print(topdesk_formatted)
 
             self.__update_ticket(topdesk_number, topdesk_formatted)
 
