@@ -1,7 +1,7 @@
 import requests
 from ConfigurationManager import ConfigurationManager
 from HttpResponseEvaluator import RequestType, HttpResponseEvaluator
-from src.TimestampUtils import TimestampUtils
+from TimestampUtils import TimestampUtils
 from Singleton import Singleton
 
 class CsisAPI(Singleton):

@@ -1,7 +1,7 @@
 import requests
 from ConfigurationManager import ConfigurationManager
 from HttpResponseEvaluator import RequestType, HttpResponseEvaluator
-from src.TicketConverter import TicketConverter
+from TicketConverter import TicketConverter
 from Singleton import Singleton
 
 class TOPdeskAPI(Singleton):

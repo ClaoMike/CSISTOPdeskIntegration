@@ -1,7 +1,7 @@
 from ConfigurationManager import ConfigurationManager
 from CsisAPI import CsisAPI
 from TOPdeskAPI import TOPdeskAPI
-from src.TimestampUtils import TimestampUtils
+from TimestampUtils import TimestampUtils
 ########################################################################################################################
 # Initialize configurations
 config = ConfigurationManager()
