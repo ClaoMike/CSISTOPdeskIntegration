@@ -51,6 +51,18 @@ class TicketConverter:
 
         return new_ticket
 
+    @staticmethod
+    def convert_CSIS_comment_to_TOPdesk_format(comment):
+        """
+        Converts CSIS comment into the TOPdesk format.
+        """
+        formmated_comment = comment['text'].replace('\n', '<br>') # format
+        new_comment = {
+            "action": f"<b>Creator:</b> {comment['creator']}<br>{formmated_comment}"
+        }
+
+        return new_comment
+
     # # noinspection PyMethodMayBeStatic
     # def convert_updated_tickets_to_TOPdesk_format(self, tickets):
     #     """

@@ -18,11 +18,11 @@ csisAPI.set_authorization_token()
 tickets = csisAPI.get_tickets_to_be_created()
 TimestampUtils.save_current_date_as(config.last_new_tickets_timestamp_key)
 
-# TODO: Create the tickets in TOPdesk
+# Create the tickets in TOPdesk
 created_tickets = topdeskAPI.create_tickets(tickets)
 
-# TODO: Update CSIS tickets with the corresponding TOPdesk ticket IDs
-# csisAPI.update_tickets(created_tickets)
+# Update CSIS tickets with the corresponding TOPdesk ticket IDs
+csisAPI.update_tickets_with_customer_reference(created_tickets)
 ########################################################################################################################
 # ==========================
 # STEP 3: Update Existing Tickets

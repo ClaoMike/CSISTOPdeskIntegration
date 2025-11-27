@@ -32,22 +32,26 @@ class TOPdeskAPI:
         for ticket in tickets:
             # convert CSIS to TOPdesk format
             topdesk_formatted = TicketConverter.convert_CSIS_ticket_to_be_created_to_TOPdesk_format(ticket)
-            # create the TOPdesk ticket
-            created_topdesk_ticket = self.__create_ticket(topdesk_formatted)
 
-            # save the response
-        #     created_tickets.append(created_topdesk_ticket)
-        #     # extract the topdesk id
-        #     topdesk_id = created_topdesk_ticket["number"]
-        #     # put comments if any
-        #     if "comments" in ticket:
-        #         comments = ticket["comments"]
-        #
-        #         for comment in comments:
-        #             self.__update_actions(topdesk_id, comment)
-        #
-        # # return the TOPdesk ticket(s)
-        # return created_tickets
+            # create the TOPdesk ticket
+            created_topdesk_ticket_id = self.__create_ticket(topdesk_formatted)["number"]
+
+            # add comments, if any
+            if "comments" in ticket:
+                for comment in ticket["comments"]:
+                    self.__update_actions(
+                        created_topdesk_ticket_id,
+                        TicketConverter.convert_CSIS_comment_to_TOPdesk_format(comment)
+                    )
+
+            # save the topdesk id for each csis ticket
+            created_ticket = {
+                "csis_id": ticket["id"],
+                "topdesk_id": created_topdesk_ticket_id
+            }
+            created_tickets.append(created_ticket)
+
+        return created_tickets
 
     def __create_ticket(self, ticket):
         """
@@ -55,7 +59,7 @@ class TOPdeskAPI:
         """
         url = f"{ConfigurationManager().topdesk_base_url}/incidents"
 
-        HttpResponseEvaluator.announce_request(url, RequestType.POST)
+        HttpResponseEvaluator.announce_request(url, RequestType.POST, json=ticket)
         response = requests.post(url=url, headers=self.__headers, auth=self.__auth, json=ticket)
         HttpResponseEvaluator.evaluate(response)
 
@@ -65,7 +69,11 @@ class TOPdeskAPI:
         """
         Sends a PUT request to add an action or comment to a ticket.
         """
-        self.__make_request(payload=comment, request_type=RequestType.PUT, endpoint=f"/number/{topdesk_id}")
+        url = f"{ConfigurationManager().topdesk_base_url}/incidents/number/{topdesk_id}"
+
+        HttpResponseEvaluator.announce_request(url, RequestType.PUT, json=comment)
+        response = requests.put(url=url, headers=self.__headers, auth=self.__auth, json=comment)
+        HttpResponseEvaluator.evaluate(response)
 
     # def get_ticket(self, ticket_id: str):
     #     return self.__make_request(request_type=RequestType.GET, endpoint=f"/number/{ticket_id}")
@@ -121,41 +129,3 @@ class TOPdeskAPI:
     #         payload (dict): The data to update the ticket with.
     #     """
     #     self.__make_request(payload=payload, request_type=RequestType.PATCH, endpoint=f"/number/{topdesk_id}")
-
-    def __make_request(self, request_type: RequestType, endpoint: str = "", payload: Optional[dict] = None):
-        # Construct request parameters
-        request_params = {
-            "url": f"{self.__configurationManager.topdesk_base_url}/incidents{endpoint}",
-            "auth": (self.__configurationManager.topdesk_username, self.__configurationManager.topdesk_password),
-        }
-
-        # Only add JSON payload if provided
-        if payload is not None:
-            request_params["json"] = payload
-            request_params["headers"] = self.__headers
-
-        # Log the request attempt
-        print(f"Performing a {request_type.value} request at {request_params['url']}")
-        print(f"Payload: {payload}")
-
-        # Perform the appropriate HTTP request based on the request type
-        if request_type == RequestType.POST:
-            response = requests.post(**request_params)
-
-        elif request_type == RequestType.GET:
-            response = requests.get(**request_params)
-
-        elif request_type == RequestType.PUT:
-            response = requests.put(**request_params)
-
-        elif request_type == RequestType.PATCH:
-            response = requests.patch(**request_params)
-
-        else:
-            raise SystemExit("Invalid request type")
-
-        # Evaluate the response (this may log errors and raise exceptions if necessary)
-        self.__responseEvaluator.evaluate(response)
-
-        # Return the parsed JSON response
-        return response.json()

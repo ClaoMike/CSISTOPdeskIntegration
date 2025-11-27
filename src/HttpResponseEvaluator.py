@@ -9,9 +9,11 @@ class RequestType(Enum):
 
 class HttpResponseEvaluator:
     @staticmethod
-    def announce_request(url, request_type: RequestType,):
+    def announce_request(url, request_type: RequestType, json=None):
         print("\n## HTTP REQUEST ##")
         print(f"Performing a {request_type.value} request at {url}")
+        if json is not None:
+            print(f"Payload (json) {json}")
 
     @staticmethod
     def evaluate(response, hide_response=False):

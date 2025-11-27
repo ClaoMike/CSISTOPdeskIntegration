@@ -69,11 +69,35 @@ class CsisAPI:
 
         # get comments
         for ticket in tickets:
-            ticket["comments"] = self.__get_comments(ticket["id"])
+            comments = self.__get_comments(ticket["id"])
+            comments.reverse() # reverse them to display them in order of appearance in topdesk
+            if comments is not None and len(comments) > 0:
+                ticket["comments"] = comments
 
         print(f"All tickets that must be created in TOPdesk: {tickets}")
 
         return tickets
+
+    def update_tickets_with_customer_reference(self, tickets):
+        """
+        Updates tickets with new customer references.
+        """
+        for ticket in tickets:
+            payload = {
+                "customer_reference": ticket["topdesk_id"],
+            }
+
+            self.__update_ticket( ticket["csis_id"], payload)
+
+    def __update_ticket(self, ticket_id, payload):
+        """
+        Updates ticket.
+        """
+        url = f"{ConfigurationManager().csis_base_url}/1.0/ticket/{ticket_id}"
+
+        HttpResponseEvaluator.announce_request(url, RequestType.PATCH, json=payload)
+        response = requests.patch(url=url, headers=self.__headers, json=payload)
+        HttpResponseEvaluator.evaluate(response)
 
     def __get_filtered_tickets(self, updated_after, status):
         """
@@ -215,24 +239,6 @@ class CsisAPI:
     #     }
     #
     #     return self.__make_request(request_type=RequestType.GET, params=params)
-
-    # def update_tickets(self, tickets):
-    #     """
-    #             Updates tickets with new customer references.
-    #
-    #             Args:
-    #                 tickets (list): List of tickets to update.
-    #             """
-    #     for ticket in tickets:
-    #         payload = {
-    #             "customer_reference": ticket["number"],
-    #         }
-    #
-    #         self.__make_request(
-    #             request_type=RequestType.PATCH,
-    #             payload=payload,
-    #             endpoint=f"/{ticket['externalNumber']}"
-    #         )
 
     # def get_updated_tickets(self):
     #     """
