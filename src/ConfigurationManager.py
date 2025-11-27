@@ -103,15 +103,7 @@ class ConfigurationManager:
     # noinspection PyAttributeOutsideInit
     @csis_client_token.setter
     def csis_client_token(self, new_token):
-        """
-        Updates the CSIS client token dynamically.
-
-        Args:
-            new_token (str): The new CSIS client token.
-
-        Raises:
-            ValueError: If the new token is not a string.
-        """
+        """Updates the CSIS client token dynamically."""
         if isinstance(new_token, str):
             self.__CSIS_CLIENT_TOKEN = new_token
         else:

@@ -7,9 +7,7 @@ import automationassets
 class TimestampUtils:
     @staticmethod
     def get_start_of_the_search_timestamp(minutes: int) -> str:
-        """
-        Generates a timestamp representing the current UTC time minus the specified minutes.
-        """
+        """Generates a timestamp representing the current UTC time minus the specified minutes."""
         new_time = datetime.now(timezone.utc) - timedelta(minutes=minutes)
         return new_time.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"  # Trim to 3 decimal places
 
@@ -22,9 +20,7 @@ class TimestampUtils:
 
     @staticmethod
     def get_time_difference_between(t1: str, t2: str) -> int:
-        """
-        Calculates the absolute difference in minutes between two ISO 8601 timestamps.
-        """
+        """Calculates the absolute difference in minutes between two ISO 8601 timestamps."""
         t1 = t1.replace("Z", "+00:00")
         t2 = t2.replace("Z", "+00:00")
 

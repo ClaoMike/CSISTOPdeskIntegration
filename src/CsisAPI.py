@@ -20,9 +20,7 @@ class CsisAPI:
 
     @staticmethod
     def get_token():
-        """
-           Fetches and stores the CSIS authentication token.
-        """
+        """Fetches and stores the CSIS authentication token."""
         cm = ConfigurationManager()
         payload = {
             "grant_type": "client_credentials",
@@ -120,9 +118,7 @@ class CsisAPI:
         return tickets
 
     def update_tickets_with_customer_reference(self, tickets):
-        """
-        Updates tickets with new customer references.
-        """
+        """Updates tickets with new customer references."""
         for ticket in tickets:
             payload = {
                 "customer_reference": ticket["topdesk_id"],
@@ -151,9 +147,7 @@ class CsisAPI:
         return recent_comments
 
     def __update_ticket(self, ticket_id, payload):
-        """
-        Updates ticket.
-        """
+        """Updates ticket."""
         url = f"{ConfigurationManager().csis_base_url}/1.0/ticket/{ticket_id}"
 
         HttpResponseEvaluator.announce_request(url, RequestType.PATCH, json=payload)
@@ -161,9 +155,7 @@ class CsisAPI:
         HttpResponseEvaluator.evaluate(response)
 
     def __get_filtered_tickets(self, updated_after, status):
-        """
-        Fetches filtered tickets, by status and update after time.
-        """
+        """Fetches filtered tickets, by status and update after time."""
         offset = 0
         limit = 10
         tickets = []
@@ -214,10 +206,7 @@ class CsisAPI:
         return tickets_with_customer_reference, tickets_without_customer_reference
 
     def __get_ticket(self, external_id):
-        """
-        Fetches ticket details by external_id.
-        """
-
+        """Fetches ticket details by external_id."""
         url = f"{ConfigurationManager().csis_base_url}/1.1/ticket/{external_id}"
         HttpResponseEvaluator.announce_request(url, RequestType.GET)
         response = requests.get(url=url, headers=self.__headers)
@@ -226,9 +215,7 @@ class CsisAPI:
         return response.json()["payload"]
 
     def __get_comments(self, ticket_id):
-        """
-            Fetches comments associated with a specific ticket.
-        """
+        """Fetches comments associated with a specific ticket."""
         url = f"{ConfigurationManager().csis_base_url}/1.0/ticket/{ticket_id}/comment"
         HttpResponseEvaluator.announce_request(url, RequestType.GET)
         response = requests.get(url=url, headers=self.__headers)

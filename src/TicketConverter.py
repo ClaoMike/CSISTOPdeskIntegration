@@ -1,9 +1,7 @@
 class TicketConverter:
     @staticmethod
     def convert_CSIS_ticket_to_be_created_to_TOPdesk_format(ticket):
-        """
-        Converts CSIS-created ticket into the TOPdesk ticket format.
-        """
+        """Converts CSIS-created ticket into the TOPdesk ticket format."""
 
         if {"description", "title", "id", "status", "severity"} - ticket.keys():
             print(f"Ticket {ticket} is missing some fields! Please Investigate!")
@@ -53,9 +51,7 @@ class TicketConverter:
 
     @staticmethod
     def convert_CSIS_comment_to_TOPdesk_format(comment):
-        """
-        Converts CSIS comment into the TOPdesk format.
-        """
+        """Converts CSIS comment into the TOPdesk format."""
         formmated_comment = comment['text'].replace('\n', '<br>') # format
         new_comment = {
             "action": f"<b>Creator:</b> {comment['creator']}<br>{formmated_comment}"
@@ -65,9 +61,7 @@ class TicketConverter:
 
     @staticmethod
     def convert_updated_ticket_to_TOPdesk_format(ticket, new_description=None):
-        """
-        Converts updated CSIS ticket into the TOPdesk format.
-        """
+        """Converts updated CSIS ticket into the TOPdesk format."""
         new_payload = {
             "priority": {
                 "id": TicketConverter.convert_severity_to_priority(ticket["severity"])
@@ -82,10 +76,7 @@ class TicketConverter:
 
     @staticmethod
     def convert_severity_to_priority(severity):
-        """
-        Maps CSIS severity levels to TOPdesk priority IDs.
-        """
-
+        """Maps CSIS severity levels to TOPdesk priority IDs."""
         priority_map = {
             "info": "e5355405-1795-4543-963d-897cf0b6ea37",
             "low": "f4f41126-f799-4517-a1a9-0f6c2d4db677",
@@ -99,9 +90,7 @@ class TicketConverter:
 
     @staticmethod
     def convert_csis_to_topdesk_status(status):
-        """
-        Maps CSIS status values to TOPdesk processing status IDs.
-        """
+        """Maps CSIS status values to TOPdesk processing status IDs."""
         status_map = {
             "new": "b20abac9-6114-4907-882a-9b40802abc48", # registered
             "in-progress": "a4515d1f-a690-421a-b8a5-95ac9c32890e", # in progress

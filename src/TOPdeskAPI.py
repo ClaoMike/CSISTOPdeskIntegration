@@ -23,9 +23,7 @@ class TOPdeskAPI:
             self.__auth = (cm.topdesk_username, cm.topdesk_password)
 
     def create_tickets(self, tickets):
-        """
-        For each ticket, create its TOPdesk representation. For each created ticket, put its comments, if any. Then return the ids.
-        """
+        """For each ticket, create its TOPdesk representation. For each created ticket, put its comments, if any. Then return the ids."""
         created_tickets = []
         for ticket in tickets:
             # convert CSIS to TOPdesk format
@@ -52,9 +50,7 @@ class TOPdeskAPI:
         return created_tickets
 
     def update_tickets(self, tickets):
-        """
-        Sends PATCH and PUT requests to update tickets and add comments.
-        """
+        """Sends PATCH and PUT requests to update tickets and add comments."""
         if len(tickets) == 0:
             return
 
@@ -89,9 +85,7 @@ class TOPdeskAPI:
                     )
 
     def __create_ticket(self, ticket):
-        """
-        Sends a POST request to create a single ticket in TOPdesk.
-        """
+        """Sends a POST request to create a single ticket in TOPdesk."""
         url = f"{ConfigurationManager().topdesk_base_url}/incidents"
 
         HttpResponseEvaluator.announce_request(url, RequestType.POST, json=ticket)
@@ -101,9 +95,7 @@ class TOPdeskAPI:
         return response.json()
 
     def __update_actions(self, topdesk_id, comment):
-        """
-        Sends a PUT request to add an action or comment to a ticket.
-        """
+        """Sends a PUT request to add an action or comment to a ticket."""
         url = f"{ConfigurationManager().topdesk_base_url}/incidents/number/{topdesk_id}"
 
         HttpResponseEvaluator.announce_request(url, RequestType.PUT, json=comment)
@@ -126,9 +118,7 @@ class TOPdeskAPI:
         return None
 
     def __update_ticket(self, topdesk_id, payload):
-        """
-        Sends a PATCH request to update a ticket's status or details.
-        """
+        """Sends a PATCH request to update a ticket's status or details."""
         url = f"{ConfigurationManager().topdesk_base_url}/incidents/number/{topdesk_id}"
 
         HttpResponseEvaluator.announce_request(url, RequestType.PATCH, json=payload)
@@ -136,9 +126,7 @@ class TOPdeskAPI:
         HttpResponseEvaluator.evaluate(response)
 
     def __get_ticket(self, ticket_id: str):
-        """
-        Sends a PATCH request to update a ticket's status or details.
-        """
+        """Sends a PATCH request to update a ticket's status or details."""
         url = f"{ConfigurationManager().topdesk_base_url}/incidents/number/{ticket_id}"
 
         HttpResponseEvaluator.announce_request(url, RequestType.GET)
