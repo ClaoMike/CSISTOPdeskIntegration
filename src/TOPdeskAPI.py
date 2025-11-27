@@ -103,12 +103,12 @@ class TOPdeskAPI:
             self.__update_ticket(topdesk_number, topdesk_formatted)
 
             # add comments, if any
-            # if "comments" in ticket:
-            #     for comment in ticket["comments"]:
-            #         self.__update_actions(
-            #             topdesk_id,
-            #             TicketConverter.convert_CSIS_comment_to_TOPdesk_format(comment)
-            #         )
+            if "comments" in ticket:
+                for comment in ticket["comments"]:
+                    self.__update_actions(
+                        topdesk_number,
+                        TicketConverter.convert_CSIS_comment_to_TOPdesk_format(comment)
+                    )
 
     def __get_ticket_requests(self, ticket_id: str):
         url = f"{ConfigurationManager().topdesk_base_url}/incidents/id/{ticket_id}/requests"

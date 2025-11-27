@@ -121,7 +121,7 @@ class CsisAPI:
         return tickets
 
     def __filter_comments_by_date(self, comments):
-        last_updated_timestamp = TimestampUtils.convert_UTC_z_to_ISO8601(ConfigurationManager().last_new_tickets_timestamp)
+        last_updated_timestamp = TimestampUtils.convert_UTC_z_to_ISO8601(ConfigurationManager().last_updates_timestamp)
 
         recent_comments = []
         for comment in comments:
