@@ -26,23 +26,6 @@ class TimestampUtils:
         return dt_utc.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
     @staticmethod
-    def get_time_difference_between(t1: str, t2: str) -> int:
-        """Calculates the absolute difference in minutes between two ISO 8601 timestamps."""
-        t1 = t1.replace("Z", "+00:00")
-        t2 = t2.replace("Z", "+00:00")
-
-        dt1 = datetime.fromisoformat(t1)
-        dt2 = datetime.fromisoformat(t2)
-
-        # Compute difference
-        diff = dt2 - dt1
-
-        # Convert to minutes (rounded)
-        minutes_diff = math.ceil(abs(diff.total_seconds() / 60))
-
-        return minutes_diff
-
-    @staticmethod
     def parse_ms_timestamp(ms_timestamp):
         match = re.search(r'/Date\((\d+)\)/', ms_timestamp)
         if match:
