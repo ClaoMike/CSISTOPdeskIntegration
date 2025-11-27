@@ -24,12 +24,8 @@ created_tickets = topdeskAPI.create_tickets(tickets)
 # Update CSIS tickets with the corresponding TOPdesk ticket IDs
 csisAPI.update_tickets_with_customer_reference(created_tickets)
 ########################################################################################################################
-# ==========================
-# STEP 3: Update Existing Tickets
-# ==========================
-
 # Fetch CSIS tickets that have been modified recently
-# tickets_to_be_updated = csisAPI.get_updated_tickets()
+tickets_to_be_updated = csisAPI.get_tickets_to_be_updated()
 
 # now = datetime.utcnow().replace(tzinfo=timezone.utc)
 # now_as_azure_string = datetime_to_ms_timestamp(now)

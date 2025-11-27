@@ -19,9 +19,7 @@ class TOPdeskAPI:
             self._initialized = True
 
             cm = ConfigurationManager()
-            self.__headers = {
-                "Content-Type": "application/json"
-            }
+            self.__headers = { "Content-Type": "application/json" }
             self.__auth = (cm.topdesk_username, cm.topdesk_password)
 
     def create_tickets(self, tickets):

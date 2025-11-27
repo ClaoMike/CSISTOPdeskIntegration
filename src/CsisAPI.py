@@ -1,6 +1,8 @@
 import requests
 from ConfigurationManager import ConfigurationManager
 from HttpResponseEvaluator import RequestType, HttpResponseEvaluator
+from src.TimestampUtils import TimestampUtils
+
 
 class CsisAPI:
     _instance = None  # Singleton instance
@@ -50,7 +52,7 @@ class CsisAPI:
         - do not have a TOPdesk ID;
         - along with their comments;
         """
-        print("Getting tickets to_be_created")
+        print("Getting tickets to be created")
 
         # get filtered tickets
         tickets = self.__get_filtered_tickets(
@@ -77,6 +79,81 @@ class CsisAPI:
         print(f"All tickets that must be created in TOPdesk: {tickets}")
 
         return tickets
+
+    def get_tickets_to_be_updated(self):
+        """
+        Retrieves tickets that:
+        - have been updated after the last saved timestamp;
+        - have their status set to either New, Pending Customer, Pending Csis, Confirmed, Closed
+        - have a TOPdesk ID;
+        - along with their comments;
+        """
+        print("Getting tickets to be updated")
+
+        # get filtered tickets
+        tickets = self.__get_filtered_tickets(
+            ConfigurationManager().last_updates_timestamp,
+            ["new", "pending-customer", "pending-csis", "confirmed", "closed"]
+        )
+        print(f"All tickets: {tickets}")
+
+        # get their details
+        tickets = self.__get_details_for_tickets(tickets)
+        print(f"Detailed tickets: {tickets}")
+
+        # filter out those that have been created in TOPdesk already
+        tickets, _ = self.__filter_tickets_by_customer_reference(tickets)
+        print(f"Tickets with customer reference: {tickets}")
+
+        # get comments
+        for ticket in tickets:
+            comments = self.__get_comments(ticket["id"])
+            comments.reverse() # reverse them to display them in order of appearance in topdesk
+
+            comments = self.__filter_comments_by_date(comments)
+            comments = self.__filter_comments_by_creator(comments)
+
+            if comments is not None and len(comments) > 0:
+                ticket["comments"] = comments
+
+        print(f"All tickets that must be updated in TOPdesk: {tickets}")
+
+        return tickets
+
+    def __filter_comments_by_date(self, comments):
+        last_updated_timestamp = TimestampUtils.convert_UTC_z_to_ISO8601(ConfigurationManager().last_new_tickets_timestamp)
+
+        recent_comments = []
+        for comment in comments:
+            comment_date = TimestampUtils.convert_UTC_z_to_ISO8601(TimestampUtils.convert_csis_time_to_UTC_z(comment["created"]))
+
+            if comment_date >= last_updated_timestamp:
+                recent_comments.append(comment)
+
+        return recent_comments
+
+    def __filter_comments_by_creator(self, comments):
+        recent_comments = []
+        for comment in comments:
+            if not comment["text"].startswith("[TOPdesk]"):
+                recent_comments.append(comment)
+
+        return recent_comments
+
+    # def __attach_comments():
+    #     for ticket in tickets:
+    #         recent_comments = []
+    #         for comment in all_comments:
+    #             if not comment_text.startswith("[TOPdesk]"):
+    #                 if recent:  # if recent we filter them based on date, otherwise not
+    #                     if last_update < comment_created:
+    #                         recent_comments.append(comment)
+    #                 else:
+    #                     recent_comments.append(comment)
+    #
+    #         ticket["comments"] = recent_comments
+    #
+    #     return tickets
 
     def update_tickets_with_customer_reference(self, tickets):
         """
@@ -174,81 +251,3 @@ class CsisAPI:
         HttpResponseEvaluator.evaluate(response)
 
         return response.json()["payload"]
-
-    # def __attach_comments(self, tickets, recent=True):
-    #     """
-    #             Attaches recent comments to each ticket.
-    #
-    #             Args:
-    #                 tickets (list): List of tickets.
-    #
-    #             Returns:
-    #                 list: List of tickets with attached recent comments.
-    #             """
-    #
-    #     if recent:
-    #         last_update = datetime.fromisoformat(
-    #             self.__configurationManager.last_updates_timestamp.replace("Z", "+00:00")
-    #         )
-    #
-    #     for ticket in tickets:
-    #         # get all comments in ticket
-    #         all_comments = self.__get_comments(ticket["payload"]["id"])
-    #
-    #         # save only those that are recent
-    #         recent_comments = []
-    #         for comment in all_comments:
-    #             if recent:
-    #                 comment_created = datetime.fromisoformat(comment["created"])
-    #             comment_text = comment['text']
-    #
-    #             if recent:
-    #                 print(f"Last Update Timestamp: {last_update}")
-    #             print(f"Comment timestamp: {comment_created}")
-    #
-    #             if not comment_text.startswith("[TOPdesk]"):
-    #                 if recent:  # if recent we filter them based on date, otherwise not
-    #                     if last_update < comment_created:
-    #                         recent_comments.append(comment)
-    #                 else:
-    #                     recent_comments.append(comment)
-    #
-    #         ticket["comments"] = recent_comments
-    #
-    #     return tickets
-
-    # def __get_updated_tickets_with_offset(self, offset, limit):
-    #     """
-    #     Fetches tickets that were updated after a timestamp.
-    #
-    #     Args:
-    #         offset (int): Pagination offset for fetching tickets.
-    #         limit (int): Number of tickets to fetch per request.
-    #
-    #     Returns:
-    #         dict: JSON response containing ticket data.
-    #
-    #     Raises:
-    #         SystemExit: If the API request fails.
-    #     """
-    #     params = {
-    #         "updated_after": self.__configurationManager.last_updates_timestamp,
-    #         "status": ["new", "pending-customer", "pending-csis", "confirmed", "closed"],
-    #         "limit": limit,
-    #         "offset": offset
-    #     }
-    #
-    #     return self.__make_request(request_type=RequestType.GET, params=params)
-
-    # def get_updated_tickets(self):
-    #     """
-    #     Retrieves updated tickets after a timestamp and attaches recent comments.
-    #
-    #     Returns:
-    #         list: A list of updated tickets with comments.
-    #     """
-    #     tickets = self.__get_filtered_tickets(self.__get_updated_tickets_with_offset,
-    #                                           should_have_customer_reference=True)
-    #     tickets = self.__attach_comments(tickets)
-    #
-    #     return tickets

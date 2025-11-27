@@ -25,6 +25,13 @@ class TimestampUtils:
         return new_time.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"  # Trim to 3 decimal places
 
     @staticmethod
+    def convert_csis_time_to_UTC_z(date):
+        dt = datetime.fromisoformat(date)
+        dt_utc = dt.astimezone(timezone.utc)
+
+        return dt_utc.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+
+    @staticmethod
     def get_time_difference_between(t1: str, t2: str) -> int:
         """
         Calculates the absolute difference in minutes between two ISO 8601 timestamps.
@@ -63,6 +70,10 @@ class TimestampUtils:
             return datetime.fromtimestamp(millis / 1000.0, tz=timezone.utc)
         else:
             return None
+
+    @staticmethod
+    def convert_UTC_z_to_ISO8601(d):
+        return datetime.fromisoformat(d.replace("Z", "+00:00"))
 
     @staticmethod
     def format_to_iso_z(dt):
