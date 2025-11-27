@@ -27,8 +27,6 @@ class ConfigurationManager:
             self.__LAST_UPDATES_TIMESTAMP = TimestampUtils.parse_Azure_Date_to_iso(
                 automationassets.get_automation_variable("CSIS_LAST_UPDATES_TIMESTAMP")
             )
-            minutes_str     = automationassets.get_automation_variable("CSIS_MINUTES")
-            self.__minutes  = int(minutes_str)
 
             # CSIS data
             self.__CSIS_AUTHENTICATION_URL  = "https://login.csis.com/oauth2/v2/token"
@@ -46,7 +44,6 @@ class ConfigurationManager:
             # Logs
             print(f"Last new tickets timestamp: {self.__LAST_NEW_TICKETS_TIMESTAMP}")
             print(f"Last updates timestamp: {self.__LAST_UPDATES_TIMESTAMP}")
-            print(f"MINUTES: {self.__minutes}")
             print(f"CSIS authentication url: {self.__CSIS_AUTHENTICATION_URL}")
             print(f"CSIS base url: {self.__CSIS_BASE_URL}")
             print(f"CSIS client ID: {ConfigurationManager.hide_data(self.__CSIS_CLIENT_ID)}")
@@ -76,17 +73,6 @@ class ConfigurationManager:
     def last_updates_timestamp_key(self):
         """Retrieves the key of the last fetch of new updates object in Azure automations."""
         return self.__LAST_UPDATES_TIMESTAMP_KEY
-
-    @property
-    def is_logging(self):
-        """Retrieves the value of the logging status."""
-        return self.__is_logging
-
-    # General configuration variables
-    @property
-    def minutes(self):
-        """Retrieves the configured number of minutes."""
-        return self.__minutes
 
     # CSIS API Getters
     @property
