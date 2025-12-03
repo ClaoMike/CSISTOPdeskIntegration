@@ -2,17 +2,16 @@ from dotenv import load_dotenv
 import os
 
 def get_automation_variable(key: str) -> str:
-    load_dotenv()
+    load_dotenv(override=True)
     return os.getenv(key)
 
 def set_automation_variable(key: str, value: str):
     pass
 
 def get_automation_credential(key: str) -> dict[str, str]:
-    load_dotenv()
-    if key == "CREDENTIAL_TOPDESK_API":
-        cred = {}
-        cred["username"] = get_automation_variable("TOPDESK_USERNAME")
-        cred["password"] = get_automation_variable("TOPDESK_PASSWORD")
+    if key == 'CREDENTIAL_TOPDESK_API':
+        cred = {'username': get_automation_variable('TOPDESK_USERNAME'),
+                'password': get_automation_variable('TOPDESK_PASSWORD')}
 
         return cred
+    return {}
