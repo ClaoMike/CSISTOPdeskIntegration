@@ -1,13 +1,13 @@
 ########################################################################################################################
 
 from src import automationassets # dev
+from abc import ABC, abstractmethod
 # import automationassets # prod
+from datetime import datetime, timedelta, timezone
+from enum import Enum
+import html
 import re
 import requests
-from enum import Enum
-import datetime
-from datetime import datetime, timedelta, timezone
-from abc import ABC, abstractmethod
 
 ########################################################################################################################
 
@@ -318,6 +318,7 @@ class CsisAPI(Singleton):
         # get filtered tickets
         tickets = self.__get_filtered_tickets(
             ConfigurationManager().last_updates_timestamp,
+            # "2025-12-15T09:00:00Z", # use this for testing purposes
             ["new", "pending-customer", "pending-csis", "confirmed", "closed"]
         )
         print(f"All tickets: {tickets}")
@@ -455,6 +456,13 @@ class CsisAPI(Singleton):
 
 ########################################################################################################################
 
+class StringParser:
+    @staticmethod
+    def normalize_html_strings(s):
+        return html.unescape(s).replace('\n', '<br/>')
+
+########################################################################################################################
+
 class TicketConverter:
     @staticmethod
     def convert_CSIS_ticket_to_be_created_to_TOPdesk_format(ticket):
@@ -467,7 +475,7 @@ class TicketConverter:
         new_ticket = {
             "status": "firstLine",  # Default status for new tickets
             # Full description, TOPdesk does not render new line chars, but it does render break lines
-            "request": ticket["description"].replace('\n', '<br>'),
+            "request":  StringParser.normalize_html_strings(ticket["description"]),
             "caller": {
                 "dynamicName": "ecrime"
             },
@@ -619,7 +627,13 @@ class TOPdeskAPI(Singleton):
             last_topdesk_description = self.__get_ticket_last_request(topdesk_current_ticket_requests)
             # check if the last description is different from the current CSIS description
             new_description = None
-            current_csis_description = ticket["description"].replace('\n', '<br/>').replace('&#x20;', ' ')
+
+            current_csis_description = StringParser.normalize_html_strings(ticket["description"])
+            last_topdesk_description = StringParser.normalize_html_strings(last_topdesk_description)
+
+            print(f"TOPdesk last description: {last_topdesk_description}")
+            print(f"CSIS current description: {current_csis_description}")
+
             if last_topdesk_description is not None and last_topdesk_description != current_csis_description:
                 new_description = current_csis_description
 

@@ -80,6 +80,7 @@ class CsisAPI(Singleton):
         # get filtered tickets
         tickets = self.__get_filtered_tickets(
             ConfigurationManager().last_updates_timestamp,
+            # "2025-12-15T09:00:00Z", # use this for testing purposes
             ["new", "pending-customer", "pending-csis", "confirmed", "closed"]
         )
         print(f"All tickets: {tickets}")

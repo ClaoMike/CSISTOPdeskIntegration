@@ -3,6 +3,7 @@ from ConfigurationManager import ConfigurationManager
 from HttpResponseEvaluator import RequestType, HttpResponseEvaluator
 from TicketConverter import TicketConverter
 from Singleton import Singleton
+from StringParser import StringParser
 
 class TOPdeskAPI(Singleton):
     def _init_singleton(self):
@@ -58,7 +59,13 @@ class TOPdeskAPI(Singleton):
             last_topdesk_description = self.__get_ticket_last_request(topdesk_current_ticket_requests)
             # check if the last description is different from the current CSIS description
             new_description = None
-            current_csis_description = ticket["description"].replace('\n', '<br/>').replace('&#x20;', ' ')
+
+            current_csis_description = StringParser.normalize_html_strings(ticket["description"])
+            last_topdesk_description = StringParser.normalize_html_strings(last_topdesk_description)
+
+            print(f"TOPdesk last description: {last_topdesk_description}")
+            print(f"CSIS current description: {current_csis_description}")
+
             if last_topdesk_description is not None and last_topdesk_description != current_csis_description:
                 new_description = current_csis_description
 

@@ -1,3 +1,5 @@
+from StringParser import StringParser
+
 class TicketConverter:
     @staticmethod
     def convert_CSIS_ticket_to_be_created_to_TOPdesk_format(ticket):
@@ -10,7 +12,7 @@ class TicketConverter:
         new_ticket = {
             "status": "firstLine",  # Default status for new tickets
             # Full description, TOPdesk does not render new line chars, but it does render break lines
-            "request": ticket["description"].replace('\n', '<br>'),
+            "request":  StringParser.normalize_html_strings(ticket["description"]),
             "caller": {
                 "dynamicName": "ecrime"
             },
