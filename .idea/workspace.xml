@@ -4,13 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="Update azure script">
-      <change afterPath="$PROJECT_DIR$/src/StringParser.py" afterDir="false" />
+    <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="Fix descriptions not matching bugs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/azure/azure_script_draft.py" beforeDir="false" afterPath="$PROJECT_DIR$/azure/azure_script_draft.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CsisAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/CsisAPI.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TOPdeskAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/TOPdeskAPI.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TicketConverter.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/TicketConverter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TimestampUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/TimestampUtils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -143,15 +140,7 @@
       <workItem from="1764233017369" duration="18426000" />
       <workItem from="1764330267928" duration="53000" />
       <workItem from="1764665422014" duration="1751000" />
-      <workItem from="1765792320196" duration="4668000" />
-    </task>
-    <task id="LOCAL-00032" summary="Added some unit tests">
-      <option name="closed" value="true" />
-      <created>1741687095637</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1741687095637</updated>
+      <workItem from="1765792320196" duration="6213000" />
     </task>
     <task id="LOCAL-00033" summary="Improved tests as I added new logs">
       <option name="closed" value="true" />
@@ -537,14 +526,21 @@
       <option name="project" value="LOCAL" />
       <updated>1764250166085</updated>
     </task>
-    <option name="localTasksCounter" value="81" />
+    <task id="LOCAL-00081" summary="Fix descriptions not matching bugs">
+      <option name="closed" value="true" />
+      <created>1765797054230</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1765797054230</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Small CSIS API refactor" />
     <MESSAGE value="Refactor RequestType" />
     <MESSAGE value="Refactor TOPdesk API" />
     <MESSAGE value="Unit Tests for TOPdesk API" />
@@ -569,7 +565,8 @@
     <MESSAGE value="Refactor" />
     <MESSAGE value="cleanup" />
     <MESSAGE value="Update azure script" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update azure script" />
+    <MESSAGE value="Fix descriptions not matching bugs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix descriptions not matching bugs" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_tests_with_coverage.coverage" NAME="Run tests with coverage Coverage Results" MODIFIED="1742896259126" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -577,7 +574,7 @@
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$.coverage" NAME=" Coverage Results" MODIFIED="1741688752739" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/tests/API" />
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_main.coverage" NAME="Run main Coverage Results" MODIFIED="1743063661610" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\ClaJec0\PycharmProjects\TOPdeskCsisIntegration" />
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$ConfigurationManager.coverage" NAME="ConfigurationManager Coverage Results" MODIFIED="1741178430193" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$azure_script_draft.coverage" NAME="azure_script_draft Coverage Results" MODIFIED="1765796940076" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/azure" />
-    <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$main.coverage" NAME="main Coverage Results" MODIFIED="1765796948471" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$azure_script_draft.coverage" NAME="azure_script_draft Coverage Results" MODIFIED="1765797023467" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/azure" />
+    <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$main.coverage" NAME="main Coverage Results" MODIFIED="1765798368961" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
 </project>

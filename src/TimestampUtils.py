@@ -49,6 +49,10 @@ class TimestampUtils:
 
     @staticmethod
     def save_current_date_as(key: str):
+        print(f"Saving {key} ...")
         now = datetime.utcnow().replace(tzinfo=timezone.utc)
+        print(f"Current time: {now}")
+        now -= timedelta(hours=2)
+        print(f"Updating to CSIS time: {now}")
         now_as_azure_string = TimestampUtils.datetime_to_ms_timestamp(now)
         automationassets.set_automation_variable(key, now_as_azure_string)
