@@ -80,7 +80,7 @@ class CsisAPI(Singleton):
         # get filtered tickets
         tickets = self.__get_filtered_tickets(
             ConfigurationManager().last_updates_timestamp,
-            # "2025-12-15T09:00:00Z", # use this for testing purposes
+            # "2025-12-15T00:45:00Z", # use this for testing purposes
             ["new", "pending-customer", "pending-csis", "confirmed", "closed"]
         )
         print(f"All tickets: {tickets}")
@@ -89,7 +89,7 @@ class CsisAPI(Singleton):
         tickets = self.__get_details_for_tickets(tickets)
         print(f"Detailed tickets: {tickets}")
 
-        # filter out those that have been created in TOPdesk already
+        # filter out those that have not been created in TOPdesk already
         tickets, _ = self.__filter_tickets_by_customer_reference(tickets)
         print(f"Tickets with customer reference: {tickets}")
 
@@ -163,7 +163,7 @@ class CsisAPI(Singleton):
             params["offset"] = offset
             params["limit"] = limit
 
-            HttpResponseEvaluator.announce_request(url, RequestType.GET)
+            HttpResponseEvaluator.announce_request(url, RequestType.GET, params=params)
             response = requests.get(url=url, headers=self.__headers, params=params)
             HttpResponseEvaluator.evaluate(response)
 

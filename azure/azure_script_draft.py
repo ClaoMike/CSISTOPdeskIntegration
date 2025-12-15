@@ -89,8 +89,6 @@ class TimestampUtils:
         print(f"Saving {key} ...")
         now = datetime.utcnow().replace(tzinfo=timezone.utc)
         print(f"Current time: {now}")
-        now -= timedelta(hours=2)
-        print(f"Updating to CSIS time: {now}")
         now_as_azure_string = TimestampUtils.datetime_to_ms_timestamp(now)
         automationassets.set_automation_variable(key, now_as_azure_string)
 
@@ -132,7 +130,7 @@ class ConfigurationManager(Singleton):
         print(f"CSIS client ID: {ConfigurationManager.hide_data(self.__CSIS_CLIENT_ID)}")
         print(f"CSIS client secret: {ConfigurationManager.hide_data(self.__CSIS_CLIENT_SECRET)}")
         print(f"TOPdesk username: {self.__TOPdesk_USERNAME}")
-        print(f"TOPdesk password: {self.__TOPdesk_PASSWORD}")
+        print(f"TOPdesk password: {ConfigurationManager.hide_data(self.__TOPdesk_PASSWORD)}")
         print(f"TOPdesk base url: {self.__TOPdesk_BASE_URL}")
 
         print("Script configuration loaded successfully.")
@@ -224,18 +222,20 @@ class RequestType(Enum):
 
 class HttpResponseEvaluator:
     @staticmethod
-    def announce_request(url, request_type: RequestType, json=None):
+    def announce_request(url, request_type: RequestType, json=None, params=None):
         print("\n## HTTP REQUEST ##")
         print(f"Performing a {request_type.value} request at {url}")
         if json is not None:
             print(f"Payload (json) {json}")
+        if params is not None:
+            print(f"Parameters (params) {params}")
 
     @staticmethod
     def evaluate(response, hide_response=False):
         if 200 <= response.status_code < 300:
             if hide_response:
                 print(f"Request was successful ({response.status_code}): "
-                      + "{ConfigurationManager.hide_data(response.text)}")
+                      + f"{ConfigurationManager.hide_data(response.text)}")
             else:
                 print(f"Request was successful ({response.status_code}): {response.text}")
             print("##################\n")
@@ -322,7 +322,7 @@ class CsisAPI(Singleton):
         # get filtered tickets
         tickets = self.__get_filtered_tickets(
             ConfigurationManager().last_updates_timestamp,
-            # "2025-12-15T09:00:00Z", # use this for testing purposes
+            # "2025-12-15T00:45:00Z", # use this for testing purposes
             ["new", "pending-customer", "pending-csis", "confirmed", "closed"]
         )
         print(f"All tickets: {tickets}")
@@ -331,7 +331,7 @@ class CsisAPI(Singleton):
         tickets = self.__get_details_for_tickets(tickets)
         print(f"Detailed tickets: {tickets}")
 
-        # filter out those that have been created in TOPdesk already
+        # filter out those that have not been created in TOPdesk already
         tickets, _ = self.__filter_tickets_by_customer_reference(tickets)
         print(f"Tickets with customer reference: {tickets}")
 
@@ -405,7 +405,7 @@ class CsisAPI(Singleton):
             params["offset"] = offset
             params["limit"] = limit
 
-            HttpResponseEvaluator.announce_request(url, RequestType.GET)
+            HttpResponseEvaluator.announce_request(url, RequestType.GET, params=params)
             response = requests.get(url=url, headers=self.__headers, params=params)
             HttpResponseEvaluator.evaluate(response)
 

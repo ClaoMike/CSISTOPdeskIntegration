@@ -39,7 +39,7 @@ class ConfigurationManager(Singleton):
         print(f"CSIS client ID: {ConfigurationManager.hide_data(self.__CSIS_CLIENT_ID)}")
         print(f"CSIS client secret: {ConfigurationManager.hide_data(self.__CSIS_CLIENT_SECRET)}")
         print(f"TOPdesk username: {self.__TOPdesk_USERNAME}")
-        print(f"TOPdesk password: {self.__TOPdesk_PASSWORD}")
+        print(f"TOPdesk password: {ConfigurationManager.hide_data(self.__TOPdesk_PASSWORD)}")
         print(f"TOPdesk base url: {self.__TOPdesk_BASE_URL}")
 
         print("Script configuration loaded successfully.")
