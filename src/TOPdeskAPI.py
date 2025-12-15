@@ -56,7 +56,7 @@ class TOPdeskAPI(Singleton):
             # Get the list of all descriptions of the TOPdesk ticket
             topdesk_current_ticket_requests = self.__get_ticket_requests(topdesk_current_ticket_id)
             # Extract the last one
-            last_topdesk_description = self.__get_ticket_last_request(topdesk_current_ticket_requests)
+            last_topdesk_description = TOPdeskAPI.__get_ticket_last_request(topdesk_current_ticket_requests)
             # check if the last description is different from the current CSIS description
             new_description = None
 
@@ -112,7 +112,8 @@ class TOPdeskAPI(Singleton):
 
         return response.json()
 
-    def __get_ticket_last_request(self, req):
+    @staticmethod
+    def __get_ticket_last_request(req):
         if req is not None and len(req) != 0:
             return req[0].get("memoText")
 

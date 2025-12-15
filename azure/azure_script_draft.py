@@ -87,7 +87,7 @@ class TimestampUtils:
     @staticmethod
     def save_current_date_as(key: str):
         print(f"Saving {key} ...")
-        now = datetime.utcnow().replace(tzinfo=timezone.utc)
+        now = datetime.now(timezone.utc)
         print(f"Current time: {now}")
         now_as_azure_string = TimestampUtils.datetime_to_ms_timestamp(now)
         automationassets.set_automation_variable(key, now_as_azure_string)
@@ -295,8 +295,8 @@ class CsisAPI(Singleton):
         print(f"Detailed tickets: {tickets}")
 
         # filter out those that have been created in TOPdesk already
-        _, tickets = self.__filter_tickets_by_customer_reference(tickets)
-        print(f"Tickets without customer referene: {tickets}")
+        _, tickets = CsisAPI.__filter_tickets_by_customer_reference(tickets)
+        print(f"Tickets without customer reference: {tickets}")
 
         # get comments
         for ticket in tickets:
@@ -332,7 +332,7 @@ class CsisAPI(Singleton):
         print(f"Detailed tickets: {tickets}")
 
         # filter out those that have not been created in TOPdesk already
-        tickets, _ = self.__filter_tickets_by_customer_reference(tickets)
+        tickets, _ = CsisAPI.__filter_tickets_by_customer_reference(tickets)
         print(f"Tickets with customer reference: {tickets}")
 
         # get comments
@@ -340,8 +340,8 @@ class CsisAPI(Singleton):
             comments = self.__get_comments(ticket["id"])
             comments.reverse() # reverse them to display them in order of appearance in topdesk
 
-            comments = self.__filter_comments_by_date(comments)
-            comments = self.__filter_comments_by_creator(comments)
+            comments = CsisAPI.__filter_comments_by_date(comments)
+            comments = CsisAPI.__filter_comments_by_creator(comments)
 
             if comments is not None and len(comments) > 0:
                 ticket["comments"] = comments
@@ -359,7 +359,8 @@ class CsisAPI(Singleton):
 
             self.__update_ticket( ticket["csis_id"], payload)
 
-    def __filter_comments_by_date(self, comments):
+    @staticmethod
+    def __filter_comments_by_date(comments):
         last_updated_timestamp = TimestampUtils.convert_UTC_z_to_ISO8601(ConfigurationManager().last_updates_timestamp)
 
         recent_comments = []
@@ -373,7 +374,8 @@ class CsisAPI(Singleton):
 
         return recent_comments
 
-    def __filter_comments_by_creator(self, comments):
+    @staticmethod
+    def __filter_comments_by_creator(comments):
         recent_comments = []
         for comment in comments:
             if not comment["text"].startswith("[TOPdesk]"):
@@ -428,7 +430,8 @@ class CsisAPI(Singleton):
 
         return detailed_tickets
 
-    def __filter_tickets_by_customer_reference(self, tickets):
+    @staticmethod
+    def __filter_tickets_by_customer_reference(tickets):
         tickets_with_customer_reference     = []
         tickets_without_customer_reference  = []
 
@@ -522,9 +525,9 @@ class TicketConverter:
     @staticmethod
     def convert_CSIS_comment_to_TOPdesk_format(comment):
         """Converts CSIS comment into the TOPdesk format."""
-        formmated_comment = comment['text'].replace('\n', '<br>') # format
+        formatted_comment = comment['text'].replace('\n', '<br>') # format
         new_comment = {
-            "action": f"<b>Creator:</b> {comment['creator']}<br>{formmated_comment}"
+            "action": f"<b>Creator:</b> {comment['creator']}<br>{formatted_comment}"
         }
 
         return new_comment
@@ -533,11 +536,9 @@ class TicketConverter:
     def convert_updated_ticket_to_TOPdesk_format(ticket, new_description=None):
         """Converts updated CSIS ticket into the TOPdesk format."""
         new_payload = {
-            "priority": {
-                "id": TicketConverter.convert_severity_to_priority(ticket["severity"])
-            }
+            "priority": { "id": TicketConverter.convert_severity_to_priority(ticket["severity"]) },
+            "processingStatus": { "id": TicketConverter.convert_csis_to_topdesk_status(ticket["status"]) }
         }
-        new_payload["processingStatus"] = {"id": TicketConverter.convert_csis_to_topdesk_status(ticket["status"])}
 
         if new_description is not None:
             # Full description, TOPdesk does not render new line chars, but it does render break lines
@@ -628,7 +629,7 @@ class TOPdeskAPI(Singleton):
             # Get the list of all descriptions of the TOPdesk ticket
             topdesk_current_ticket_requests = self.__get_ticket_requests(topdesk_current_ticket_id)
             # Extract the last one
-            last_topdesk_description = self.__get_ticket_last_request(topdesk_current_ticket_requests)
+            last_topdesk_description = TOPdeskAPI.__get_ticket_last_request(topdesk_current_ticket_requests)
             # check if the last description is different from the current CSIS description
             new_description = None
 
@@ -684,7 +685,8 @@ class TOPdeskAPI(Singleton):
 
         return response.json()
 
-    def __get_ticket_last_request(self, req):
+    @staticmethod
+    def __get_ticket_last_request(req):
         if req is not None and len(req) != 0:
             return req[0].get("memoText")
 

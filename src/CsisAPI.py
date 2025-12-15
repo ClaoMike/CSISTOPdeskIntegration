@@ -53,8 +53,8 @@ class CsisAPI(Singleton):
         print(f"Detailed tickets: {tickets}")
 
         # filter out those that have been created in TOPdesk already
-        _, tickets = self.__filter_tickets_by_customer_reference(tickets)
-        print(f"Tickets without customer referene: {tickets}")
+        _, tickets = CsisAPI.__filter_tickets_by_customer_reference(tickets)
+        print(f"Tickets without customer reference: {tickets}")
 
         # get comments
         for ticket in tickets:
@@ -90,7 +90,7 @@ class CsisAPI(Singleton):
         print(f"Detailed tickets: {tickets}")
 
         # filter out those that have not been created in TOPdesk already
-        tickets, _ = self.__filter_tickets_by_customer_reference(tickets)
+        tickets, _ = CsisAPI.__filter_tickets_by_customer_reference(tickets)
         print(f"Tickets with customer reference: {tickets}")
 
         # get comments
@@ -98,8 +98,8 @@ class CsisAPI(Singleton):
             comments = self.__get_comments(ticket["id"])
             comments.reverse() # reverse them to display them in order of appearance in topdesk
 
-            comments = self.__filter_comments_by_date(comments)
-            comments = self.__filter_comments_by_creator(comments)
+            comments = CsisAPI.__filter_comments_by_date(comments)
+            comments = CsisAPI.__filter_comments_by_creator(comments)
 
             if comments is not None and len(comments) > 0:
                 ticket["comments"] = comments
@@ -117,7 +117,8 @@ class CsisAPI(Singleton):
 
             self.__update_ticket( ticket["csis_id"], payload)
 
-    def __filter_comments_by_date(self, comments):
+    @staticmethod
+    def __filter_comments_by_date(comments):
         last_updated_timestamp = TimestampUtils.convert_UTC_z_to_ISO8601(ConfigurationManager().last_updates_timestamp)
 
         recent_comments = []
@@ -131,7 +132,8 @@ class CsisAPI(Singleton):
 
         return recent_comments
 
-    def __filter_comments_by_creator(self, comments):
+    @staticmethod
+    def __filter_comments_by_creator(comments):
         recent_comments = []
         for comment in comments:
             if not comment["text"].startswith("[TOPdesk]"):
@@ -186,7 +188,8 @@ class CsisAPI(Singleton):
 
         return detailed_tickets
 
-    def __filter_tickets_by_customer_reference(self, tickets):
+    @staticmethod
+    def __filter_tickets_by_customer_reference(tickets):
         tickets_with_customer_reference     = []
         tickets_without_customer_reference  = []
 

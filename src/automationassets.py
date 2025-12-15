@@ -5,7 +5,7 @@ def get_automation_variable(key: str) -> str:
     load_dotenv(override=True)
     return os.getenv(key)
 
-def set_automation_variable(key: str, value: str):
+def set_automation_variable(_key: str, _value: str):
     pass
 
 def get_automation_credential(key: str) -> dict[str, str]:

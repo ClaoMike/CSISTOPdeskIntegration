@@ -55,9 +55,9 @@ class TicketConverter:
     @staticmethod
     def convert_CSIS_comment_to_TOPdesk_format(comment):
         """Converts CSIS comment into the TOPdesk format."""
-        formmated_comment = comment['text'].replace('\n', '<br>') # format
+        formatted_comment = comment['text'].replace('\n', '<br>') # format
         new_comment = {
-            "action": f"<b>Creator:</b> {comment['creator']}<br>{formmated_comment}"
+            "action": f"<b>Creator:</b> {comment['creator']}<br>{formatted_comment}"
         }
 
         return new_comment
@@ -66,11 +66,9 @@ class TicketConverter:
     def convert_updated_ticket_to_TOPdesk_format(ticket, new_description=None):
         """Converts updated CSIS ticket into the TOPdesk format."""
         new_payload = {
-            "priority": {
-                "id": TicketConverter.convert_severity_to_priority(ticket["severity"])
-            }
+            "priority": { "id": TicketConverter.convert_severity_to_priority(ticket["severity"]) },
+            "processingStatus": { "id": TicketConverter.convert_csis_to_topdesk_status(ticket["status"]) }
         }
-        new_payload["processingStatus"] = {"id": TicketConverter.convert_csis_to_topdesk_status(ticket["status"])}
 
         if new_description is not None:
             # Full description, TOPdesk does not render new line chars, but it does render break lines
