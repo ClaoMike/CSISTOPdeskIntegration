@@ -4,14 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="Fix some bugs">
+    <list default="true" id="69efb83d-12e4-4663-b342-73bf3c9f7e51" name="Changes" comment="Remove some warnings">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/azure/azure_script_draft.py" beforeDir="false" afterPath="$PROJECT_DIR$/azure/azure_script_draft.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CsisAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/CsisAPI.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TOPdeskAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/TOPdeskAPI.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TicketConverter.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/TicketConverter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TimestampUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/TimestampUtils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/automationassets.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/automationassets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -144,15 +140,7 @@
       <workItem from="1764233017369" duration="18426000" />
       <workItem from="1764330267928" duration="53000" />
       <workItem from="1764665422014" duration="1751000" />
-      <workItem from="1765792320196" duration="10856000" />
-    </task>
-    <task id="LOCAL-00035" summary="More Unit Tests">
-      <option name="closed" value="true" />
-      <created>1741689107475</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1741689107475</updated>
+      <workItem from="1765792320196" duration="11208000" />
     </task>
     <task id="LOCAL-00036" summary="Refactor TOPdesk API class">
       <option name="closed" value="true" />
@@ -538,14 +526,21 @@
       <option name="project" value="LOCAL" />
       <updated>1765802930323</updated>
     </task>
-    <option name="localTasksCounter" value="84" />
+    <task id="LOCAL-00084" summary="Remove some warnings">
+      <option name="closed" value="true" />
+      <created>1765803898214</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1765803898214</updated>
+    </task>
+    <option name="localTasksCounter" value="85" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Unit Tests for TOPdesk API" />
     <MESSAGE value="Saving the interval as an environment variable" />
     <MESSAGE value="Add optional logging" />
     <MESSAGE value="Update TODO list" />
@@ -570,7 +565,8 @@
     <MESSAGE value="Fix descriptions not matching bugs" />
     <MESSAGE value="Need to set back time for CSIS" />
     <MESSAGE value="Fix some bugs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix some bugs" />
+    <MESSAGE value="Remove some warnings" />
+    <option name="LAST_COMMIT_MESSAGE" value="Remove some warnings" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/TOPdeskCsisIntegration$Run_tests_with_coverage.coverage" NAME="Run tests with coverage Coverage Results" MODIFIED="1742896259126" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
